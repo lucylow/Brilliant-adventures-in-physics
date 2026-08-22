@@ -252,3 +252,6 @@
 - [x] Add validated deterministic simple-harmonic displacement and velocity helpers
 - [x] Add deterministic oscillation regression tests including invalid-parameter handling
 - [x] Connect oscillation content to an accessible harmonic-motion experiment in the Lab
+- [x] Add validated deterministic one-dimensional collision helpers
+- [x] Add deterministic collision regression tests including invalid-mass handling
+- [x] Connect momentum conservation to an accessible collision experiment in the Lab

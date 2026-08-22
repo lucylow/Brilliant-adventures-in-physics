@@ -142,6 +142,29 @@ export function wavePeriod(frequencyHz: number): number {
   return 1 / positive(frequencyHz, "frequencyHz");
 }
 
+export type ElasticCollisionResult = {
+  finalVelocity1Mps: number;
+  finalVelocity2Mps: number;
+  initialMomentumKgMps: number;
+  finalMomentumKgMps: number;
+};
+
+export function elasticCollision1D(mass1Kg: number, velocity1Mps: number, mass2Kg: number, velocity2Mps: number): ElasticCollisionResult {
+  const m1 = positive(mass1Kg, "mass1Kg");
+  const m2 = positive(mass2Kg, "mass2Kg");
+  const u1 = finite(velocity1Mps, "velocity1Mps");
+  const u2 = finite(velocity2Mps, "velocity2Mps");
+  const totalMass = m1 + m2;
+  const finalVelocity1Mps = ((m1 - m2) * u1 + 2 * m2 * u2) / totalMass;
+  const finalVelocity2Mps = (2 * m1 * u1 + (m2 - m1) * u2) / totalMass;
+  return {
+    finalVelocity1Mps,
+    finalVelocity2Mps,
+    initialMomentumKgMps: m1 * u1 + m2 * u2,
+    finalMomentumKgMps: m1 * finalVelocity1Mps + m2 * finalVelocity2Mps,
+  };
+}
+
 export function harmonicDisplacement(amplitudeM: number, frequencyHz: number, timeS: number, phaseRad = 0): number {
   const amplitude = positive(amplitudeM, "amplitudeM");
   const frequency = positive(frequencyHz, "frequencyHz");

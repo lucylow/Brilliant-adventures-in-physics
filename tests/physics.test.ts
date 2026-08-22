@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { angularSpeedFromRpm, buoyantForce, centripetalAcceleration, checkNumericAnswer, coulombForce, criticalAngleDeg, electricField, harmonicDisplacement, harmonicVelocity, hydrostaticPressure, impulse, kineticEnergy, momentum, ohmsLaw, powerFromCurrentResistance, projectile, refraction, resistanceFromVoltageCurrent, tangentialSpeed, temperatureChangeFromEnergy, thermalEnergy, velocityChangeFromImpulse, volumetricFlowRate, wave, waveFrequency, wavePeriod, waveSpeed } from "../lib/physics";
+import { angularSpeedFromRpm, buoyantForce, centripetalAcceleration, checkNumericAnswer, coulombForce, criticalAngleDeg, electricField, elasticCollision1D, harmonicDisplacement, harmonicVelocity, hydrostaticPressure, impulse, kineticEnergy, momentum, ohmsLaw, powerFromCurrentResistance, projectile, refraction, resistanceFromVoltageCurrent, tangentialSpeed, temperatureChangeFromEnergy, thermalEnergy, velocityChangeFromImpulse, volumetricFlowRate, wave, waveFrequency, wavePeriod, waveSpeed } from "../lib/physics";
 import { createMockTutorAnswer, validateTutorAnswer } from "../lib/ai";
 
 describe("physics engine", () => {
@@ -137,6 +137,19 @@ describe("physics engine", () => {
     expect(() => harmonicVelocity(1, -1, 0)).toThrow("frequencyHz must be positive");
     expect(() => harmonicDisplacement(1, 1, Number.NaN)).toThrow("timeS must be finite");
     expect(() => harmonicVelocity(1, 1, 0, Number.NaN)).toThrow("phaseRad must be finite");
+  });
+
+  it("computes an elastic collision and conserves momentum", () => {
+    const result = elasticCollision1D(2, 3, 1, -1);
+    expect(result.finalVelocity1Mps).toBeCloseTo(1 / 3, 8);
+    expect(result.finalVelocity2Mps).toBeCloseTo(13 / 3, 8);
+    expect(result.finalMomentumKgMps).toBeCloseTo(result.initialMomentumKgMps, 8);
+  });
+
+  it("rejects invalid collision masses and velocities", () => {
+    expect(() => elasticCollision1D(0, 1, 1, 0)).toThrow("mass1Kg must be positive");
+    expect(() => elasticCollision1D(1, Number.NaN, 1, 0)).toThrow("velocity1Mps must be finite");
+    expect(() => elasticCollision1D(1, 1, -1, 0)).toThrow("mass2Kg must be positive");
   });
 });
 
