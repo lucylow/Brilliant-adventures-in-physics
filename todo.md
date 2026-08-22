@@ -170,3 +170,7 @@
 - [x] Add lifecycle-safe async state updates and explicit persistence feedback
 - [x] Re-check recent runtime logs for new warnings or bundle failures
 - [x] Add deterministic regression coverage for lifecycle-safe persistence handling
+- [x] Audit Lens saves, draft loading, and preference loading for rejected promises
+- [x] Add validation and safe fallback handling for malformed persisted records
+- [x] Add accessible recovery feedback for Lens save and draft-loading failures
+- [x] Add deterministic regression tests for malformed persistence data and failure recovery
