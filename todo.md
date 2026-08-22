@@ -219,3 +219,6 @@
 - [x] Audit remaining local-data loaders for stale updates and rejected promises
 - [x] Add retryable loading feedback to remaining persistence-backed screens
 - [x] Add deterministic tests for loader failure and retry contracts
+- [x] Audit Lesson and Tutor loading effects for stale updates
+- [x] Add explicit retry or recovery feedback to remaining learning-screen actions
+- [x] Add deterministic regression tests for screen-level async failures
