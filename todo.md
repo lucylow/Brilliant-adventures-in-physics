@@ -147,3 +147,7 @@
 - [x] Use the persisted haptics preference for Lab milestone feedback
 - [x] Add typed service-result contracts with explicit retryable errors
 - [x] Add deterministic tests for preference migration and service-result execution
+- [x] Add a typed Tutor service boundary over the existing AI response contract
+- [x] Add Tutor validation, loading, retry, and offline-safe fallback states
+- [x] Preserve Tutor drafts and successful responses through local persistence
+- [x] Add deterministic Tutor service and UI-state tests
