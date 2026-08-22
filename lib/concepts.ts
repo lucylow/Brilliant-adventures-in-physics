@@ -8,7 +8,9 @@ export const conceptRegistry: PhysicsConcept[] = [
   { id: "forces", title: "Forces", domain: "Mechanics", level: "core", prerequisites: ["kinematics"], intuition: "Interactions change an object’s motion through net force.", equation: "F_net = ma", units: "N", misconceptionKeywords: ["normal force always equals weight", "centripetal force is a new force"] },
   { id: "energy", title: "Energy", domain: "Mechanics", level: "core", prerequisites: ["kinematics"], intuition: "Track transfers and transformations rather than memorizing isolated formulas.", equation: "K = ½mv²", units: "J" },
   { id: "momentum", title: "Momentum", domain: "Mechanics", level: "core", prerequisites: ["kinematics"], intuition: "Momentum measures motion that changes through impulse and interactions.", equation: "p = mv", units: "kg·m/s" },
+  { id: "oscillation", title: "Oscillation", domain: "Waves", level: "foundation", prerequisites: [], intuition: "A repeating change around an equilibrium position provides the pattern behind many waves.", equation: "T = 1/f", units: "s, Hz" },
   { id: "wave-motion", title: "Wave Motion", domain: "Waves", level: "core", prerequisites: ["oscillation"], intuition: "A disturbance transfers energy and information without transporting matter as a whole.", equation: "v = fλ", units: "m/s" },
+  { id: "sound", title: "Sound", domain: "Waves", level: "core", prerequisites: ["wave-motion"], intuition: "Sound is a mechanical wave whose frequency relates to pitch and whose amplitude relates to perceived loudness.", equation: "v = fλ", units: "Hz, m/s" },
   { id: "circuits", title: "Circuits", domain: "Electricity", level: "core", prerequisites: ["charge", "field"], intuition: "Charges transfer energy through a connected path.", equation: "V = IR", units: "V, A, Ω" },
 ];
 

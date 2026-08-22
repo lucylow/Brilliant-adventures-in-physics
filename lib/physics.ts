@@ -112,6 +112,42 @@ export function newtonAcceleration(forces: Vec2[], mass: number): Vec2 {
   return vec.scale(net, 1 / mass);
 }
 
+export type WaveInput = {
+  frequencyHz: number;
+  wavelengthM: number;
+};
+
+export type WaveResult = {
+  speedMps: number;
+  frequencyHz: number;
+  wavelengthM: number;
+  periodS: number;
+};
+
+function positive(value: number, label: string): number {
+  finite(value, label);
+  if (value <= 0) throw new Error(`${label} must be positive`);
+  return value;
+}
+
+export function waveSpeed(frequencyHz: number, wavelengthM: number): number {
+  return positive(frequencyHz, "frequencyHz") * positive(wavelengthM, "wavelengthM");
+}
+
+export function waveFrequency(speedMps: number, wavelengthM: number): number {
+  return positive(speedMps, "speedMps") / positive(wavelengthM, "wavelengthM");
+}
+
+export function wavePeriod(frequencyHz: number): number {
+  return 1 / positive(frequencyHz, "frequencyHz");
+}
+
+export function wave(input: WaveInput): WaveResult {
+  const frequencyHz = positive(input.frequencyHz, "frequencyHz");
+  const wavelengthM = positive(input.wavelengthM, "wavelengthM");
+  return { speedMps: frequencyHz * wavelengthM, frequencyHz, wavelengthM, periodS: 1 / frequencyHz };
+}
+
 export function ohmsLaw(voltage: number, resistance: number) {
   if (!Number.isFinite(resistance) || resistance <= 0) throw new Error("Resistance must be positive");
   const current = voltage / resistance;

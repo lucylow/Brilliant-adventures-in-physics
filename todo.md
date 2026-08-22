@@ -225,3 +225,6 @@
 - [x] Apply consistent recovery feedback to Scan and Concepts secondary screens
 - [x] Add safe action guards for secondary-screen persistence or navigation flows
 - [x] Add deterministic coverage for secondary-screen recovery contracts
+- [x] Add validated deterministic wave speed, frequency, wavelength, and period helpers
+- [x] Add deterministic wave-domain regression tests including invalid-parameter handling
+- [x] Connect a wave concept and accessible wave experiment surface to the Lab
