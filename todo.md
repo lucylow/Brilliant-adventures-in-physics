@@ -111,3 +111,7 @@
 - [ ] Add achievement filtering by earned and in-progress status
 - [ ] Apply consistent loading, empty, error, and offline states to secondary screens
 - [x] Add deterministic tests for concepts, search, queue recovery, and filters
+- [x] Add earned and in-progress achievement filters to Progress
+- [ ] Add a manual retry button and reconnect queue draining for offline autosaves
+- [ ] Apply consistent loading, empty, error, and offline states to Scan, Lesson, Upgrade, and Concepts
+- [x] Add deterministic tests for achievement filters, queue draining, and secondary-screen states

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { ScrollView, Text, View } from "react-native";
+import { Pressable, ScrollView, Text, View } from "react-native";
 import { router } from "expo-router";
 import { ScreenContainer } from "@/components/screen-container";
 import { Card, MasteryRing, ProgressBar, SectionHeader } from "@/components/physica-ui";
@@ -27,6 +27,8 @@ export default function ProgressScreen() {
   const mission = generateMission(new Date().getDate());
   const missionValue = mission.kind === "practice" ? learning.attempts : 0;
   const achievements = evaluateAchievements(learning);
+  const [achievementFilter, setAchievementFilter] = useState<"all" | "earned" | "progress">("all");
+  const visibleAchievements = achievements.filter((achievement) => achievementFilter === "all" || (achievementFilter === "earned" ? achievement.earned : !achievement.earned));
 
   return (
     <ScreenContainer className="p-5">
@@ -54,8 +56,9 @@ export default function ProgressScreen() {
         </Card>
         <View style={{ marginTop: 24 }}>
           <SectionHeader title="Achievements" subtitle="Earned through meaningful learning evidence." />
+          <View accessibilityRole="tablist" style={{ flexDirection: "row", gap: 8, marginBottom: 10 }}><Pressable accessibilityRole="tab" accessibilityState={{ selected: achievementFilter === "all" }} onPress={() => setAchievementFilter("all")}><Text style={{ color: achievementFilter === "all" ? colors.primary : colors.muted, fontWeight: "800" }}>All</Text></Pressable><Pressable accessibilityRole="tab" accessibilityState={{ selected: achievementFilter === "earned" }} onPress={() => setAchievementFilter("earned")}><Text style={{ color: achievementFilter === "earned" ? colors.primary : colors.muted, fontWeight: "800" }}>Earned</Text></Pressable><Pressable accessibilityRole="tab" accessibilityState={{ selected: achievementFilter === "progress" }} onPress={() => setAchievementFilter("progress")}><Text style={{ color: achievementFilter === "progress" ? colors.primary : colors.muted, fontWeight: "800" }}>In progress</Text></Pressable></View>
           <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 10 }}>
-            {achievements.map((achievement) => <Card key={achievement.id} onPress={() => router.push({ pathname: "/achievement", params: { id: achievement.id } } as never)} style={{ width: "47%", opacity: achievement.earned ? 1 : 0.5 }}><Text style={{ color: colors.primary, fontSize: 22 }}>{achievement.icon}</Text><Text style={{ color: colors.foreground, fontWeight: "800", marginTop: 6 }}>{achievement.title}</Text><Text style={{ color: colors.muted, marginTop: 4, fontSize: 12 }}>{achievement.earned ? "Earned" : achievement.description}</Text><View style={{ marginTop: 8 }}><ProgressBar value={achievementProgress(achievement, learning)} /></View></Card>)}
+            {visibleAchievements.map((achievement) => <Card key={achievement.id} onPress={() => router.push({ pathname: "/achievement", params: { id: achievement.id } } as never)} style={{ width: "47%", opacity: achievement.earned ? 1 : 0.5 }}><Text style={{ color: colors.primary, fontSize: 22 }}>{achievement.icon}</Text><Text style={{ color: colors.foreground, fontWeight: "800", marginTop: 6 }}>{achievement.title}</Text><Text style={{ color: colors.muted, marginTop: 4, fontSize: 12 }}>{achievement.earned ? "Earned" : achievement.description}</Text><View style={{ marginTop: 8 }}><ProgressBar value={achievementProgress(achievement, learning)} /></View></Card>)}
           </View>
         </View>
         <View style={{ marginTop: 24 }}>

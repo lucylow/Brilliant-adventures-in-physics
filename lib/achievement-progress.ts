@@ -1,6 +1,8 @@
 import type { Achievement } from "@/lib/achievements";
 import type { LearningState } from "@/lib/progress-store";
 
+export function filterAchievements<T extends { earned: boolean }>(items: T[], filter: "all" | "earned" | "progress"): T[] { return items.filter((item) => filter === "all" || (filter === "earned" ? item.earned : !item.earned)); }
+
 export function achievementProgress(achievement: Achievement, learning: LearningState): number {
   if (achievement.earned) return 1;
   if (achievement.id === "first-step") return Math.min(1, learning.attempts);
