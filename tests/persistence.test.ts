@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { persistSafely, persistenceRecoveryMessage } from "../lib/persistence";
+import { loadRecoveryMessage, persistSafely, persistenceRecoveryMessage } from "../lib/persistence";
 
 describe("safe persistence", () => {
   it("returns successful persistence values", async () => {
@@ -11,5 +11,10 @@ describe("safe persistence", () => {
     const result = await persistSafely(Promise.reject(new Error("network unavailable")));
     expect(result).toMatchObject({ ok: false, error: { code: "OFFLINE", retryable: true } });
     expect(persistenceRecoveryMessage(result)).toContain("try again");
+  });
+  it("keeps loading recovery copy stable by data scope", () => {
+    expect(loadRecoveryMessage("profile")).toContain("learning path");
+    expect(loadRecoveryMessage("progress")).toContain("progress");
+    expect(loadRecoveryMessage("draft")).toContain("saved session");
   });
 });
