@@ -178,3 +178,8 @@
 - [x] Validate draft shape, timestamps, and expiry before restoring sessions
 - [x] Add safe recovery behavior for invalid persisted learning data
 - [x] Add deterministic regression tests for malformed learning-state and drafts
+- [x] Add typed product catalog and provider-agnostic store adapter contracts
+- [x] Add purchase state machine with cancellation, pending, failure, retry, and restore states
+- [x] Add catalog validation that rejects missing or fabricated price data
+- [x] Add accessible restore and manage-subscription recovery states
+- [x] Add deterministic tests for entitlement expiry, purchase errors, retries, and restore behavior
