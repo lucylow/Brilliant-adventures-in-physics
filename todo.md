@@ -53,3 +53,8 @@
 - [x] Add mastery badges and milestone feedback without rewarding answer farming
 - [x] Add optional gamification widgets to Progress and Home
 - [x] Add deterministic gamification tests for rewards, missions, streaks, and level progress
+- [x] Add persisted Tutor, Practice, and Physics Lens session drafts with restore and expiry rules
+- [x] Add topic-level mastery records with confidence and hint usage signals
+- [x] Add real streak dates and missed-day recovery without guilt messaging
+- [x] Add evidence-based achievement evaluation and an achievement shelf
+- [x] Add deterministic tests for draft recovery, mastery updates, and achievements

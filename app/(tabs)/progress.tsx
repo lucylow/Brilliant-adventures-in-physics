@@ -10,7 +10,7 @@ const TOPICS = [{ name: "Kinematics", detail: "Review motion graphs and units." 
 
 export default function ProgressScreen() {
   const colors = useColors();
-  const [learning, setLearning] = useState<LearningState>({ attempts: 0, correct: 0, savedQuestions: [] });
+  const [learning, setLearning] = useState<LearningState>({ attempts: 0, correct: 0, savedQuestions: [], topics: {}, streak: 0 });
   useEffect(() => { void loadLearningState().then(setLearning); }, []);
   const accuracy = learning.attempts ? learning.correct / learning.attempts : 0;
   const xp = learning.correct * 10;
