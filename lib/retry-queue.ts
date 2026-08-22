@@ -12,3 +12,8 @@ export async function getRetryCount(): Promise<number> { return (await readQueue
 export async function markLastSave(): Promise<void> { await AsyncStorage.setItem(LAST_SAVE_KEY, new Date().toISOString()); }
 export async function getLastSave(): Promise<string | null> { return AsyncStorage.getItem(LAST_SAVE_KEY); }
 export function formatLastSave(value: string | null): string { return value ? `Last local save: ${new Date(value).toLocaleString()}` : "No successful local save recorded yet."; }
+export function formatRetryResult(saved: number, remaining: number): string {
+  if (!Number.isInteger(saved) || saved < 0 || !Number.isInteger(remaining) || remaining < 0) throw new Error("retry counts must be non-negative integers");
+  if (remaining === 0) return saved > 0 ? `Recovered ${saved} offline save${saved === 1 ? "" : "s"}.` : "No pending offline saves.";
+  return `Recovered ${saved}; ${remaining} still waiting.`;
+}

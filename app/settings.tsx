@@ -8,6 +8,8 @@ import { persistSafely, persistenceRecoveryMessage } from "@/lib/persistence";
 import { useColors } from "@/hooks/use-colors";
 import { PersistenceDiagnostics } from "@/components/persistence-diagnostics";
 import { loadOnboarding, resetOnboarding, saveOnboarding } from "@/lib/onboarding";
+import { formatLastSave, formatRetryResult, getLastSave, getRetryCount, markLastSave, retryQueue } from "@/lib/retry-queue";
+import { saveDraft } from "@/lib/progress-store";
 
 export default function SettingsScreen() {
   const colors = useColors();
@@ -15,8 +17,13 @@ export default function SettingsScreen() {
   const [saveMessage, setSaveMessage] = useState<string | null>(null);
   const [onboardingMessage, setOnboardingMessage] = useState<string | null>(null);
   const [loadMessage, setLoadMessage] = useState<string | null>(null);
-  useEffect(() => { let active = true; void loadPreferencesWithStatus().then((result) => { if (!active) return; setPreferences(result.preferences); if (result.recovered) setLoadMessage("We could not read saved preferences, so safe defaults are in use."); }).catch(() => { if (active) setLoadMessage("Preferences are temporarily unavailable. You can try again later."); }); return () => { active = false; }; }, []);
+  const [retryCount, setRetryCount] = useState(0);
+  const [lastSave, setLastSave] = useState<string | null>(null);
+  const [retrying, setRetrying] = useState(false);
+  const [retryMessage, setRetryMessage] = useState<string | null>(null);
+  useEffect(() => { let active = true; void loadPreferencesWithStatus().then((result) => { if (!active) return; setPreferences(result.preferences); if (result.recovered) setLoadMessage("We could not read saved preferences, so safe defaults are in use."); }).catch(() => { if (active) setLoadMessage("Preferences are temporarily unavailable. You can try again later."); }); void Promise.all([getRetryCount(), getLastSave()]).then(([count, savedAt]) => { if (!active) return; setRetryCount(count); setLastSave(savedAt); }).catch(() => { if (active) setRetryMessage("Offline-save details are temporarily unavailable."); }); return () => { active = false; }; }, []);
   const update = (key: keyof Preferences, value: boolean) => { const next = { ...preferences, [key]: value }; void persistSafely(savePreferences(next)).then((saved) => { setSaveMessage(persistenceRecoveryMessage(saved)); if (saved.ok) setPreferences(saved.data); }); };
+  const retryPendingSaves = () => { if (retrying) return; setRetrying(true); setRetryMessage(null); void retryQueue(async (item) => { await saveDraft({ id: item.id, data: item.payload, updatedAt: item.queuedAt }); }).then(async (result) => { if (result.saved > 0) await markLastSave(); setRetryCount(result.remaining); setLastSave(result.saved > 0 ? new Date().toISOString() : lastSave); setRetryMessage(formatRetryResult(result.saved, result.remaining)); }).catch(() => setRetryMessage("We could not retry offline saves. Your queued work remains available to try again.")).finally(() => setRetrying(false)); };
   return (
     <ScreenContainer edges={["top", "bottom", "left", "right"]} className="p-5">
       <ScrollView contentContainerStyle={{ paddingBottom: 32 }}>
@@ -39,6 +46,7 @@ export default function SettingsScreen() {
             <Switch value={preferences.hapticsEnabled} onValueChange={(value) => update("hapticsEnabled", value)} accessibilityLabel="Haptic feedback" />
           </View>
         </Card>
+        <Card style={{ marginTop: 12 }}><Text style={{ color: colors.foreground, fontSize: 18, fontWeight: "800" }}>Offline saves</Text><Text style={{ color: colors.muted, marginTop: 5, lineHeight: 20 }}>{retryCount > 0 ? `${retryCount} autosave${retryCount === 1 ? "" : "s"} waiting to retry.` : "No offline autosaves are waiting."}</Text><Text style={{ color: colors.muted, marginTop: 4 }}>{formatLastSave(lastSave)}</Text><View style={{ marginTop: 12 }}><SecondaryButton label={retrying ? "Retrying offline saves…" : "Retry offline saves"} onPress={retryPendingSaves} /></View>{retryMessage && <Text accessibilityLiveRegion="assertive" style={{ marginTop: 10, color: colors.warning }}>{retryMessage}</Text>}</Card>
         <Card style={{ marginTop: 12 }}><Text style={{ color: colors.foreground, fontSize: 18, fontWeight: "800" }}>Learning path</Text><Text style={{ color: colors.muted, marginTop: 5, lineHeight: 20 }}>Revisit your starting level and goal, or reset them for a fresh first-run experience.</Text><View style={{ marginTop: 12 }}><SecondaryButton label="Review onboarding" onPress={() => router.push("/onboarding" as never)} /></View><View style={{ marginTop: 8 }}><SecondaryButton label="Reset onboarding choices" onPress={() => { void persistSafely(saveOnboarding(resetOnboarding())).then((result) => { const message = persistenceRecoveryMessage(result); setOnboardingMessage(message); if (result.ok) router.push("/onboarding" as never); }); }} /></View>{onboardingMessage && <Text accessibilityLiveRegion="assertive" style={{ marginTop: 10, color: colors.warning }}>{onboardingMessage}</Text>}</Card>
         <Pressable accessibilityRole="button" onPress={() => router.push("/privacy" as never)} style={({ pressed }) => ({ marginTop: 12, opacity: pressed ? 0.7 : 1 })}>
           <Card><Text style={{ color: colors.foreground, fontWeight: "800" }}>Privacy and local data</Text><Text style={{ color: colors.muted, marginTop: 4 }}>Review, export, or clear device-only study data.</Text><PersistenceDiagnostics /></Card></Pressable>

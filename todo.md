@@ -276,3 +276,6 @@
 - [x] Centralize bounded async retry behavior for autosave persistence
 - [x] Prevent autosave retry failures from becoming unhandled rejections
 - [x] Add deterministic tests for retry success, exhaustion, and invalid retry settings
+- [x] Show pending offline autosaves and last-save information in Settings
+- [x] Add a lifecycle-safe manual retry action with accessible success and failure feedback
+- [x] Add deterministic coverage for retry-queue status copy and result handling
