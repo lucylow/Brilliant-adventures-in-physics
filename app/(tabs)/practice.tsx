@@ -1,8 +1,9 @@
 import { useMemo, useState } from "react";
 import { Keyboard, ScrollView, Text, TextInput, View } from "react-native";
 import { ScreenContainer } from "@/components/screen-container";
+import { useLocalSearchParams } from "expo-router";
 import { Card, Pill, PrimaryButton, SectionHeader, SecondaryButton } from "@/components/physica-ui";
-import { checkNumericAnswer, projectile } from "@/lib/physics";
+import { checkNumericAnswer } from "@/lib/physics";
 import { useColors } from "@/hooks/use-colors";
 import { recordAttempt } from "@/lib/progress-store";
 import { DraftRecovery } from "@/components/draft-recovery";
@@ -10,21 +11,19 @@ import { useDraftAutosave } from "@/hooks/use-draft-autosave";
 import { DraftStatus } from "@/components/draft-status";
 import { deleteDraft } from "@/lib/progress-store";
 import { persistSafely, persistenceRecoveryMessage } from "@/lib/persistence";
-
-const QUESTIONS = [
-  { prompt: "A ball is launched at 18 m/s at 42° from level ground. What is its horizontal range?", unit: "m", solve: () => projectile({ speed: 18, angleDeg: 42, height: 0 }).range, concept: "Projectile motion" },
-  { prompt: "A car starts at 4 m/s and accelerates at 2 m/s² for 5 s. What is its final velocity?", unit: "m/s", solve: () => 4 + 2 * 5, concept: "Kinematics" },
-];
+import { practiceQuestionIndexForConcept, practiceQuestions } from "@/lib/practice";
 
 export default function PracticeScreen() {
   const colors = useColors();
-  const [index, setIndex] = useState(0);
+  const { concept: conceptId } = useLocalSearchParams<{ concept?: string }>();
+  const requestedIndex = typeof conceptId === "string" ? practiceQuestionIndexForConcept(conceptId) : null;
+  const [index, setIndex] = useState(requestedIndex ?? 0);
   const [answer, setAnswer] = useState("");
   const [feedback, setFeedback] = useState<"correct" | "incorrect" | null>(null);
   const [hint, setHint] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [persistenceMessage, setPersistenceMessage] = useState<string | null>(null);
-  const question = QUESTIONS[index % QUESTIONS.length];
+  const question = practiceQuestions[index % practiceQuestions.length];
   const draftStatus = useDraftAutosave("practice", { index, answer });
   const expected = useMemo(() => question.solve(), [question]);
   const submit = async () => { Keyboard.dismiss(); if (submitting || !answer.trim()) return; setSubmitting(true); setPersistenceMessage(null); const numeric = Number(answer.replace(",", ".")); const isCorrect = checkNumericAnswer(numeric, expected); setFeedback(isCorrect ? "correct" : "incorrect"); const saved = await persistSafely(recordAttempt(isCorrect, question.concept)); const deleted = await persistSafely(deleteDraft("practice")); setPersistenceMessage(persistenceRecoveryMessage(saved) ?? persistenceRecoveryMessage(deleted)); setSubmitting(false); };

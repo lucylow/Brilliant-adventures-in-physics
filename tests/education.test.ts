@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { hintFor, masteryState, nextHintLevel, unmetPrereqs, updateMastery } from "../lib/education";
+import { hasPracticeQuestion, practiceQuestionIndexForConcept, practiceQuestions } from "../lib/practice";
 
 describe("education rules", () => {
   it("identifies prerequisites below the mastery threshold", () => {
@@ -10,6 +11,13 @@ describe("education rules", () => {
     const next = updateMastery(0.5, true, 1, 0.8);
     expect(next).toBeGreaterThan(0.5);
     expect(masteryState(next)).toBe("practicing");
+  });
+  it("matches supported concepts to local practice questions", () => {
+    expect(practiceQuestions.length).toBeGreaterThan(0);
+    expect(practiceQuestionIndexForConcept("kinematics")).toBe(0);
+    expect(hasPracticeQuestion("KINEMATICS")).toBe(true);
+    expect(practiceQuestionIndexForConcept("relativity")).toBeNull();
+    expect(hasPracticeQuestion("relativity")).toBe(false);
   });
   it("keeps progressive hints ordered", () => {
     expect(nextHintLevel("concept")).toBe("representation");
