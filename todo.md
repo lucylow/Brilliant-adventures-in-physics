@@ -271,3 +271,5 @@
 - [x] Add deterministic tests for reachable, disconnected, and indeterminate network states
 - [x] Add explicit accessibility labels to shared interactive cards and dashboard quick actions
 - [x] Add deterministic coverage for the shared accessibility contract
+- [x] Add explicit screen-reader roles, hints, and disabled states to Lab slider step controls
+- [x] Add deterministic coverage for slider boundary clamping behavior

@@ -10,11 +10,14 @@ import { SimulationPlayhead, VectorGrowth } from "@/components/motion-primitives
 import { loadPreferencesWithStatus, type Preferences } from "@/lib/preferences";
 import { triggerHaptic } from "@/lib/haptics";
 import { persistSafely, persistenceRecoveryMessage } from "@/lib/persistence";
+import { clampStepValue, isSliderAtMax, isSliderAtMin, sliderAccessibilityValue, sliderProgressPercent, sliderStepHint, sliderValueLabel } from "@/lib/ui-logic";
 
 function Slider({ label, value, min, max, step, onChange }: { label: string; value: number; min: number; max: number; step: number; onChange: (value: number) => void }) {
   const colors = useColors();
-  const nudge = (delta: number) => onChange(Math.max(min, Math.min(max, Number((value + delta).toFixed(2)))));
-  return <View style={{ marginBottom: 16 }}><View style={{ flexDirection: "row", justifyContent: "space-between" }}><Text style={{ color: colors.foreground, fontWeight: "700" }}>{label}</Text><Text style={{ color: colors.primary, fontWeight: "800" }}>{value} </Text></View><View style={{ flexDirection: "row", alignItems: "center", gap: 10, marginTop: 8 }}><Pressable accessibilityLabel={`Decrease ${label}`} onPress={() => nudge(-step)}><Text style={{ fontSize: 24, color: colors.primary }}>−</Text></Pressable><View style={{ flex: 1, height: 8, borderRadius: 8, backgroundColor: colors.border }}><View style={{ width: `${((value - min) / (max - min)) * 100}%`, height: 8, borderRadius: 8, backgroundColor: colors.primary }} /></View><Pressable accessibilityLabel={`Increase ${label}`} onPress={() => nudge(step)}><Text style={{ fontSize: 24, color: colors.primary }}>+</Text></Pressable></View></View>;
+  const nudge = (delta: number) => onChange(clampStepValue(value, delta, min, max));
+  const atMin = isSliderAtMin(value, min);
+  const atMax = isSliderAtMax(value, max);
+  return <View style={{ marginBottom: 16 }}><View style={{ flexDirection: "row", justifyContent: "space-between" }}><Text style={{ color: colors.foreground, fontWeight: "700" }}>{label}</Text><Text accessibilityLabel={sliderValueLabel(label, value)} style={{ color: colors.primary, fontWeight: "800" }}>{value} </Text></View><View accessibilityRole="adjustable" accessibilityValue={sliderAccessibilityValue(value, min, max)} style={{ flexDirection: "row", alignItems: "center", gap: 10, marginTop: 8 }}><Pressable accessibilityRole="button" accessibilityLabel={`Decrease ${label}`} accessibilityHint={sliderStepHint("decrease", label, step)} accessibilityState={{ disabled: atMin }} disabled={atMin} onPress={() => nudge(-step)} style={{ opacity: atMin ? 0.4 : 1 }}><Text style={{ fontSize: 24, color: colors.primary }}>−</Text></Pressable><View style={{ flex: 1, height: 8, borderRadius: 8, backgroundColor: colors.border }}><View style={{ width: `${sliderProgressPercent(value, min, max)}%`, height: 8, borderRadius: 8, backgroundColor: colors.primary }} /></View><Pressable accessibilityRole="button" accessibilityLabel={`Increase ${label}`} accessibilityHint={sliderStepHint("increase", label, step)} accessibilityState={{ disabled: atMax }} disabled={atMax} onPress={() => nudge(step)} style={{ opacity: atMax ? 0.4 : 1 }}><Text style={{ fontSize: 24, color: colors.primary }}>+</Text></Pressable></View></View>;
 }
 
 export default function LabScreen() {
