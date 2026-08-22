@@ -72,3 +72,7 @@
 - [ ] Persist lesson and lab completion events for achievement evaluation
 - [ ] Add user-controlled streak preference and privacy settings entry point
 - [x] Add deterministic tests for completion events and settings persistence
+- [ ] Add explicit Resume/Discard draft controls in active Tutor, Practice, and Physics Lens screens
+- [x] Add an optional streak preference persisted locally and exposed in settings
+- [x] Add achievement detail interactions showing the evidence behind milestones
+- [x] Add deterministic tests for streak preference and achievement detail data

@@ -7,6 +7,7 @@ import { loadLearningState, type LearningState } from "@/lib/progress-store";
 import { evaluateAchievements } from "@/lib/achievements";
 import { generateMission, levelProgress, missionProgress, streakMessage } from "@/lib/gamification";
 import { useColors } from "@/hooks/use-colors";
+import { loadPreferences, type Preferences } from "@/lib/preferences";
 
 const TOPICS = [
   { name: "Kinematics", detail: "Review motion graphs and units." },
@@ -18,7 +19,8 @@ const TOPICS = [
 export default function ProgressScreen() {
   const colors = useColors();
   const [learning, setLearning] = useState<LearningState>({ attempts: 0, correct: 0, savedQuestions: [], topics: {}, streak: 0, lessonsCompleted: 0, labsCompleted: 0 });
-  useEffect(() => { void loadLearningState().then(setLearning); }, []);
+  const [preferences, setPreferences] = useState<Preferences>({ streakEnabled: true });
+  useEffect(() => { void loadLearningState().then(setLearning); void loadPreferences().then(setPreferences); }, []);
   const accuracy = learning.attempts ? learning.correct / learning.attempts : 0;
   const level = levelProgress(learning.correct * 10);
   const mission = generateMission(new Date().getDate());
@@ -41,7 +43,7 @@ export default function ProgressScreen() {
         </Card>
         <View style={{ flexDirection: "row", gap: 10, marginTop: 14 }}>
           <Card style={{ flex: 1 }}><Text style={{ color: colors.muted, fontSize: 12 }}>LEARNING XP</Text><Text style={{ color: colors.foreground, fontSize: 26, fontWeight: "800", marginTop: 4 }}>{learning.correct * 10}</Text><Text style={{ color: colors.primary, marginTop: 4 }}>Level {level.level}</Text></Card>
-          <Card style={{ flex: 1 }}><Text style={{ color: colors.muted, fontSize: 12 }}>STREAK</Text><Text style={{ color: colors.foreground, fontSize: 26, fontWeight: "800", marginTop: 4 }}>{learning.streak} days</Text><Text style={{ color: colors.muted, marginTop: 4 }}>{streakMessage(learning.streak)}</Text></Card>
+          <Card style={{ flex: 1 }}><Text style={{ color: colors.muted, fontSize: 12 }}>STREAK</Text><Text style={{ color: colors.foreground, fontSize: 26, fontWeight: "800", marginTop: 4 }}>{preferences.streakEnabled ? `${learning.streak} days` : "Hidden"}</Text><Text style={{ color: colors.muted, marginTop: 4 }}>{preferences.streakEnabled ? streakMessage(learning.streak) : "Streak display is off in Settings."}</Text></Card>
         </View>
         <Card style={{ marginTop: 14, backgroundColor: colors.primary + "0D" }}>
           <Text style={{ color: colors.primary, fontWeight: "800" }}>TODAY’S MISSION</Text>
@@ -59,7 +61,7 @@ export default function ProgressScreen() {
           <SectionHeader title="Topic guidance" subtitle="Suggested starting points until more topic evidence is recorded." />
           {TOPICS.map((topic) => <Card key={topic.name} style={{ marginBottom: 10 }}><Text style={{ color: colors.foreground, fontSize: 17, fontWeight: "800" }}>{topic.name}</Text><Text style={{ color: colors.muted, marginTop: 4 }}>{topic.detail}</Text></Card>)}
         </View>
-        <View style={{ marginTop: 6 }}><Card onPress={() => router.push("/privacy" as never)}><Text style={{ color: colors.foreground, fontWeight: "800" }}>Privacy and local data</Text><Text style={{ color: colors.muted, marginTop: 4 }}>Review or clear what PhysicaAI stores on this device.</Text></Card></View>
+        <View style={{ marginTop: 6 }}><Card onPress={() => router.push("/settings" as never)}><Text style={{ color: colors.foreground, fontWeight: "800" }}>Settings and privacy</Text><Text style={{ color: colors.muted, marginTop: 4 }}>Control streak display and review local study data.</Text></Card></View>
       </ScrollView>
     </ScreenContainer>
   );
