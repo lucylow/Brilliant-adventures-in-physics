@@ -6,10 +6,26 @@ const DEFAULTS: Preferences = { streakEnabled: true, reducedMotion: false, hapti
 
 export function mergePreferences(input: unknown): Preferences {
   const stored = input && typeof input === "object" ? input as Partial<Preferences> : {};
-  return { ...DEFAULTS, ...stored, hapticsEnabled: stored.hapticsEnabled !== false };
+  return {
+    streakEnabled: typeof stored.streakEnabled === "boolean" ? stored.streakEnabled : DEFAULTS.streakEnabled,
+    reducedMotion: typeof stored.reducedMotion === "boolean" ? stored.reducedMotion : DEFAULTS.reducedMotion,
+    hapticsEnabled: typeof stored.hapticsEnabled === "boolean" ? stored.hapticsEnabled : DEFAULTS.hapticsEnabled,
+  };
+}
+
+export type PreferenceLoadResult = { preferences: Preferences; recovered: boolean };
+
+export async function loadPreferencesWithStatus(): Promise<PreferenceLoadResult> {
+  try {
+    const raw = await AsyncStorage.getItem(KEY);
+    return { preferences: mergePreferences(raw ? JSON.parse(raw) : {}), recovered: false };
+  } catch {
+    return { preferences: DEFAULTS, recovered: true };
+  }
 }
 
 export async function loadPreferences(): Promise<Preferences> {
-  try { const raw = await AsyncStorage.getItem(KEY); return mergePreferences(raw ? JSON.parse(raw) : {}); } catch { return DEFAULTS; }
+  return (await loadPreferencesWithStatus()).preferences;
 }
+
 export async function savePreferences(next: Preferences): Promise<Preferences> { await AsyncStorage.setItem(KEY, JSON.stringify(next)); return next; }

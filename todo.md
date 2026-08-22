@@ -210,5 +210,9 @@
 - [x] Add deterministic regression tests for personalized-flow error handling
 - [x] Audit remaining loading effects for rejected promises and stale updates
 - [x] Add explicit retry UI for dashboard and summary profile-loading failures
-- [ ] Harden preference and saved-data loading with typed fallback diagnostics
+- [x] Harden preference and saved-data loading with typed fallback diagnostics
 - [x] Add deterministic regression tests for retry and loading recovery paths
+- [x] Audit preference loading and saving for typed fallback diagnostics
+- [x] Surface a recoverable preference-load state in Settings and dependent screens
+- [x] Re-check the dependency-emitted pointerEvents warning and document its boundary
+- [x] Add deterministic tests for preference-load failures and recovery copy
