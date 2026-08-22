@@ -306,6 +306,8 @@
 - [x] Add an accessible matter-wave Lab experiment and concept coverage
 - [x] Add deterministic relativistic-energy calculations with subluminal speed validation
 - [x] Add an accessible relativistic-energy comparison and concept coverage
+- [x] Add deterministic relativistic momentum with subluminal speed validation
+- [x] Add an accessible relativistic-momentum comparison and concept coverage
 - [x] Install and wire the Expo network-state listener for autosave reconciliation
 - [x] Add deterministic coverage for connectivity-gated reconciliation decisions
 - [x] Add a global accessible network-status banner for offline and checking states

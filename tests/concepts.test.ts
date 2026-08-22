@@ -12,6 +12,10 @@ describe("physics concept intelligence", () => {
     expect(result[0]?.id).toBe("modern-energy");
     expect(missingPrerequisites("modern-energy", {})).toEqual(["wave-motion", "energy"]);
   });
+  it("finds relativistic momentum with energy prerequisites", () => {
+    expect(searchConcepts("relativistic momentum")[0]?.id).toBe("relativistic-momentum");
+    expect(missingPrerequisites("relativistic-momentum", { momentum: 0.8, "relativistic-energy": 0.8 })).toEqual([]);
+  });
   it("finds relativistic energy with mechanics prerequisites", () => {
     expect(searchConcepts("relativistic")[0]?.id).toBe("relativistic-energy");
     expect(missingPrerequisites("relativistic-energy", { kinematics: 0.8, energy: 0.8 })).toEqual([]);

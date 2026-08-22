@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { angularSpeedFromRpm, averagePowerFromWork, buoyantForce, centripetalAcceleration, checkNumericAnswer, coulombForce, criticalAngleDeg, deBroglieWavelength, electricField, elasticCollision1D, elasticPotentialEnergy, gravitationalPotentialEnergy, harmonicDisplacement, harmonicVelocity, hydrostaticPressure, impulse, kineticEnergy, massEnergyEquivalent, momentum, ohmsLaw, photonEnergyFromFrequency, photonEnergyFromWavelength, photoelectricEffect, powerFromCurrentResistance, relativisticKineticEnergy, projectile, refraction, resistanceFromVoltageCurrent, rotationalKineticEnergy, solidDiskMomentOfInertia, springForce, tangentialSpeed, temperatureChangeFromEnergy, thermalEnergy, velocityChangeFromImpulse, volumetricFlowRate, wave, waveFrequency, wavePeriod, waveSpeed, weightForce, workFromForce } from "../lib/physics";
+import { angularSpeedFromRpm, averagePowerFromWork, buoyantForce, centripetalAcceleration, checkNumericAnswer, coulombForce, criticalAngleDeg, deBroglieWavelength, electricField, elasticCollision1D, elasticPotentialEnergy, gravitationalPotentialEnergy, harmonicDisplacement, harmonicVelocity, hydrostaticPressure, impulse, kineticEnergy, massEnergyEquivalent, momentum, ohmsLaw, photonEnergyFromFrequency, photonEnergyFromWavelength, photoelectricEffect, powerFromCurrentResistance, relativisticKineticEnergy, relativisticMomentum, projectile, refraction, resistanceFromVoltageCurrent, rotationalKineticEnergy, solidDiskMomentOfInertia, springForce, tangentialSpeed, temperatureChangeFromEnergy, thermalEnergy, velocityChangeFromImpulse, volumetricFlowRate, wave, waveFrequency, wavePeriod, waveSpeed, weightForce, workFromForce } from "../lib/physics";
 import { createMockTutorAnswer, validateTutorAnswer } from "../lib/ai";
 
 describe("physics engine", () => {
@@ -34,6 +34,12 @@ describe("physics engine", () => {
     expect(massEnergyEquivalent(1e-9)).toBeCloseTo(8.987551787368177e7, 4);
   });
 
+  it("computes relativistic momentum with a zero-speed boundary", () => {
+    expect(relativisticMomentum(1, 0)).toBe(0);
+    expect(relativisticMomentum(1, 0.6 * 299792458)).toBeCloseTo(224844343.5, 3);
+    expect(relativisticMomentum(1, 0.6 * 299792458)).toBeGreaterThan(1 * 0.6 * 299792458);
+  });
+
   it("computes relativistic kinetic energy with a zero-speed boundary", () => {
     expect(relativisticKineticEnergy(1, 0)).toBe(0);
     expect(relativisticKineticEnergy(1, 0.6 * 299792458)).toBeCloseTo(2.246887946842044e16, 4);
@@ -63,6 +69,8 @@ describe("physics engine", () => {
     expect(() => deBroglieWavelength(1, 0)).toThrow("speedMps must be positive");
     expect(() => relativisticKineticEnergy(1, 299792458)).toThrow("speedMps must be between zero and the speed of light");
     expect(() => relativisticKineticEnergy(1, -1)).toThrow("speedMps must be between zero and the speed of light");
+    expect(() => relativisticMomentum(1, 299792458)).toThrow("speedMps must be between zero and the speed of light");
+    expect(() => relativisticMomentum(1, Number.NaN)).toThrow("speedMps must be finite");
   });
 
   it("computes refraction using Snell's law", () => {
