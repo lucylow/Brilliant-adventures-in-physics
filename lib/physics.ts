@@ -235,6 +235,18 @@ export function temperatureChangeFromEnergy(energyJ: number, massKg: number, spe
   return finite(energyJ, "energyJ") / (positive(massKg, "massKg") * positive(specificHeatJPerKgK, "specificHeatJPerKgK"));
 }
 
+export function hydrostaticPressure(densityKgM3: number, depthM: number, gravity = PHYSICS.g): number {
+  return positive(densityKgM3, "densityKgM3") * positive(depthM, "depthM") * positive(gravity, "gravity");
+}
+
+export function buoyantForce(fluidDensityKgM3: number, displacedVolumeM3: number, gravity = PHYSICS.g): number {
+  return positive(fluidDensityKgM3, "fluidDensityKgM3") * positive(displacedVolumeM3, "displacedVolumeM3") * positive(gravity, "gravity");
+}
+
+export function volumetricFlowRate(areaM2: number, speedMps: number): number {
+  return positive(areaM2, "areaM2") * finite(speedMps, "speedMps");
+}
+
 export function coulombForce(charge1C: number, charge2C: number, distanceM: number): number {
   return PHYSICS.k * finite(charge1C, "charge1C") * finite(charge2C, "charge2C") / positive(distanceM, "distanceM") ** 2;
 }

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { angularSpeedFromRpm, centripetalAcceleration, checkNumericAnswer, coulombForce, criticalAngleDeg, electricField, impulse, kineticEnergy, momentum, ohmsLaw, powerFromCurrentResistance, projectile, refraction, resistanceFromVoltageCurrent, tangentialSpeed, temperatureChangeFromEnergy, thermalEnergy, velocityChangeFromImpulse, wave, waveFrequency, wavePeriod, waveSpeed } from "../lib/physics";
+import { angularSpeedFromRpm, buoyantForce, centripetalAcceleration, checkNumericAnswer, coulombForce, criticalAngleDeg, electricField, hydrostaticPressure, impulse, kineticEnergy, momentum, ohmsLaw, powerFromCurrentResistance, projectile, refraction, resistanceFromVoltageCurrent, tangentialSpeed, temperatureChangeFromEnergy, thermalEnergy, velocityChangeFromImpulse, volumetricFlowRate, wave, waveFrequency, wavePeriod, waveSpeed } from "../lib/physics";
 import { createMockTutorAnswer, validateTutorAnswer } from "../lib/ai";
 
 describe("physics engine", () => {
@@ -109,6 +109,19 @@ describe("physics engine", () => {
     expect(() => ohmsLaw(12, 0)).toThrow("resistance must be positive");
     expect(() => resistanceFromVoltageCurrent(12, 0)).toThrow("current must be non-zero");
     expect(() => powerFromCurrentResistance(3, -1)).toThrow("resistance must be positive");
+  });
+
+  it("computes fluid quantities deterministically", () => {
+    expect(hydrostaticPressure(1000, 2)).toBeCloseTo(19613.3, 6);
+    expect(buoyantForce(1000, 0.01)).toBeCloseTo(98.0665, 6);
+    expect(volumetricFlowRate(0.02, 3)).toBe(0.06);
+  });
+
+  it("rejects invalid fluid parameters", () => {
+    expect(() => hydrostaticPressure(0, 2)).toThrow("densityKgM3 must be positive");
+    expect(() => buoyantForce(1000, -1)).toThrow("displacedVolumeM3 must be positive");
+    expect(() => volumetricFlowRate(0, 3)).toThrow("areaM2 must be positive");
+    expect(() => volumetricFlowRate(1, Number.NaN)).toThrow("speedMps must be finite");
   });
 });
 

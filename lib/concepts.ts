@@ -21,6 +21,9 @@ export const conceptRegistry: PhysicsConcept[] = [
   { id: "charge", title: "Electric Charge", domain: "Electricity", level: "foundation", prerequisites: [], intuition: "Charge is a conserved property that determines how matter responds to electric interactions.", units: "C" },
   { id: "field", title: "Electric Field", domain: "Electricity", level: "core", prerequisites: ["charge"], intuition: "An electric field describes the force per unit charge at a location around charged matter.", equation: "E = kq/r²", units: "N/C" },
   { id: "coulomb-law", title: "Coulomb's Law", domain: "Electricity", level: "core", prerequisites: ["charge", "field"], intuition: "The force between point charges depends on both charge values and decreases with the square of distance.", equation: "F = kq₁q₂/r²", units: "N" },
+  { id: "fluids", title: "Fluids", domain: "Fluids", level: "foundation", prerequisites: [], intuition: "A fluid flows and transmits pressure; its density connects mass to volume.", units: "kg/m³" },
+  { id: "buoyancy", title: "Buoyancy", domain: "Fluids", level: "core", prerequisites: ["fluids"], intuition: "A submerged volume displaces fluid and experiences an upward force equal to the weight of the displaced fluid.", equation: "F_b = ρVg", units: "N" },
+  { id: "fluid-flow", title: "Fluid Flow", domain: "Fluids", level: "core", prerequisites: ["fluids"], intuition: "Volumetric flow rate is the cross-sectional area multiplied by average flow speed.", equation: "Q = Av", units: "m³/s" },
   { id: "circuits", title: "Circuits", domain: "Electricity", level: "core", prerequisites: ["charge", "field"], intuition: "Charges transfer energy through a connected path.", equation: "V = IR", units: "V, A, Ω" },
 ];
 

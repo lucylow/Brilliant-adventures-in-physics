@@ -246,3 +246,6 @@
 - [x] Add validated deterministic circuit helpers for current, resistance, and power
 - [x] Add deterministic circuit regression tests including invalid-parameter handling
 - [x] Connect circuit concepts to an accessible circuit experiment in the Lab
+- [x] Add validated deterministic fluid helpers for pressure, buoyant force, and volumetric flow
+- [x] Add deterministic fluid regression tests including invalid-parameter handling
+- [x] Connect fluid concepts to an accessible fluid experiment in the Lab
