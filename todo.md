@@ -115,3 +115,15 @@
 - [ ] Add a manual retry button and reconnect queue draining for offline autosaves
 - [ ] Apply consistent loading, empty, error, and offline states to Scan, Lesson, Upgrade, and Concepts
 - [x] Add deterministic tests for achievement filters, queue draining, and secondary-screen states
+- [ ] Add validated vector, vector3, quantity, unit-conversion, and dimensional-analysis utilities
+- [ ] Add deterministic mechanics helpers for kinematics, projectile motion, forces, gravity, friction, energy, momentum, torque, and rotation
+- [ ] Add deterministic oscillation, wave, optics, electricity, thermal, and modern-physics helpers
+- [ ] Add a physics feature catalog connecting utilities to concepts and supported learning levels
+- [ ] Connect selected physics features to Lab, Tutor, Practice, and Concepts
+- [ ] Add deterministic tests for physics feature domains and invalid-parameter handling
+- [x] Add responsive visual tokens and lightweight canvas models for physics scenes
+- [x] Add trajectory, vector, particle, field, wave, circuit, optics, thermal, and fluid visual primitives
+- [x] Add visual-state contracts for idle, running, paused, complete, error, and empty states
+- [ ] Connect visual primitives to Lab, Concepts, and experiment overlays
+- [x] Add reduced-motion and high-contrast visual alternatives
+- [x] Add deterministic tests for visual scaling, ticks, paths, field layouts, and visual states
