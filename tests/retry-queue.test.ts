@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { formatLastSave, formatRetryResult, parseRetryQueue, RETRY_QUEUE_DISCARD_COPY, RETRY_QUEUE_DISCARDED_COPY } from "../lib/retry-queue";
+import { formatLastSave, formatRetryItemAge, formatRetryResult, parseRetryQueue, RETRY_QUEUE_DISCARD_COPY, RETRY_QUEUE_DISCARDED_COPY } from "../lib/retry-queue";
 
 describe("retry queue copy", () => {
   it("describes recovered, pending, and empty queue outcomes", () => {
@@ -29,5 +29,12 @@ describe("retry queue copy", () => {
     expect(RETRY_QUEUE_DISCARD_COPY).toContain("only queued autosaves");
     expect(RETRY_QUEUE_DISCARD_COPY).toContain("learning history");
     expect(RETRY_QUEUE_DISCARDED_COPY).toContain("Learning history was kept");
+  });
+
+  it("formats queued-draft ages deterministically", () => {
+    const now = 10 * 60 * 60 * 1000;
+    expect(formatRetryItemAge(now - 30_000, now)).toBe("just now");
+    expect(formatRetryItemAge(now - 2 * 60 * 60 * 1000, now)).toBe("2 hours ago");
+    expect(formatRetryItemAge(Number.NaN, now)).toBe("age unavailable");
   });
 });

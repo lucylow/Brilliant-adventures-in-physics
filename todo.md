@@ -290,3 +290,6 @@
 - [x] Add a confirmed Settings action to discard only queued offline autosaves
 - [x] Preserve learning history and preferences when queued autosaves are discarded
 - [x] Add deterministic coverage for queue-discard copy and scope
+- [x] Expose sanitized pending autosave details from the retry queue
+- [x] Show accessible draft age and identifier summaries in Settings
+- [x] Add deterministic coverage for queue-detail sanitization and formatting
