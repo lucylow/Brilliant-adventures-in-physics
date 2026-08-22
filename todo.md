@@ -29,7 +29,7 @@
 - [x] Add graceful premium fallback that routes locked features to core free workflows
 - [x] Persist and list saved Physics Lens experiments
 - [x] Add experiment deletion and privacy-safe local retention controls
-- [ ] Add stronger persisted mastery feedback for topic-level attempts
+- [x] Add stronger persisted mastery feedback for topic-level attempts
 - [x] Add deterministic tests for usage limits, saved experiments, and fallback behavior
 - [x] Add curriculum topic, lesson, objective, and prerequisite domain models
 - [x] Add progressive hint, scaffolding, misconception, and mastery update rules
@@ -43,7 +43,7 @@
 - [x] Apply coherent UI states across Tutor, Lab, Practice, Physics Lens, and Progress
 - [x] Add UI-focused tests for state transitions and accessibility labels
 - [x] Add UX state, action-priority, friendly-error, retry, and offline-queue utilities
-- [ ] Add recoverable session drafts and input restoration for active learning flows
+- [x] Add recoverable session drafts and input restoration for active learning flows
 - [x] Add accessible announcement, touch-target, validation, and keyboard-dismissal helpers
 - [x] Improve next-best-action, resume, empty, and saved feedback across core screens
 - [x] Add UX-focused tests for recovery, copy, filters, and state transitions
@@ -58,3 +58,8 @@
 - [x] Add real streak dates and missed-day recovery without guilt messaging
 - [x] Add evidence-based achievement evaluation and an achievement shelf
 - [x] Add deterministic tests for draft recovery, mastery updates, and achievements
+- [x] Wire Resume/Discard draft restoration into Tutor, Practice, and Physics Lens screens
+- [x] Add local data privacy controls for export summary and clear-all confirmation
+- [x] Add evidence-based achievement evaluation from lessons, attempts, labs, and mastery
+- [x] Add achievement shelf and milestone feedback to Progress
+- [x] Add deterministic tests for privacy controls, draft actions, and achievement criteria
