@@ -222,3 +222,6 @@
 - [x] Audit Lesson and Tutor loading effects for stale updates
 - [x] Add explicit retry or recovery feedback to remaining learning-screen actions
 - [x] Add deterministic regression tests for screen-level async failures
+- [x] Apply consistent recovery feedback to Scan and Concepts secondary screens
+- [x] Add safe action guards for secondary-screen persistence or navigation flows
+- [x] Add deterministic coverage for secondary-screen recovery contracts
