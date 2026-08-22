@@ -264,3 +264,6 @@
 - [x] Add validated deterministic gravitational potential-energy and weight helpers
 - [x] Add deterministic gravitational regression tests including invalid-parameter handling
 - [x] Connect gravitational-energy content to an accessible potential-energy experiment in the Lab
+- [x] Add validated deterministic solid-disk moment-of-inertia and rotational-energy helpers
+- [x] Add deterministic rotational-energy regression tests including invalid-parameter handling
+- [x] Connect rotational-energy content to an accessible rotational-energy experiment in the Lab

@@ -149,6 +149,14 @@ export type ElasticCollisionResult = {
   finalMomentumKgMps: number;
 };
 
+export function solidDiskMomentOfInertia(massKg: number, radiusM: number): number {
+  return 0.5 * positive(massKg, "massKg") * positive(radiusM, "radiusM") ** 2;
+}
+
+export function rotationalKineticEnergy(momentOfInertiaKgM2: number, angularSpeedRadS: number): number {
+  return 0.5 * positive(momentOfInertiaKgM2, "momentOfInertiaKgM2") * finite(angularSpeedRadS, "angularSpeedRadS") ** 2;
+}
+
 export function weightForce(massKg: number, gravity: number = PHYSICS.g): number {
   return positive(massKg, "massKg") * positive(gravity, "gravity");
 }

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { angularSpeedFromRpm, averagePowerFromWork, buoyantForce, centripetalAcceleration, checkNumericAnswer, coulombForce, criticalAngleDeg, electricField, elasticCollision1D, elasticPotentialEnergy, gravitationalPotentialEnergy, harmonicDisplacement, harmonicVelocity, hydrostaticPressure, impulse, kineticEnergy, momentum, ohmsLaw, powerFromCurrentResistance, projectile, refraction, resistanceFromVoltageCurrent, springForce, tangentialSpeed, temperatureChangeFromEnergy, thermalEnergy, velocityChangeFromImpulse, volumetricFlowRate, wave, waveFrequency, wavePeriod, waveSpeed, weightForce, workFromForce } from "../lib/physics";
+import { angularSpeedFromRpm, averagePowerFromWork, buoyantForce, centripetalAcceleration, checkNumericAnswer, coulombForce, criticalAngleDeg, electricField, elasticCollision1D, elasticPotentialEnergy, gravitationalPotentialEnergy, harmonicDisplacement, harmonicVelocity, hydrostaticPressure, impulse, kineticEnergy, momentum, ohmsLaw, powerFromCurrentResistance, projectile, refraction, resistanceFromVoltageCurrent, rotationalKineticEnergy, solidDiskMomentOfInertia, springForce, tangentialSpeed, temperatureChangeFromEnergy, thermalEnergy, velocityChangeFromImpulse, volumetricFlowRate, wave, waveFrequency, wavePeriod, waveSpeed, weightForce, workFromForce } from "../lib/physics";
 import { createMockTutorAnswer, validateTutorAnswer } from "../lib/ai";
 
 describe("physics engine", () => {
@@ -186,6 +186,19 @@ describe("physics engine", () => {
     expect(() => weightForce(0)).toThrow("massKg must be positive");
     expect(() => gravitationalPotentialEnergy(2, Number.NaN)).toThrow("heightM must be finite");
     expect(() => gravitationalPotentialEnergy(2, 1, 0)).toThrow("gravity must be positive");
+  });
+
+  it("computes rotational inertia and energy deterministically", () => {
+    const inertia = solidDiskMomentOfInertia(4, 0.5);
+    expect(inertia).toBeCloseTo(0.5, 8);
+    expect(rotationalKineticEnergy(inertia, 6)).toBeCloseTo(9, 8);
+  });
+
+  it("rejects invalid rotational-energy parameters", () => {
+    expect(() => solidDiskMomentOfInertia(0, 0.5)).toThrow("massKg must be positive");
+    expect(() => solidDiskMomentOfInertia(4, 0)).toThrow("radiusM must be positive");
+    expect(() => rotationalKineticEnergy(0, 6)).toThrow("momentOfInertiaKgM2 must be positive");
+    expect(() => rotationalKineticEnergy(1, Number.NaN)).toThrow("angularSpeedRadS must be finite");
   });
 });
 
