@@ -296,3 +296,5 @@
 - [x] Add individual confirmation and discard controls for visible queued autosave drafts
 - [x] Preserve other queued drafts and successful-save metadata when one draft is discarded
 - [x] Add deterministic validation coverage for individual discard inputs and privacy copy
+- [x] Add individual retry controls for visible queued autosave drafts
+- [x] Preserve queued work and expose accessible per-draft retry feedback

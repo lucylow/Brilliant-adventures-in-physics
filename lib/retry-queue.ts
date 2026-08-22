@@ -27,6 +27,20 @@ export async function removeRetryItem(id: string): Promise<number> {
   await AsyncStorage.setItem(QUEUE_KEY, JSON.stringify(next));
   return next.length;
 }
+export async function retryOneItem(id: string, save: (item: RetryItem) => Promise<void>): Promise<{ saved: boolean; remaining: number }> {
+  if (typeof id !== "string" || id.trim().length === 0) throw new Error("retry item id is required");
+  const current = await readQueue();
+  const target = current.find((item) => item.id === id);
+  if (!target) return { saved: false, remaining: current.length };
+  try {
+    await save(target);
+  } catch {
+    return { saved: false, remaining: current.length };
+  }
+  const next = current.filter((item) => item.id !== id);
+  await AsyncStorage.setItem(QUEUE_KEY, JSON.stringify(next));
+  return { saved: true, remaining: next.length };
+}
 export function formatRetryItemAge(queuedAt: number, now: number): string {
   if (!Number.isFinite(queuedAt) || !Number.isFinite(now) || queuedAt < 0) return "age unavailable";
   const elapsedMs = Math.max(0, now - queuedAt);
@@ -46,4 +60,8 @@ export function formatRetryResult(saved: number, remaining: number): string {
   if (!Number.isInteger(saved) || saved < 0 || !Number.isInteger(remaining) || remaining < 0) throw new Error("retry counts must be non-negative integers");
   if (remaining === 0) return saved > 0 ? `Recovered ${saved} offline save${saved === 1 ? "" : "s"}.` : "No pending offline saves.";
   return `Recovered ${saved}; ${remaining} still waiting.`;
+}
+export function formatRetryItemResult(index: number, saved: boolean, remaining: number): string {
+  if (!Number.isInteger(index) || index < 0 || typeof saved !== "boolean" || !Number.isInteger(remaining) || remaining < 0) throw new Error("invalid retry item result");
+  return saved ? `Recovered draft ${index + 1}. ${remaining} still waiting.` : `Draft ${index + 1} is still waiting. Your queued work was kept.`;
 }

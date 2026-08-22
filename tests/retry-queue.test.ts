@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { formatLastSave, formatRetryItemAge, formatRetryResult, parseRetryQueue, removeRetryItem, RETRY_ITEM_DISCARD_COPY, RETRY_ITEM_DISCARDED_COPY, RETRY_QUEUE_DISCARD_COPY, RETRY_QUEUE_DISCARDED_COPY } from "../lib/retry-queue";
+import { formatLastSave, formatRetryItemAge, formatRetryItemResult, formatRetryResult, parseRetryQueue, removeRetryItem, RETRY_ITEM_DISCARD_COPY, RETRY_ITEM_DISCARDED_COPY, RETRY_QUEUE_DISCARD_COPY, RETRY_QUEUE_DISCARDED_COPY } from "../lib/retry-queue";
 
 describe("retry queue copy", () => {
   it("describes recovered, pending, and empty queue outcomes", () => {
@@ -43,5 +43,11 @@ describe("retry queue copy", () => {
     expect(RETRY_ITEM_DISCARD_COPY).toContain("selected queued autosave");
     expect(RETRY_ITEM_DISCARDED_COPY).toContain("Other local data was kept");
     expect(RETRY_QUEUE_DISCARDED_COPY).toContain("Learning history was kept");
+  });
+
+  it("formats per-draft retry outcomes without hiding retained work", () => {
+    expect(formatRetryItemResult(0, true, 2)).toBe("Recovered draft 1. 2 still waiting.");
+    expect(formatRetryItemResult(1, false, 2)).toBe("Draft 2 is still waiting. Your queued work was kept.");
+    expect(() => formatRetryItemResult(-1, true, 0)).toThrow("invalid retry item result");
   });
 });
