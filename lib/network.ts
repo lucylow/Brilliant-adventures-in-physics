@@ -19,6 +19,13 @@ export function networkStatusMessage(status: NetworkStatus): string | null {
   return null;
 }
 
+export function manualNetworkCheckMessage(status: NetworkStatus): string {
+  if (status === "online") return "Connection is available. You can retry queued saves now.";
+  if (status === "offline") return "No internet connection detected. Queued saves remain on this device.";
+  if (status === "checking") return "The connection is still being checked. Your queued saves remain safe.";
+  return "We could not confirm the connection. Your queued saves remain on this device.";
+}
+
 export function serviceErrorNetworkStatus(error: Pick<ServiceError, "code">): NetworkStatus {
   if (error.code === "OFFLINE") return "offline";
   if (error.code === "TIMEOUT" || error.code === "RETRYABLE_ERROR" || error.code === "UNEXPECTED_ERROR") return "unknown";

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { networkStateToStatus, networkStatusLabel, networkStatusMessage, recoveryMessage, serviceErrorNetworkStatus } from "../lib/network";
+import { manualNetworkCheckMessage, networkStateToStatus, networkStatusLabel, networkStatusMessage, recoveryMessage, serviceErrorNetworkStatus } from "../lib/network";
 
 describe("network recovery contracts", () => {
   it("classifies transport failures without treating validation as offline", () => {
@@ -27,5 +27,11 @@ describe("network recovery contracts", () => {
     expect(networkStatusMessage("checking")).toContain("local work remains safe");
     expect(networkStatusMessage("online")).toBeNull();
     expect(networkStatusMessage("unknown")).toBeNull();
+  });
+  it("provides stable manual-check outcomes for every status", () => {
+    expect(manualNetworkCheckMessage("online")).toContain("Connection is available");
+    expect(manualNetworkCheckMessage("offline")).toContain("remain on this device");
+    expect(manualNetworkCheckMessage("checking")).toContain("still being checked");
+    expect(manualNetworkCheckMessage("unknown")).toContain("could not confirm");
   });
 });

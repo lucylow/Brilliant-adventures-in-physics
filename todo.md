@@ -302,3 +302,5 @@
 - [x] Add deterministic coverage for connectivity-gated reconciliation decisions
 - [x] Add a global accessible network-status banner for offline and checking states
 - [x] Add deterministic copy and status-mapping coverage for the banner
+- [x] Add a manual connection-check action in Settings
+- [x] Add deterministic feedback coverage for manual connection checks
