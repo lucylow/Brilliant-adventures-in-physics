@@ -1,20 +1,31 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { consume } from "@/lib/monetization";
+import { consume } from "./monetization";
 
 const STORAGE_KEY = "physicaai.usage.v1";
 export type UsageState = { date: string; tutorUsed: number; tutorLimit: number };
 
 function today() { return new Date().toISOString().slice(0, 10); }
 
-export async function loadUsage(): Promise<UsageState> {
+export type UsageLoadResult = { usage: UsageState; recovered: boolean };
+
+function defaults(): UsageState { return { date: today(), tutorUsed: 0, tutorLimit: 5 }; }
+
+export async function loadUsageWithStatus(): Promise<UsageLoadResult> {
   try {
     const raw = await AsyncStorage.getItem(STORAGE_KEY);
     const saved = raw ? JSON.parse(raw) as Partial<UsageState> : {};
-    if (saved.date !== today()) return { date: today(), tutorUsed: 0, tutorLimit: 5 };
-    return { date: today(), tutorUsed: Number(saved.tutorUsed) || 0, tutorLimit: Number(saved.tutorLimit) || 5 };
+    if (saved.date !== today()) return { usage: defaults(), recovered: false };
+    const tutorUsed = Number(saved.tutorUsed);
+    const tutorLimit = Number(saved.tutorLimit);
+    if (!Number.isFinite(tutorUsed) || !Number.isFinite(tutorLimit) || tutorUsed < 0 || tutorLimit <= 0) return { usage: defaults(), recovered: true };
+    return { usage: { date: today(), tutorUsed: Math.min(tutorUsed, tutorLimit), tutorLimit }, recovered: false };
   } catch {
-    return { date: today(), tutorUsed: 0, tutorLimit: 5 };
+    return { usage: defaults(), recovered: true };
   }
+}
+
+export async function loadUsage(): Promise<UsageState> {
+  return (await loadUsageWithStatus()).usage;
 }
 
 export async function consumeTutorUse(): Promise<UsageState> {

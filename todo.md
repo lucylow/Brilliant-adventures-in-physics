@@ -216,3 +216,6 @@
 - [x] Surface a recoverable preference-load state in Settings and dependent screens
 - [x] Re-check the dependency-emitted pointerEvents warning and document its boundary
 - [x] Add deterministic tests for preference-load failures and recovery copy
+- [x] Audit remaining local-data loaders for stale updates and rejected promises
+- [x] Add retryable loading feedback to remaining persistence-backed screens
+- [x] Add deterministic tests for loader failure and retry contracts
