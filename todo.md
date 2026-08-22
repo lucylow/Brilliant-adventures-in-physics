@@ -187,3 +187,7 @@
 - [x] Add safe purchase-session feedback without fabricated plans or prices
 - [x] Add restore-purchases and manage-subscription action states
 - [x] Add deterministic tests for Upgrade state transitions and failure copy
+- [x] Add dynamic entrance and press-feedback motion to dashboard quick actions
+- [x] Add animated dashboard progress/activity states driven by persisted learning data
+- [x] Add purposeful animated feedback to Progress and Lab controls
+- [x] Add deterministic motion-contract tests and validate reduced-motion behavior
