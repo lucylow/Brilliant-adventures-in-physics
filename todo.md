@@ -240,3 +240,6 @@
 - [x] Add validated deterministic angular-speed, centripetal-acceleration, and tangential-speed helpers
 - [x] Add deterministic rotational-mechanics regression tests including invalid-parameter handling
 - [x] Connect rotational mechanics to concepts and an accessible circular-motion Lab experiment
+- [x] Add validated deterministic Coulomb-force and electric-field helpers
+- [x] Add deterministic electrostatics regression tests including invalid-parameter handling
+- [x] Connect charge and field concepts to an accessible electrostatics Lab experiment

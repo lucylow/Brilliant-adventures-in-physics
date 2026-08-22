@@ -235,6 +235,14 @@ export function temperatureChangeFromEnergy(energyJ: number, massKg: number, spe
   return finite(energyJ, "energyJ") / (positive(massKg, "massKg") * positive(specificHeatJPerKgK, "specificHeatJPerKgK"));
 }
 
+export function coulombForce(charge1C: number, charge2C: number, distanceM: number): number {
+  return PHYSICS.k * finite(charge1C, "charge1C") * finite(charge2C, "charge2C") / positive(distanceM, "distanceM") ** 2;
+}
+
+export function electricField(chargeC: number, distanceM: number): number {
+  return PHYSICS.k * finite(chargeC, "chargeC") / positive(distanceM, "distanceM") ** 2;
+}
+
 export function ohmsLaw(voltage: number, resistance: number) {
   if (!Number.isFinite(resistance) || resistance <= 0) throw new Error("Resistance must be positive");
   const current = voltage / resistance;

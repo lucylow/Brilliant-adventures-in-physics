@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { angularSpeedFromRpm, centripetalAcceleration, checkNumericAnswer, criticalAngleDeg, impulse, kineticEnergy, momentum, projectile, refraction, tangentialSpeed, temperatureChangeFromEnergy, thermalEnergy, velocityChangeFromImpulse, wave, waveFrequency, wavePeriod, waveSpeed } from "../lib/physics";
+import { angularSpeedFromRpm, centripetalAcceleration, checkNumericAnswer, coulombForce, criticalAngleDeg, electricField, impulse, kineticEnergy, momentum, projectile, refraction, tangentialSpeed, temperatureChangeFromEnergy, thermalEnergy, velocityChangeFromImpulse, wave, waveFrequency, wavePeriod, waveSpeed } from "../lib/physics";
 import { createMockTutorAnswer, validateTutorAnswer } from "../lib/ai";
 
 describe("physics engine", () => {
@@ -85,6 +85,17 @@ describe("physics engine", () => {
     expect(() => angularSpeedFromRpm(Number.NaN)).toThrow("revolutionsPerMinute must be finite");
     expect(() => tangentialSpeed(2, 0)).toThrow("radiusM must be positive");
     expect(() => centripetalAcceleration(4, -1)).toThrow("radiusM must be positive");
+  });
+
+  it("computes Coulomb force and electric field deterministically", () => {
+    expect(coulombForce(1e-6, 2e-6, 0.5)).toBeCloseTo(0.0719004, 7);
+    expect(coulombForce(1e-6, -2e-6, 0.5)).toBeCloseTo(-0.0719004, 7);
+    expect(electricField(1e-6, 0.5)).toBeCloseTo(35950.2071692, 6);
+  });
+
+  it("rejects invalid electrostatics parameters", () => {
+    expect(() => coulombForce(1, 2, 0)).toThrow("distanceM must be positive");
+    expect(() => electricField(Number.NaN, 1)).toThrow("chargeC must be finite");
   });
 });
 

@@ -18,6 +18,9 @@ export const conceptRegistry: PhysicsConcept[] = [
   { id: "temperature", title: "Temperature", domain: "Thermal", level: "foundation", prerequisites: [], intuition: "Temperature describes the average thermal state of a system, while heat describes energy transferred because of a temperature difference.", units: "K, °C" },
   { id: "heat", title: "Heat Capacity", domain: "Thermal", level: "core", prerequisites: ["temperature"], intuition: "The energy needed for a temperature change depends on mass and the material’s specific heat capacity.", equation: "Q = mcΔT", units: "J" },
   { id: "gas-laws", title: "Gas Laws", domain: "Thermal", level: "core", prerequisites: ["temperature"], intuition: "Pressure, volume, and temperature describe predictable relationships in an idealized gas.", equation: "PV = nRT", units: "Pa, m³, K" },
+  { id: "charge", title: "Electric Charge", domain: "Electricity", level: "foundation", prerequisites: [], intuition: "Charge is a conserved property that determines how matter responds to electric interactions.", units: "C" },
+  { id: "field", title: "Electric Field", domain: "Electricity", level: "core", prerequisites: ["charge"], intuition: "An electric field describes the force per unit charge at a location around charged matter.", equation: "E = kq/r²", units: "N/C" },
+  { id: "coulomb-law", title: "Coulomb's Law", domain: "Electricity", level: "core", prerequisites: ["charge", "field"], intuition: "The force between point charges depends on both charge values and decreases with the square of distance.", equation: "F = kq₁q₂/r²", units: "N" },
   { id: "circuits", title: "Circuits", domain: "Electricity", level: "core", prerequisites: ["charge", "field"], intuition: "Charges transfer energy through a connected path.", equation: "V = IR", units: "V, A, Ω" },
 ];
 
