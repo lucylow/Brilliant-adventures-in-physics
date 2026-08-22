@@ -162,3 +162,7 @@
 - [x] Fix any actionable source-level warnings or errors found
 - [x] Add defensive fallbacks for persistence and user-triggered actions
 - [x] Add deterministic regression coverage for the newly fixed failure paths
+- [x] Audit async persistence and completion actions for unhandled rejection paths
+- [x] Add mounted-state or duplicate-submit guards where asynchronous actions update UI
+- [x] Re-check the dependency deprecation warning and document or safely mitigate it
+- [x] Add deterministic tests for async failure recovery and duplicate-action prevention
