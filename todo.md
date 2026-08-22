@@ -261,3 +261,6 @@
 - [x] Add validated deterministic spring-force and elastic-potential-energy helpers
 - [x] Add deterministic spring regression tests including invalid-parameter handling
 - [x] Connect elasticity content to an accessible spring experiment in the Lab
+- [x] Add validated deterministic gravitational potential-energy and weight helpers
+- [x] Add deterministic gravitational regression tests including invalid-parameter handling
+- [x] Connect gravitational-energy content to an accessible potential-energy experiment in the Lab

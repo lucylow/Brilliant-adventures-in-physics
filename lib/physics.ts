@@ -149,6 +149,14 @@ export type ElasticCollisionResult = {
   finalMomentumKgMps: number;
 };
 
+export function weightForce(massKg: number, gravity: number = PHYSICS.g): number {
+  return positive(massKg, "massKg") * positive(gravity, "gravity");
+}
+
+export function gravitationalPotentialEnergy(massKg: number, heightM: number, gravity: number = PHYSICS.g): number {
+  return positive(massKg, "massKg") * finite(heightM, "heightM") * positive(gravity, "gravity");
+}
+
 export function springForce(springConstantNPerM: number, displacementM: number): number {
   return -positive(springConstantNPerM, "springConstantNPerM") * finite(displacementM, "displacementM");
 }

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { angularSpeedFromRpm, averagePowerFromWork, buoyantForce, centripetalAcceleration, checkNumericAnswer, coulombForce, criticalAngleDeg, electricField, elasticCollision1D, elasticPotentialEnergy, harmonicDisplacement, harmonicVelocity, hydrostaticPressure, impulse, kineticEnergy, momentum, ohmsLaw, powerFromCurrentResistance, projectile, refraction, resistanceFromVoltageCurrent, springForce, tangentialSpeed, temperatureChangeFromEnergy, thermalEnergy, velocityChangeFromImpulse, volumetricFlowRate, wave, waveFrequency, wavePeriod, waveSpeed, workFromForce } from "../lib/physics";
+import { angularSpeedFromRpm, averagePowerFromWork, buoyantForce, centripetalAcceleration, checkNumericAnswer, coulombForce, criticalAngleDeg, electricField, elasticCollision1D, elasticPotentialEnergy, gravitationalPotentialEnergy, harmonicDisplacement, harmonicVelocity, hydrostaticPressure, impulse, kineticEnergy, momentum, ohmsLaw, powerFromCurrentResistance, projectile, refraction, resistanceFromVoltageCurrent, springForce, tangentialSpeed, temperatureChangeFromEnergy, thermalEnergy, velocityChangeFromImpulse, volumetricFlowRate, wave, waveFrequency, wavePeriod, waveSpeed, weightForce, workFromForce } from "../lib/physics";
 import { createMockTutorAnswer, validateTutorAnswer } from "../lib/ai";
 
 describe("physics engine", () => {
@@ -174,6 +174,18 @@ describe("physics engine", () => {
   it("rejects invalid spring parameters", () => {
     expect(() => springForce(0, 0.2)).toThrow("springConstantNPerM must be positive");
     expect(() => elasticPotentialEnergy(100, Number.NaN)).toThrow("displacementM must be finite");
+  });
+
+  it("computes gravitational weight and potential energy deterministically", () => {
+    expect(weightForce(2)).toBeCloseTo(19.6133, 8);
+    expect(weightForce(2, 1.62)).toBeCloseTo(3.24, 8);
+    expect(gravitationalPotentialEnergy(2, 5)).toBeCloseTo(98.0665, 8);
+  });
+
+  it("rejects invalid gravitational parameters", () => {
+    expect(() => weightForce(0)).toThrow("massKg must be positive");
+    expect(() => gravitationalPotentialEnergy(2, Number.NaN)).toThrow("heightM must be finite");
+    expect(() => gravitationalPotentialEnergy(2, 1, 0)).toThrow("gravity must be positive");
   });
 });
 
