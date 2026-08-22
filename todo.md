@@ -328,3 +328,5 @@
 - [x] Validate practice route parameters and preserve local-only question generation
 - [x] Expand deterministic local practice questions across core physics domains
 - [x] Add regression coverage for new question concepts and exact solutions
+- [x] Add deterministic Practice questions for optics, momentum, collisions, and modern physics
+- [x] Add regression coverage for cross-domain question mappings and exact solutions

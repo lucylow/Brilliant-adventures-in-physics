@@ -13,8 +13,10 @@ describe("education rules", () => {
     expect(masteryState(next)).toBe("practicing");
   });
   it("matches supported concepts to local practice questions", () => {
-    expect(practiceQuestions.length).toBeGreaterThan(5);
-    expect(practiceQuestions.map((question) => question.conceptId)).toEqual(["kinematics", "kinematics", "energy", "wave-motion", "heat", "circuits"]);
+    expect(practiceQuestions.length).toBe(10);
+    expect(practiceQuestions.map((question) => question.conceptId)).toEqual(["kinematics", "kinematics", "energy", "wave-motion", "heat", "circuits", "momentum", "collisions", "optics", "modern-energy"]);
+    expect(practiceQuestions.find((question) => question.id === "momentum")?.solve()).toBe(10);
+    expect(practiceQuestions.find((question) => question.id === "elastic-collision")?.solve()).toBe(4);
     expect(practiceQuestionIndexForConcept("kinematics")).toBe(0);
     expect(hasPracticeQuestion("KINEMATICS")).toBe(true);
     expect(practiceQuestionIndexForConcept("relativity")).toBeNull();
