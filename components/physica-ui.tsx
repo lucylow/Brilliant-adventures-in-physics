@@ -4,10 +4,10 @@ import { useColors } from "@/hooks/use-colors";
 
 export const ui = { space: { xs: 4, sm: 8, md: 12, lg: 16, xl: 24, xxl: 32 }, radius: { sm: 8, md: 12, lg: 18, xl: 24, pill: 999 }, text: { xs: 12, sm: 14, md: 16, lg: 20, xl: 28, xxl: 36 } } as const;
 
-export function Card({ children, onPress, style }: PropsWithChildren<{ onPress?: () => void; style?: StyleProp<ViewStyle> }>) {
+export function Card({ children, onPress, accessibilityLabel, style }: PropsWithChildren<{ onPress?: () => void; accessibilityLabel?: string; style?: StyleProp<ViewStyle> }>) {
   const colors = useColors();
   const content = <View style={[{ padding: 16, borderRadius: 18, backgroundColor: colors.surface, borderWidth: 1, borderColor: colors.border }, style]}>{children}</View>;
-  return onPress ? <Pressable accessibilityRole="button" onPress={onPress} style={({ pressed }) => ({ opacity: pressed ? 0.72 : 1 })}>{content}</Pressable> : content;
+  return onPress ? <Pressable accessibilityRole="button" accessibilityLabel={accessibilityLabel} onPress={onPress} style={({ pressed }) => ({ opacity: pressed ? 0.72 : 1 })}>{content}</Pressable> : content;
 }
 
 export function PrimaryButton({ label, onPress, disabled = false }: { label: string; onPress: () => void; disabled?: boolean }) {
@@ -29,7 +29,7 @@ export function Chip({ label, selected = false, onPress }: { label: string; sele
 
 export function SectionHeader({ title, subtitle, action, onAction }: { title: string; subtitle?: string; action?: string; onAction?: () => void }) {
   const colors = useColors();
-  return <View style={{ marginBottom: 12 }}><View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}><Text style={{ fontSize: 20, fontWeight: "800", color: colors.foreground }}>{title}</Text>{action && <Pressable accessibilityRole="button" onPress={onAction}><Text style={{ fontWeight: "800", color: colors.primary }}>{action}</Text></Pressable>}</View>{subtitle && <Text style={{ marginTop: 4, color: colors.muted, lineHeight: 20 }}>{subtitle}</Text>}</View>;
+  return <View style={{ marginBottom: 12 }}><View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}><Text style={{ fontSize: 20, fontWeight: "800", color: colors.foreground }}>{title}</Text>{action && <Pressable accessibilityRole="button" accessibilityLabel={action} onPress={onAction}><Text style={{ fontWeight: "800", color: colors.primary }}>{action}</Text></Pressable>}</View>{subtitle && <Text style={{ marginTop: 4, color: colors.muted, lineHeight: 20 }}>{subtitle}</Text>}</View>;
 }
 
 export function ProgressBar({ value }: { value: number }) {

@@ -269,3 +269,5 @@
 - [x] Connect rotational-energy content to an accessible rotational-energy experiment in the Lab
 - [x] Normalize Expo-style network state into stable online, offline, checking, or unknown statuses
 - [x] Add deterministic tests for reachable, disconnected, and indeterminate network states
+- [x] Add explicit accessibility labels to shared interactive cards and dashboard quick actions
+- [x] Add deterministic coverage for the shared accessibility contract
