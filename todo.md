@@ -25,3 +25,31 @@
 - [ ] Add transparent premium upgrade screen using entitlement gates and non-deceptive copy
 - [ ] Add free-tier usage meter and graceful premium feature fallback
 - [x] Add tests for Physics Lens calculations, persisted mastery, and entitlement gating
+- [x] Add a local AI usage meter with daily free-tier limits and visible remaining usage
+- [x] Add graceful premium fallback that routes locked features to core free workflows
+- [x] Persist and list saved Physics Lens experiments
+- [x] Add experiment deletion and privacy-safe local retention controls
+- [ ] Add stronger persisted mastery feedback for topic-level attempts
+- [x] Add deterministic tests for usage limits, saved experiments, and fallback behavior
+- [x] Add curriculum topic, lesson, objective, and prerequisite domain models
+- [x] Add progressive hint, scaffolding, misconception, and mastery update rules
+- [x] Add reusable lesson, equation, solution-step, vocabulary, and reflection components
+- [x] Add a focused lesson flow connected to Tutor, Practice, and Lab
+- [x] Add educational tests for prerequisite checks, mastery states, hint levels, and grading feedback
+- [x] Add shared UI tokens for spacing, type scale, radii, and semantic color roles
+- [x] Add accessible loading, empty, error, success, and offline state components
+- [x] Improve touch targets, press feedback, and keyboard-safe composer behavior
+- [x] Add reusable equation cards, solution steps, hint panels, stat tiles, and chip rows
+- [x] Apply coherent UI states across Tutor, Lab, Practice, Physics Lens, and Progress
+- [x] Add UI-focused tests for state transitions and accessibility labels
+- [x] Add UX state, action-priority, friendly-error, retry, and offline-queue utilities
+- [ ] Add recoverable session drafts and input restoration for active learning flows
+- [x] Add accessible announcement, touch-target, validation, and keyboard-dismissal helpers
+- [x] Improve next-best-action, resume, empty, and saved feedback across core screens
+- [x] Add UX-focused tests for recovery, copy, filters, and state transitions
+- [x] Add learning-first XP, level progression, and idempotent reward events
+- [x] Add daily mission generation and progress tracking
+- [x] Add gentle streak state and no-pressure recovery copy
+- [x] Add mastery badges and milestone feedback without rewarding answer farming
+- [x] Add optional gamification widgets to Progress and Home
+- [x] Add deterministic gamification tests for rewards, missions, streaks, and level progress
