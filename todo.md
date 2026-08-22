@@ -234,3 +234,6 @@
 - [x] Add validated deterministic thermal energy and temperature-change helpers
 - [x] Add deterministic thermal regression tests including invalid-parameter handling
 - [x] Connect thermal concepts and an accessible heat experiment to the Lab
+- [x] Add validated deterministic kinetic-energy, momentum, and impulse helpers
+- [x] Add deterministic mechanics regression tests including invalid-parameter handling
+- [x] Connect energy and impulse examples to concepts and learning content

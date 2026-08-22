@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { checkNumericAnswer, criticalAngleDeg, projectile, refraction, temperatureChangeFromEnergy, thermalEnergy, wave, waveFrequency, wavePeriod, waveSpeed } from "../lib/physics";
+import { checkNumericAnswer, criticalAngleDeg, impulse, kineticEnergy, momentum, projectile, refraction, temperatureChangeFromEnergy, thermalEnergy, velocityChangeFromImpulse, wave, waveFrequency, wavePeriod, waveSpeed } from "../lib/physics";
 import { createMockTutorAnswer, validateTutorAnswer } from "../lib/ai";
 
 describe("physics engine", () => {
@@ -58,6 +58,20 @@ describe("physics engine", () => {
     expect(() => thermalEnergy({ massKg: 0, specificHeatJPerKgK: 4186, temperatureChangeK: 5 })).toThrow("massKg must be positive");
     expect(() => temperatureChangeFromEnergy(100, 1, -1)).toThrow("specificHeatJPerKgK must be positive");
     expect(() => thermalEnergy({ massKg: 1, specificHeatJPerKgK: 1, temperatureChangeK: Number.NaN })).toThrow("temperatureChangeK must be finite");
+  });
+
+  it("computes mechanics quantities deterministically", () => {
+    expect(kineticEnergy(2, 3)).toBe(9);
+    expect(momentum(2, -3)).toBe(-6);
+    expect(impulse(10, 0.4)).toBe(4);
+    expect(velocityChangeFromImpulse(4, 2)).toBe(2);
+  });
+
+  it("rejects invalid mechanics parameters", () => {
+    expect(() => kineticEnergy(0, 3)).toThrow("massKg must be positive");
+    expect(() => momentum(1, Number.NaN)).toThrow("velocityMps must be finite");
+    expect(() => impulse(2, 0)).toThrow("durationS must be positive");
+    expect(() => velocityChangeFromImpulse(2, -1)).toThrow("massKg must be positive");
   });
 });
 

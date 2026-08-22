@@ -193,6 +193,22 @@ export function refraction(input: RefractionInput): RefractionResult {
   };
 }
 
+export function kineticEnergy(massKg: number, velocityMps: number): number {
+  return 0.5 * positive(massKg, "massKg") * finite(velocityMps, "velocityMps") ** 2;
+}
+
+export function momentum(massKg: number, velocityMps: number): number {
+  return positive(massKg, "massKg") * finite(velocityMps, "velocityMps");
+}
+
+export function impulse(forceN: number, durationS: number): number {
+  return finite(forceN, "forceN") * positive(durationS, "durationS");
+}
+
+export function velocityChangeFromImpulse(impulseNs: number, massKg: number): number {
+  return finite(impulseNs, "impulseNs") / positive(massKg, "massKg");
+}
+
 export type ThermalInput = {
   massKg: number;
   specificHeatJPerKgK: number;
