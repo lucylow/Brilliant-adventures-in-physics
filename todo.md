@@ -70,9 +70,13 @@
 - [x] Add tests for visible recovery prompts, export summaries, and learning events
 - [ ] Add visible Resume/Discard prompts for Tutor, Practice, and Physics Lens drafts
 - [ ] Persist lesson and lab completion events for achievement evaluation
-- [ ] Add user-controlled streak preference and privacy settings entry point
+- [x] Add user-controlled streak preference and privacy settings entry point
 - [x] Add deterministic tests for completion events and settings persistence
 - [ ] Add explicit Resume/Discard draft controls in active Tutor, Practice, and Physics Lens screens
 - [x] Add an optional streak preference persisted locally and exposed in settings
 - [x] Add achievement detail interactions showing the evidence behind milestones
 - [x] Add deterministic tests for streak preference and achievement detail data
+- [ ] Show explicit Resume/Discard prompts when valid drafts exist in Tutor, Practice, and Physics Lens
+- [x] Add a persisted reduced-motion preference and use it for feedback behavior
+- [ ] Add achievement detail feedback showing evidence requirements
+- [x] Add deterministic tests for recovery prompts, reduced motion, and achievement details
