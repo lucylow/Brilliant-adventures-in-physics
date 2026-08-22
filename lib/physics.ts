@@ -148,6 +148,51 @@ export function wave(input: WaveInput): WaveResult {
   return { speedMps: frequencyHz * wavelengthM, frequencyHz, wavelengthM, periodS: 1 / frequencyHz };
 }
 
+export type RefractionInput = {
+  incidentAngleDeg: number;
+  refractiveIndexFrom: number;
+  refractiveIndexTo: number;
+};
+
+export type RefractionResult = {
+  incidentAngleDeg: number;
+  refractedAngleDeg: number | null;
+  refractiveIndexFrom: number;
+  refractiveIndexTo: number;
+  totalInternalReflection: boolean;
+  criticalAngleDeg: number | null;
+};
+
+function angleInRange(angleDeg: number, label: string): number {
+  finite(angleDeg, label);
+  if (angleDeg < 0 || angleDeg >= 90) throw new Error(`${label} must be in the range [0, 90)`);
+  return angleDeg;
+}
+
+export function criticalAngleDeg(refractiveIndexFrom: number, refractiveIndexTo: number): number | null {
+  const from = positive(refractiveIndexFrom, "refractiveIndexFrom");
+  const to = positive(refractiveIndexTo, "refractiveIndexTo");
+  if (from <= to) return null;
+  return Math.asin(to / from) * 180 / Math.PI;
+}
+
+export function refraction(input: RefractionInput): RefractionResult {
+  const incidentAngleDeg = angleInRange(input.incidentAngleDeg, "incidentAngleDeg");
+  const from = positive(input.refractiveIndexFrom, "refractiveIndexFrom");
+  const to = positive(input.refractiveIndexTo, "refractiveIndexTo");
+  const incidentRadians = incidentAngleDeg * Math.PI / 180;
+  const sineRefracted = from / to * Math.sin(incidentRadians);
+  const totalInternalReflection = sineRefracted > 1;
+  return {
+    incidentAngleDeg,
+    refractedAngleDeg: totalInternalReflection ? null : Math.asin(Math.min(1, sineRefracted)) * 180 / Math.PI,
+    refractiveIndexFrom: from,
+    refractiveIndexTo: to,
+    totalInternalReflection,
+    criticalAngleDeg: criticalAngleDeg(from, to),
+  };
+}
+
 export function ohmsLaw(voltage: number, resistance: number) {
   if (!Number.isFinite(resistance) || resistance <= 0) throw new Error("Resistance must be positive");
   const current = voltage / resistance;

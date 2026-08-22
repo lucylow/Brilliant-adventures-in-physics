@@ -228,3 +228,6 @@
 - [x] Add validated deterministic wave speed, frequency, wavelength, and period helpers
 - [x] Add deterministic wave-domain regression tests including invalid-parameter handling
 - [x] Connect a wave concept and accessible wave experiment surface to the Lab
+- [x] Add validated deterministic refraction and critical-angle helpers
+- [x] Add deterministic optics regression tests including total-internal-reflection handling
+- [x] Connect optics concepts and an accessible refraction experiment to the Lab

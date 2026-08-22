@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { checkNumericAnswer, projectile, wave, waveFrequency, wavePeriod, waveSpeed } from "../lib/physics";
+import { checkNumericAnswer, criticalAngleDeg, projectile, refraction, wave, waveFrequency, wavePeriod, waveSpeed } from "../lib/physics";
 import { createMockTutorAnswer, validateTutorAnswer } from "../lib/ai";
 
 describe("physics engine", () => {
@@ -26,6 +26,27 @@ describe("physics engine", () => {
     expect(() => waveSpeed(0, 1)).toThrow("frequencyHz must be positive");
     expect(() => waveFrequency(2, -1)).toThrow("wavelengthM must be positive");
     expect(() => wavePeriod(Number.NaN)).toThrow("frequencyHz must be finite");
+  });
+
+  it("computes refraction using Snell's law", () => {
+    const result = refraction({ incidentAngleDeg: 30, refractiveIndexFrom: 1, refractiveIndexTo: 1.5 });
+    expect(result.totalInternalReflection).toBe(false);
+    expect(result.refractedAngleDeg).toBeCloseTo(19.4712, 3);
+    expect(result.criticalAngleDeg).toBeNull();
+  });
+
+  it("detects total internal reflection and critical angle", () => {
+    const critical = criticalAngleDeg(1.5, 1);
+    expect(critical).toBeCloseTo(41.8103, 3);
+    const result = refraction({ incidentAngleDeg: 60, refractiveIndexFrom: 1.5, refractiveIndexTo: 1 });
+    expect(result.totalInternalReflection).toBe(true);
+    expect(result.refractedAngleDeg).toBeNull();
+    expect(result.criticalAngleDeg).toBeCloseTo(critical ?? 0, 6);
+  });
+
+  it("rejects invalid optical parameters", () => {
+    expect(() => refraction({ incidentAngleDeg: 90, refractiveIndexFrom: 1, refractiveIndexTo: 1.5 })).toThrow("incidentAngleDeg must be in the range");
+    expect(() => criticalAngleDeg(0, 1)).toThrow("refractiveIndexFrom must be positive");
   });
 });
 

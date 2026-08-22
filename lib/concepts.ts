@@ -11,6 +11,8 @@ export const conceptRegistry: PhysicsConcept[] = [
   { id: "oscillation", title: "Oscillation", domain: "Waves", level: "foundation", prerequisites: [], intuition: "A repeating change around an equilibrium position provides the pattern behind many waves.", equation: "T = 1/f", units: "s, Hz" },
   { id: "wave-motion", title: "Wave Motion", domain: "Waves", level: "core", prerequisites: ["oscillation"], intuition: "A disturbance transfers energy and information without transporting matter as a whole.", equation: "v = fλ", units: "m/s" },
   { id: "sound", title: "Sound", domain: "Waves", level: "core", prerequisites: ["wave-motion"], intuition: "Sound is a mechanical wave whose frequency relates to pitch and whose amplitude relates to perceived loudness.", equation: "v = fλ", units: "Hz, m/s" },
+  { id: "optics", title: "Optics", domain: "Waves", level: "core", prerequisites: ["wave-motion"], intuition: "Light changes direction at a boundary according to the refractive indices of the two media.", equation: "n₁ sin θ₁ = n₂ sin θ₂", units: "degrees" },
+  { id: "total-internal-reflection", title: "Total Internal Reflection", domain: "Waves", level: "advanced", prerequisites: ["optics"], intuition: "When light travels into a lower-index medium beyond the critical angle, it reflects instead of refracting.", equation: "sin θc = n₂/n₁", units: "degrees" },
   { id: "circuits", title: "Circuits", domain: "Electricity", level: "core", prerequisites: ["charge", "field"], intuition: "Charges transfer energy through a connected path.", equation: "V = IR", units: "V, A, Ω" },
 ];
 
