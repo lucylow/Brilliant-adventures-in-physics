@@ -151,3 +151,6 @@
 - [x] Add Tutor validation, loading, retry, and offline-safe fallback states
 - [x] Preserve Tutor drafts and successful responses through local persistence
 - [x] Add deterministic Tutor service and UI-state tests
+- [x] Add a reusable network-status contract for online, offline, unknown, and checking states
+- [x] Map offline service failures to explicit Tutor recovery copy
+- [x] Add deterministic tests for network-status mapping and retry behavior
