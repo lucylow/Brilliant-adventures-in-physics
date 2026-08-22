@@ -127,3 +127,8 @@
 - [ ] Connect visual primitives to Lab, Concepts, and experiment overlays
 - [x] Add reduced-motion and high-contrast visual alternatives
 - [x] Add deterministic tests for visual scaling, ticks, paths, field layouts, and visual states
+- [x] Add accessible trajectory and vector canvas primitives for the Lab
+- [x] Connect deterministic projectile samples to a readable visual trajectory
+- [x] Add visual state labels for idle, running, paused, complete, empty, and error
+- [ ] Add a compact visual concept block to the projectile lesson
+- [x] Add deterministic tests for trajectory mapping, vector overlays, and visual state transitions
