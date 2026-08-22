@@ -1,5 +1,9 @@
 export type ConceptState = "unknown" | "emerging" | "developing" | "secure";
-export type PhysicsConcept = { id: string; title: string; domain: string; level: "foundation" | "core" | "advanced"; prerequisites: string[]; intuition: string; equation?: string; units?: string; misconceptionKeywords?: string[] };
+export type PhysicsConcept = { id: string; title: string; domain: string; level: "foundation" | "core" | "advanced"; prerequisites: string[]; intuition: string; equation?: string; units?: string; misconceptionKeywords?: string[]; whyItMatters?: string };
+
+const domainRelevance: Record<string, string> = { Mechanics: "It helps you predict motion, interactions, and energy transfers in the physical world.", Waves: "It helps you connect repeating patterns to how energy and information travel.", Thermal: "It helps you reason about temperature, energy transfer, and material behavior.", Electricity: "It helps you understand how charge, fields, and circuits shape useful technology.", Fluids: "It helps you model pressure, flow, and forces in liquids and gases.", "Modern Physics": "It helps you recognize where everyday approximations change at microscopic or high-speed scales." };
+
+export function conceptWhyItMatters(concept: PhysicsConcept): string { return concept.whyItMatters ?? domainRelevance[concept.domain] ?? "It connects a mathematical model to a measurable physical observation."; }
 
 export const conceptHierarchy = { mechanics: ["kinematics", "forces", "energy", "momentum", "rotation"], waves: ["oscillation", "wave-motion", "sound", "optics"], electricity: ["charge", "field", "circuits", "power"], thermal: ["temperature", "heat", "gas-laws"], modern: ["relativity", "quantum-basics"] } as const;
 

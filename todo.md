@@ -322,3 +322,5 @@
 - [x] Add deterministic route and concept-link contract coverage
 - [x] Add accessible concept links to the remaining core Lab experiments
 - [x] Validate all added Lab concept identifiers through deterministic contract tests
+- [x] Add grounded “why this matters” context to concept metadata
+- [x] Render accessible context copy in Concepts results with deterministic coverage

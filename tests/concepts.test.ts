@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { conceptState, detectMisconception, findConcept, missingPrerequisites, searchConcepts } from "../lib/concepts";
+import { conceptRegistry, conceptState, conceptWhyItMatters, detectMisconception, findConcept, missingPrerequisites, searchConcepts } from "../lib/concepts";
 
 describe("physics concept intelligence", () => {
   it("searches grounded concepts", () => {
@@ -26,6 +26,9 @@ describe("physics concept intelligence", () => {
   });
   it("resolves every Lab-linked concept identifier", () => {
     ["wave-motion", "optics", "heat", "energy", "rotation", "coulomb-law", "circuits", "fluids", "oscillation", "collisions", "work", "elasticity", "gravitational-energy", "rotational-energy", "modern-energy", "relativistic-energy", "relativistic-momentum"].forEach((id) => expect(findConcept(id)?.id).toBe(id));
+  });
+  it("provides grounded relevance copy for every concept", () => {
+    conceptRegistry.forEach((concept) => expect(conceptWhyItMatters(concept).length).toBeGreaterThan(20));
   });
   it("checks prerequisites and mastery state", () => {
     expect(missingPrerequisites("forces", {})).toEqual(["kinematics"]);
