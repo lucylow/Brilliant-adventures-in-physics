@@ -9,7 +9,7 @@ import { PersistenceDiagnostics } from "@/components/persistence-diagnostics";
 
 export default function SettingsScreen() {
   const colors = useColors();
-  const [preferences, setPreferences] = useState<Preferences>({ streakEnabled: true, reducedMotion: false });
+  const [preferences, setPreferences] = useState<Preferences>({ streakEnabled: true, reducedMotion: false, hapticsEnabled: true });
   useEffect(() => { void loadPreferences().then(setPreferences); }, []);
   const update = (key: keyof Preferences, value: boolean) => { void savePreferences({ ...preferences, [key]: value }).then(setPreferences); };
   return (
@@ -26,6 +26,12 @@ export default function SettingsScreen() {
           <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", gap: 16 }}>
             <View style={{ flex: 1 }}><Text style={{ color: colors.foreground, fontSize: 18, fontWeight: "800" }}>Reduce motion</Text><Text style={{ color: colors.muted, marginTop: 5, lineHeight: 20 }}>Use calmer state changes and less animated feedback.</Text></View>
             <Switch value={preferences.reducedMotion} onValueChange={(value) => update("reducedMotion", value)} accessibilityLabel="Reduce motion" />
+          </View>
+        </Card>
+        <Card style={{ marginTop: 12 }}>
+          <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", gap: 16 }}>
+            <View style={{ flex: 1 }}><Text style={{ color: colors.foreground, fontSize: 18, fontWeight: "800" }}>Haptic feedback</Text><Text style={{ color: colors.muted, marginTop: 5, lineHeight: 20 }}>Allow gentle vibration for meaningful actions such as completing a lab.</Text></View>
+            <Switch value={preferences.hapticsEnabled} onValueChange={(value) => update("hapticsEnabled", value)} accessibilityLabel="Haptic feedback" />
           </View>
         </Card>
         <Pressable accessibilityRole="button" onPress={() => router.push("/privacy" as never)} style={({ pressed }) => ({ marginTop: 12, opacity: pressed ? 0.7 : 1 })}>

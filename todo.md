@@ -140,3 +140,10 @@
 - [x] Add reduced-motion-safe animated progress feedback to Progress
 - [x] Add accessible lesson step or equation reveal motion
 - [x] Add deterministic tests for learning-feedback animation contracts
+- [x] Add a persisted haptics preference to local Settings
+- [x] Wire haptics preference into Lab milestone feedback
+- [x] Add deterministic tests for haptics preference defaults and updates
+- [x] Add hapticsEnabled to persisted local preferences and Settings
+- [x] Use the persisted haptics preference for Lab milestone feedback
+- [x] Add typed service-result contracts with explicit retryable errors
+- [x] Add deterministic tests for preference migration and service-result execution
