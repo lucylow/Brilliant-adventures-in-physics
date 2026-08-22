@@ -200,3 +200,7 @@
 - [x] Improve selected-state semantics and screen-reader feedback for onboarding choices
 - [x] Add Settings actions to revisit or reset onboarding profile
 - [x] Add deterministic tests for onboarding resume and reset behavior
+- [x] Add a Home dashboard entry point to change the learning path
+- [x] Add an onboarding completion summary showing saved learner level and goal
+- [x] Personalize the dashboard recommended first action by learner goal
+- [x] Add deterministic tests for summary labels and personalized recommendation routing

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { firstActionForGoal, mergeOnboarding } from "../lib/onboarding";
+import { firstActionForGoal, learnerGoalLabel, learnerLevelLabel, mergeOnboarding, recommendationForGoal } from "../lib/onboarding";
 
 describe("onboarding", () => {
   it("migrates malformed or partial profiles to safe defaults", () => {
@@ -10,5 +10,11 @@ describe("onboarding", () => {
     expect(firstActionForGoal("understand")).toBe("/lesson");
     expect(firstActionForGoal("practice")).toBe("/practice");
     expect(firstActionForGoal("experiment")).toBe("/lens");
+  });
+  it("formats saved choices and personalized recommendations consistently", () => {
+    expect(learnerLevelLabel("exam")).toBe("Preparing for an exam");
+    expect(learnerGoalLabel("experiment")).toBe("Run experiments");
+    expect(recommendationForGoal("practice")).toMatchObject({ label: "Start practice", path: "/practice" });
+    expect(recommendationForGoal("experiment")).toMatchObject({ label: "Open Physics Lab", path: "/lens" });
   });
 });

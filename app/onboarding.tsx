@@ -4,7 +4,7 @@ import { router } from "expo-router";
 import { ScreenContainer } from "@/components/screen-container";
 import { Card, Pill, PrimaryButton, SecondaryButton, SectionHeader } from "@/components/physica-ui";
 import { useColors } from "@/hooks/use-colors";
-import { firstActionForGoal, loadOnboarding, saveOnboarding, type LearnerGoal, type LearnerLevel } from "@/lib/onboarding";
+import { loadOnboarding, saveOnboarding, type LearnerGoal, type LearnerLevel } from "@/lib/onboarding";
 import { persistSafely, persistenceRecoveryMessage } from "@/lib/persistence";
 import { useEffect } from "react";
 
@@ -29,7 +29,7 @@ export default function OnboardingScreen() {
   const [error, setError] = useState<string | null>(null);
   const finish = async (skip = false) => {
     const result = await persistSafely(saveOnboarding({ completed: true, level: skip ? "new" : level, goal: skip ? "understand" : goal, step: 2 }));
-    if (result.ok) { router.replace(firstActionForGoal(skip ? "understand" : goal) as never); return; }
+    if (result.ok) { router.replace("/onboarding-summary" as never); return; }
     setError(persistenceRecoveryMessage(result));
   };
   const next = () => setStep((current) => current === 2 ? 2 : (current + 1) as 0 | 1 | 2);

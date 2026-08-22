@@ -35,3 +35,17 @@ export async function saveOnboarding(profile: OnboardingProfile): Promise<Onboar
 export function firstActionForGoal(goal: LearnerGoal): "/lesson" | "/practice" | "/lens" {
   return goal === "practice" ? "/practice" : goal === "experiment" ? "/lens" : "/lesson";
 }
+
+export function learnerLevelLabel(level: LearnerLevel): string {
+  return level === "school" ? "Studying physics" : level === "exam" ? "Preparing for an exam" : "New to physics";
+}
+
+export function learnerGoalLabel(goal: LearnerGoal): string {
+  return goal === "practice" ? "Practice problems" : goal === "experiment" ? "Run experiments" : "Understand the ideas";
+}
+
+export function recommendationForGoal(goal: LearnerGoal): { title: string; body: string; label: string; path: "/lesson" | "/practice" | "/lens" } {
+  if (goal === "practice") return { title: "Build confidence with practice", body: "Try a short set of questions with immediate feedback.", label: "Start practice", path: "/practice" };
+  if (goal === "experiment") return { title: "Explore motion in the Lab", body: "Change one variable and see the physics respond.", label: "Open Physics Lab", path: "/lens" };
+  return { title: "Understand projectile motion", body: "Start with one concept, then connect it to an experiment.", label: "Start the lesson", path: "/lesson" };
+}
