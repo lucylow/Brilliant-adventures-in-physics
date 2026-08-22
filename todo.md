@@ -183,3 +183,7 @@
 - [x] Add catalog validation that rejects missing or fabricated price data
 - [x] Add accessible restore and manage-subscription recovery states
 - [x] Add deterministic tests for entitlement expiry, purchase errors, retries, and restore behavior
+- [x] Add explicit unavailable-catalog state to Upgrade
+- [x] Add safe purchase-session feedback without fabricated plans or prices
+- [x] Add restore-purchases and manage-subscription action states
+- [x] Add deterministic tests for Upgrade state transitions and failure copy
