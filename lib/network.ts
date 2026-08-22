@@ -2,6 +2,13 @@ import type { ServiceError } from "./service-result";
 
 export type NetworkStatus = "online" | "offline" | "checking" | "unknown";
 
+export function networkStateToStatus(state: { isConnected?: boolean | null; isInternetReachable?: boolean | null }): NetworkStatus {
+  if (state.isInternetReachable === true) return "online";
+  if (state.isInternetReachable === false || state.isConnected === false) return "offline";
+  if (state.isConnected === true && state.isInternetReachable == null) return "checking";
+  return "unknown";
+}
+
 export function networkStatusLabel(status: NetworkStatus): string {
   return ({ online: "Online", offline: "Offline", checking: "Checking connection", unknown: "Connection status unavailable" })[status];
 }

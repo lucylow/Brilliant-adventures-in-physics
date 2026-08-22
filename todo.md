@@ -267,3 +267,5 @@
 - [x] Add validated deterministic solid-disk moment-of-inertia and rotational-energy helpers
 - [x] Add deterministic rotational-energy regression tests including invalid-parameter handling
 - [x] Connect rotational-energy content to an accessible rotational-energy experiment in the Lab
+- [x] Normalize Expo-style network state into stable online, offline, checking, or unknown statuses
+- [x] Add deterministic tests for reachable, disconnected, and indeterminate network states
