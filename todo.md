@@ -154,3 +154,7 @@
 - [x] Add a reusable network-status contract for online, offline, unknown, and checking states
 - [x] Map offline service failures to explicit Tutor recovery copy
 - [x] Add deterministic tests for network-status mapping and retry behavior
+- [x] Inspect and resolve active build or runtime errors in logs
+- [x] Add safe error normalization for persistence and service boundaries
+- [x] Add screen-level recovery handling for Tutor and Lab actions
+- [x] Add deterministic regression tests for error normalization and fallbacks

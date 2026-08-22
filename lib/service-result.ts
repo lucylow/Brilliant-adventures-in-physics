@@ -7,11 +7,20 @@ export interface Service<TInput, TOutput> {
   execute(input: TInput, signal?: AbortSignal): Promise<ServiceResult<TOutput>>;
 }
 
+export function normalizeServiceError(error: unknown): ServiceError {
+  const message = error instanceof Error ? error.message : "Unknown service error";
+  const name = error instanceof Error ? error.name : "";
+  if (name === "AbortError") return { code: "TIMEOUT", message: "The request was cancelled or timed out.", retryable: true };
+  if (/network|offline|failed to fetch|fetch failed/i.test(message)) return { code: "OFFLINE", message: "The network is unavailable. Please reconnect and try again.", retryable: true };
+  if (/timeout|timed out/i.test(message)) return { code: "TIMEOUT", message, retryable: true };
+  return { code: "UNEXPECTED_ERROR", message, retryable: true };
+}
+
 export async function executeService<TInput, TOutput>(service: Service<TInput, TOutput>, input: TInput, signal?: AbortSignal): Promise<ServiceResult<TOutput>> {
   try {
     return await service.execute(input, signal);
   } catch (error) {
-    return { ok: false, error: { code: "UNEXPECTED_ERROR", message: error instanceof Error ? error.message : "Unknown service error", retryable: true } };
+    return { ok: false, error: normalizeServiceError(error) };
   }
 }
 

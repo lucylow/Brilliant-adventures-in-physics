@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { executeService, isServiceSuccess, serviceFailure } from "../lib/service-result";
+import { executeService, isServiceSuccess, normalizeServiceError, serviceFailure } from "../lib/service-result";
 import { mergePreferences } from "../lib/preferences";
 
 describe("service result contracts", () => {
@@ -10,7 +10,12 @@ describe("service result contracts", () => {
   });
   it("normalizes thrown errors into retryable typed failures", async () => {
     const result = await executeService({ execute: async () => { throw new Error("network unavailable"); } }, undefined);
-    expect(result).toEqual({ ok: false, error: { code: "UNEXPECTED_ERROR", message: "network unavailable", retryable: true } });
+    expect(result).toEqual({ ok: false, error: { code: "OFFLINE", message: "The network is unavailable. Please reconnect and try again.", retryable: true } });
+  });
+  it("normalizes transport and cancellation errors into retryable codes", () => {
+    expect(normalizeServiceError(new Error("Network request failed"))).toMatchObject({ code: "OFFLINE", retryable: true });
+    expect(normalizeServiceError(new Error("request timed out"))).toMatchObject({ code: "TIMEOUT", retryable: true });
+    expect(normalizeServiceError({ message: "unknown" })).toMatchObject({ code: "UNEXPECTED_ERROR", retryable: true });
   });
   it("migrates older preferences with haptics enabled by default", () => {
     expect(mergePreferences({ streakEnabled: false, reducedMotion: true })).toEqual({ streakEnabled: false, reducedMotion: true, hapticsEnabled: true });
