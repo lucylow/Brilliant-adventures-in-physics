@@ -1,8 +1,10 @@
 import { useCallback, useEffect, useRef } from "react";
 import { AppState, type AppStateStatus } from "react-native";
+import * as Network from "expo-network";
+import { networkStateToStatus } from "@/lib/network";
 import { saveDraft } from "@/lib/progress-store";
 import { getRetryCount, markLastSave, retryQueue, type RetryItem } from "@/lib/retry-queue";
-import { shouldReconcileOnForeground, type AppLifecycleState } from "@/lib/retry-reconciliation";
+import { shouldReconcileOnForeground, shouldReconcileOnNetwork, type AppLifecycleState } from "@/lib/retry-reconciliation";
 
 function normalizeState(state: AppStateStatus): AppLifecycleState {
   return state === "active" || state === "background" || state === "inactive" ? state : "unknown";
@@ -28,13 +30,22 @@ export function AutosaveReconciler() {
 
   useEffect(() => {
     void reconcile();
+    let active = true;
+    void Network.getNetworkStateAsync().then((state) => {
+      if (active && shouldReconcileOnNetwork(networkStateToStatus(state))) void reconcile();
+    }).catch(() => {
+      // AppState reconciliation remains available when network inspection fails.
+    });
+    const networkSubscription = Network.addNetworkStateListener((state) => {
+      if (shouldReconcileOnNetwork(networkStateToStatus(state))) void reconcile();
+    });
     let previous = normalizeState(AppState.currentState);
     const subscription = AppState.addEventListener("change", (next) => {
       const normalized = normalizeState(next);
       if (shouldReconcileOnForeground(previous, normalized)) void reconcile();
       previous = normalized;
     });
-    return () => subscription.remove();
+    return () => { active = false; subscription.remove(); networkSubscription.remove(); };
   }, [reconcile]);
 
   return null;

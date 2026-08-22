@@ -298,3 +298,5 @@
 - [x] Add deterministic validation coverage for individual discard inputs and privacy copy
 - [x] Add individual retry controls for visible queued autosave drafts
 - [x] Preserve queued work and expose accessible per-draft retry feedback
+- [x] Install and wire the Expo network-state listener for autosave reconciliation
+- [x] Add deterministic coverage for connectivity-gated reconciliation decisions
