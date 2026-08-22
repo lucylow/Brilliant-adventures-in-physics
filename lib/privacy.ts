@@ -1,9 +1,11 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { clearExperiments } from "./experiments";
+import { clearRetryQueue } from "./retry-queue";
 
 const LEARNING_KEY = "physicaai.learning.v2";
 const USAGE_KEY = "physicaai.usage.v1";
 const DRAFT_KEY = "physicaai.drafts.v1";
+export const LOCAL_DATA_STORAGE_KEYS = [LEARNING_KEY, USAGE_KEY, DRAFT_KEY, "physicaai.experiments.v1", "physicaai.autosave.queue.v1", "physicaai.autosave.last-save.v1"] as const;
 
 export type LocalDataSummary = { learningRecords: number; savedQuestions: number; savedExperiments: number; activeDrafts: number };
 
@@ -20,5 +22,5 @@ export function formatLocalDataSummary(summary: LocalDataSummary): string {
 }
 
 export async function clearAllLocalData(): Promise<void> {
-  await Promise.all([AsyncStorage.removeItem(LEARNING_KEY), AsyncStorage.removeItem(USAGE_KEY), AsyncStorage.removeItem(DRAFT_KEY), clearExperiments()]);
+  await Promise.all([AsyncStorage.removeItem(LEARNING_KEY), AsyncStorage.removeItem(USAGE_KEY), AsyncStorage.removeItem(DRAFT_KEY), clearExperiments(), clearRetryQueue()]);
 }

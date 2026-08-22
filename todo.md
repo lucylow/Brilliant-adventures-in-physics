@@ -279,3 +279,5 @@
 - [x] Show pending offline autosaves and last-save information in Settings
 - [x] Add a lifecycle-safe manual retry action with accessible success and failure feedback
 - [x] Add deterministic coverage for retry-queue status copy and result handling
+- [x] Include queued offline autosaves and last-save metadata in clear-all-local-data
+- [x] Add deterministic coverage for complete local-data cleanup ownership
