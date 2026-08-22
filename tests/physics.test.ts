@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { angularSpeedFromRpm, averagePowerFromWork, buoyantForce, centripetalAcceleration, checkNumericAnswer, coulombForce, criticalAngleDeg, electricField, elasticCollision1D, elasticPotentialEnergy, gravitationalPotentialEnergy, harmonicDisplacement, harmonicVelocity, hydrostaticPressure, impulse, kineticEnergy, momentum, ohmsLaw, powerFromCurrentResistance, projectile, refraction, resistanceFromVoltageCurrent, rotationalKineticEnergy, solidDiskMomentOfInertia, springForce, tangentialSpeed, temperatureChangeFromEnergy, thermalEnergy, velocityChangeFromImpulse, volumetricFlowRate, wave, waveFrequency, wavePeriod, waveSpeed, weightForce, workFromForce } from "../lib/physics";
+import { angularSpeedFromRpm, averagePowerFromWork, buoyantForce, centripetalAcceleration, checkNumericAnswer, coulombForce, criticalAngleDeg, electricField, elasticCollision1D, elasticPotentialEnergy, gravitationalPotentialEnergy, harmonicDisplacement, harmonicVelocity, hydrostaticPressure, impulse, kineticEnergy, massEnergyEquivalent, momentum, ohmsLaw, photonEnergyFromFrequency, photonEnergyFromWavelength, powerFromCurrentResistance, projectile, refraction, resistanceFromVoltageCurrent, rotationalKineticEnergy, solidDiskMomentOfInertia, springForce, tangentialSpeed, temperatureChangeFromEnergy, thermalEnergy, velocityChangeFromImpulse, volumetricFlowRate, wave, waveFrequency, wavePeriod, waveSpeed, weightForce, workFromForce } from "../lib/physics";
 import { createMockTutorAnswer, validateTutorAnswer } from "../lib/ai";
 
 describe("physics engine", () => {
@@ -26,6 +26,18 @@ describe("physics engine", () => {
     expect(() => waveSpeed(0, 1)).toThrow("frequencyHz must be positive");
     expect(() => waveFrequency(2, -1)).toThrow("wavelengthM must be positive");
     expect(() => wavePeriod(Number.NaN)).toThrow("frequencyHz must be finite");
+  });
+
+  it("computes photon energy and mass-energy equivalence deterministically", () => {
+    expect(photonEnergyFromFrequency(1e14)).toBeCloseTo(6.62607015e-20, 28);
+    expect(photonEnergyFromWavelength(500e-9)).toBeCloseTo(3.972891714e-19, 28);
+    expect(massEnergyEquivalent(1e-9)).toBeCloseTo(8.987551787368177e7, 4);
+  });
+
+  it("rejects non-positive modern-physics parameters", () => {
+    expect(() => photonEnergyFromFrequency(0)).toThrow("frequencyHz must be positive");
+    expect(() => photonEnergyFromWavelength(-1)).toThrow("wavelengthM must be positive");
+    expect(() => massEnergyEquivalent(0)).toThrow("massKg must be positive");
   });
 
   it("computes refraction using Snell's law", () => {

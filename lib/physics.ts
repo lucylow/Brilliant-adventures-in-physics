@@ -9,6 +9,8 @@ export type Quantity = {
 export const PHYSICS = {
   g: 9.80665,
   k: 8.9875517923e9,
+  c: 299_792_458,
+  h: 6.62607015e-34,
 } as const;
 
 const UNIT_SCALE: Record<string, number> = {
@@ -140,6 +142,18 @@ export function waveFrequency(speedMps: number, wavelengthM: number): number {
 
 export function wavePeriod(frequencyHz: number): number {
   return 1 / positive(frequencyHz, "frequencyHz");
+}
+
+export function photonEnergyFromFrequency(frequencyHz: number): number {
+  return PHYSICS.h * positive(frequencyHz, "frequencyHz");
+}
+
+export function photonEnergyFromWavelength(wavelengthM: number): number {
+  return PHYSICS.h * PHYSICS.c / positive(wavelengthM, "wavelengthM");
+}
+
+export function massEnergyEquivalent(massKg: number): number {
+  return positive(massKg, "massKg") * PHYSICS.c ** 2;
 }
 
 export type ElasticCollisionResult = {

@@ -298,6 +298,8 @@
 - [x] Add deterministic validation coverage for individual discard inputs and privacy copy
 - [x] Add individual retry controls for visible queued autosave drafts
 - [x] Preserve queued work and expose accessible per-draft retry feedback
+- [x] Add deterministic photon-energy and mass-energy physics helpers
+- [x] Add an accessible modern-physics Lab experiment and concept entry
 - [x] Install and wire the Expo network-state listener for autosave reconciliation
 - [x] Add deterministic coverage for connectivity-gated reconciliation decisions
 - [x] Add a global accessible network-status banner for offline and checking states

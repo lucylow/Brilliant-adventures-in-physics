@@ -7,6 +7,11 @@ describe("physics concept intelligence", () => {
     expect(searchConcepts("kinematics")[0]?.id).toBe("kinematics");
     expect(searchConcepts("electric")[0]?.domain).toBe("Electricity");
   });
+  it("finds the modern-energy concept with grounded prerequisites", () => {
+    const result = searchConcepts("photons");
+    expect(result[0]?.id).toBe("modern-energy");
+    expect(missingPrerequisites("modern-energy", {})).toEqual(["wave-motion", "energy"]);
+  });
   it("checks prerequisites and mastery state", () => {
     expect(missingPrerequisites("forces", {})).toEqual(["kinematics"]);
     expect(missingPrerequisites("forces", { kinematics: 0.8 })).toEqual([]);

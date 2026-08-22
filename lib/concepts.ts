@@ -30,6 +30,7 @@ export const conceptRegistry: PhysicsConcept[] = [
   { id: "buoyancy", title: "Buoyancy", domain: "Fluids", level: "core", prerequisites: ["fluids"], intuition: "A submerged volume displaces fluid and experiences an upward force equal to the weight of the displaced fluid.", equation: "F_b = ρVg", units: "N" },
   { id: "fluid-flow", title: "Fluid Flow", domain: "Fluids", level: "core", prerequisites: ["fluids"], intuition: "Volumetric flow rate is the cross-sectional area multiplied by average flow speed.", equation: "Q = Av", units: "m³/s" },
   { id: "circuits", title: "Circuits", domain: "Electricity", level: "core", prerequisites: ["charge", "field"], intuition: "Charges transfer energy through a connected path.", equation: "V = IR", units: "V, A, Ω" },
+  { id: "modern-energy", title: "Photons and Mass–Energy", domain: "Modern Physics", level: "advanced", prerequisites: ["wave-motion", "energy"], intuition: "Photon energy depends on frequency or wavelength, while mass–energy equivalence describes the energy associated with rest mass.", equation: "E = hc/λ, E = mc²", units: "J, m, kg" },
 ];
 
 export function findConcept(id: string): PhysicsConcept | undefined { return conceptRegistry.find((concept) => concept.id === id); }
