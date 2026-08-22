@@ -149,6 +149,18 @@ export type ElasticCollisionResult = {
   finalMomentumKgMps: number;
 };
 
+export function workFromForce(forceN: number, displacementM: number, angleDeg = 0): number {
+  const force = finite(forceN, "forceN");
+  const displacement = positive(displacementM, "displacementM");
+  const angle = finite(angleDeg, "angleDeg");
+  if (angle < 0 || angle > 180) throw new Error("angleDeg must be in the range [0, 180]");
+  return force * displacement * Math.cos(angle * Math.PI / 180);
+}
+
+export function averagePowerFromWork(workJ: number, durationS: number): number {
+  return finite(workJ, "workJ") / positive(durationS, "durationS");
+}
+
 export function elasticCollision1D(mass1Kg: number, velocity1Mps: number, mass2Kg: number, velocity2Mps: number): ElasticCollisionResult {
   const m1 = positive(mass1Kg, "mass1Kg");
   const m2 = positive(mass2Kg, "mass2Kg");

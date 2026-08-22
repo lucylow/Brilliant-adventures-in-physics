@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { angularSpeedFromRpm, buoyantForce, centripetalAcceleration, checkNumericAnswer, coulombForce, criticalAngleDeg, electricField, elasticCollision1D, harmonicDisplacement, harmonicVelocity, hydrostaticPressure, impulse, kineticEnergy, momentum, ohmsLaw, powerFromCurrentResistance, projectile, refraction, resistanceFromVoltageCurrent, tangentialSpeed, temperatureChangeFromEnergy, thermalEnergy, velocityChangeFromImpulse, volumetricFlowRate, wave, waveFrequency, wavePeriod, waveSpeed } from "../lib/physics";
+import { angularSpeedFromRpm, averagePowerFromWork, buoyantForce, centripetalAcceleration, checkNumericAnswer, coulombForce, criticalAngleDeg, electricField, elasticCollision1D, harmonicDisplacement, harmonicVelocity, hydrostaticPressure, impulse, kineticEnergy, momentum, ohmsLaw, powerFromCurrentResistance, projectile, refraction, resistanceFromVoltageCurrent, tangentialSpeed, temperatureChangeFromEnergy, thermalEnergy, velocityChangeFromImpulse, volumetricFlowRate, wave, waveFrequency, wavePeriod, waveSpeed, workFromForce } from "../lib/physics";
 import { createMockTutorAnswer, validateTutorAnswer } from "../lib/ai";
 
 describe("physics engine", () => {
@@ -150,6 +150,19 @@ describe("physics engine", () => {
     expect(() => elasticCollision1D(0, 1, 1, 0)).toThrow("mass1Kg must be positive");
     expect(() => elasticCollision1D(1, Number.NaN, 1, 0)).toThrow("velocity1Mps must be finite");
     expect(() => elasticCollision1D(1, 1, -1, 0)).toThrow("mass2Kg must be positive");
+  });
+
+  it("computes work and average power deterministically", () => {
+    expect(workFromForce(10, 3)).toBe(30);
+    expect(workFromForce(10, 3, 60)).toBeCloseTo(15, 8);
+    expect(averagePowerFromWork(30, 5)).toBe(6);
+  });
+
+  it("rejects invalid work-energy parameters", () => {
+    expect(() => workFromForce(10, 0)).toThrow("displacementM must be positive");
+    expect(() => workFromForce(10, 1, 181)).toThrow("angleDeg must be in the range");
+    expect(() => averagePowerFromWork(Number.NaN, 1)).toThrow("workJ must be finite");
+    expect(() => averagePowerFromWork(10, 0)).toThrow("durationS must be positive");
   });
 });
 

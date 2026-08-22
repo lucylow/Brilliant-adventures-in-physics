@@ -255,3 +255,6 @@
 - [x] Add validated deterministic one-dimensional collision helpers
 - [x] Add deterministic collision regression tests including invalid-mass handling
 - [x] Connect momentum conservation to an accessible collision experiment in the Lab
+- [x] Add validated deterministic work and average-power helpers
+- [x] Add deterministic work-energy regression tests including invalid-parameter handling
+- [x] Connect work and power concepts to an accessible work-energy experiment in the Lab
