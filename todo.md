@@ -258,3 +258,6 @@
 - [x] Add validated deterministic work and average-power helpers
 - [x] Add deterministic work-energy regression tests including invalid-parameter handling
 - [x] Connect work and power concepts to an accessible work-energy experiment in the Lab
+- [x] Add validated deterministic spring-force and elastic-potential-energy helpers
+- [x] Add deterministic spring regression tests including invalid-parameter handling
+- [x] Connect elasticity content to an accessible spring experiment in the Lab

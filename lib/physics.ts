@@ -149,6 +149,14 @@ export type ElasticCollisionResult = {
   finalMomentumKgMps: number;
 };
 
+export function springForce(springConstantNPerM: number, displacementM: number): number {
+  return -positive(springConstantNPerM, "springConstantNPerM") * finite(displacementM, "displacementM");
+}
+
+export function elasticPotentialEnergy(springConstantNPerM: number, displacementM: number): number {
+  return 0.5 * positive(springConstantNPerM, "springConstantNPerM") * finite(displacementM, "displacementM") ** 2;
+}
+
 export function workFromForce(forceN: number, displacementM: number, angleDeg = 0): number {
   const force = finite(forceN, "forceN");
   const displacement = positive(displacementM, "displacementM");

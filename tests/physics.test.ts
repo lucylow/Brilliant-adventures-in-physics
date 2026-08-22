@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { angularSpeedFromRpm, averagePowerFromWork, buoyantForce, centripetalAcceleration, checkNumericAnswer, coulombForce, criticalAngleDeg, electricField, elasticCollision1D, harmonicDisplacement, harmonicVelocity, hydrostaticPressure, impulse, kineticEnergy, momentum, ohmsLaw, powerFromCurrentResistance, projectile, refraction, resistanceFromVoltageCurrent, tangentialSpeed, temperatureChangeFromEnergy, thermalEnergy, velocityChangeFromImpulse, volumetricFlowRate, wave, waveFrequency, wavePeriod, waveSpeed, workFromForce } from "../lib/physics";
+import { angularSpeedFromRpm, averagePowerFromWork, buoyantForce, centripetalAcceleration, checkNumericAnswer, coulombForce, criticalAngleDeg, electricField, elasticCollision1D, elasticPotentialEnergy, harmonicDisplacement, harmonicVelocity, hydrostaticPressure, impulse, kineticEnergy, momentum, ohmsLaw, powerFromCurrentResistance, projectile, refraction, resistanceFromVoltageCurrent, springForce, tangentialSpeed, temperatureChangeFromEnergy, thermalEnergy, velocityChangeFromImpulse, volumetricFlowRate, wave, waveFrequency, wavePeriod, waveSpeed, workFromForce } from "../lib/physics";
 import { createMockTutorAnswer, validateTutorAnswer } from "../lib/ai";
 
 describe("physics engine", () => {
@@ -163,6 +163,17 @@ describe("physics engine", () => {
     expect(() => workFromForce(10, 1, 181)).toThrow("angleDeg must be in the range");
     expect(() => averagePowerFromWork(Number.NaN, 1)).toThrow("workJ must be finite");
     expect(() => averagePowerFromWork(10, 0)).toThrow("durationS must be positive");
+  });
+
+  it("computes spring force and elastic potential energy deterministically", () => {
+    expect(springForce(100, 0.2)).toBe(-20);
+    expect(springForce(100, -0.2)).toBe(20);
+    expect(elasticPotentialEnergy(100, 0.2)).toBeCloseTo(2, 8);
+  });
+
+  it("rejects invalid spring parameters", () => {
+    expect(() => springForce(0, 0.2)).toThrow("springConstantNPerM must be positive");
+    expect(() => elasticPotentialEnergy(100, Number.NaN)).toThrow("displacementM must be finite");
   });
 });
 
