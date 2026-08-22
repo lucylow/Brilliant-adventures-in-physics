@@ -8,6 +8,7 @@ import { consumeTutorUse, loadUsage, remainingTutorUses, type UsageState } from 
 import { projectile } from "@/lib/physics";
 import { useColors } from "@/hooks/use-colors";
 import { DraftRecovery } from "@/components/draft-recovery";
+import { useDraftAutosave } from "@/hooks/use-draft-autosave";
 
 type Message = { role: "assistant" | "user"; text: string };
 
@@ -19,6 +20,7 @@ export default function TutorScreen() {
   const [usage, setUsage] = useState<UsageState>({ date: "", tutorUsed: 0, tutorLimit: 5 });
   useEffect(() => { void loadUsage().then(setUsage); }, []);
   const remaining = remainingTutorUses(usage);
+  useDraftAutosave("tutor", { question: draft });
   const send = async (text = draft) => {
     const clean = text.trim();
     if (!clean || remaining <= 0) return;

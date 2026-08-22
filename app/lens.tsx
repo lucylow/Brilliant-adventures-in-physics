@@ -7,6 +7,7 @@ import { kinematics } from "@/lib/physics";
 import { deleteExperiment, loadExperiments, saveExperiment, type SavedExperiment } from "@/lib/experiments";
 import { useColors } from "@/hooks/use-colors";
 import { DraftRecovery } from "@/components/draft-recovery";
+import { useDraftAutosave } from "@/hooks/use-draft-autosave";
 
 export default function PhysicsLensScreen() {
   const colors = useColors();
@@ -15,6 +16,7 @@ export default function PhysicsLensScreen() {
   const [analyzed, setAnalyzed] = useState(false);
   const [saved, setSaved] = useState<SavedExperiment[]>([]);
   const values = useMemo(() => times.map((time, index) => ({ time: Number(time) || 0, distance: Number(distances[index]) || 0 })), [times, distances]);
+  useDraftAutosave("lens", { times, distances });
   const last = values[values.length - 1];
   const estimatedVelocity = last && last.time > 0 ? last.distance / last.time : 0;
   const estimatedAcceleration = last && last.time > 0 ? 2 * last.distance / (last.time ** 2) : 0;

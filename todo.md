@@ -83,3 +83,9 @@
 - [x] Add visible Resume/Discard prompts when valid drafts exist in Tutor, Practice, and Physics Lens
 - [x] Add achievement detail screen with evidence requirements and current progress
 - [x] Add deterministic tests for recovery prompt decisions and achievement detail formatting
+- [x] Autosave Tutor drafts as the learner edits a question
+- [x] Autosave Practice answer drafts and clear them after completion or discard
+- [x] Autosave Physics Lens measurements and clear them after save or discard
+- [x] Add achievement progress bars showing distance to each milestone
+- [x] Add mobile-safe keyboard dismissal and resilient empty states
+- [x] Add deterministic tests for autosave payloads and achievement progress calculations

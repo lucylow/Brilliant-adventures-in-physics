@@ -5,6 +5,7 @@ import { ScreenContainer } from "@/components/screen-container";
 import { Card, MasteryRing, ProgressBar, SectionHeader } from "@/components/physica-ui";
 import { loadLearningState, type LearningState } from "@/lib/progress-store";
 import { evaluateAchievements } from "@/lib/achievements";
+import { achievementProgress } from "@/lib/achievement-progress";
 import { generateMission, levelProgress, missionProgress, streakMessage } from "@/lib/gamification";
 import { useColors } from "@/hooks/use-colors";
 import { loadPreferences, type Preferences } from "@/lib/preferences";
@@ -54,7 +55,7 @@ export default function ProgressScreen() {
         <View style={{ marginTop: 24 }}>
           <SectionHeader title="Achievements" subtitle="Earned through meaningful learning evidence." />
           <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 10 }}>
-            {achievements.map((achievement) => <Card key={achievement.id} onPress={() => router.push({ pathname: "/achievement", params: { id: achievement.id } } as never)} style={{ width: "47%", opacity: achievement.earned ? 1 : 0.5 }}><Text style={{ color: colors.primary, fontSize: 22 }}>{achievement.icon}</Text><Text style={{ color: colors.foreground, fontWeight: "800", marginTop: 6 }}>{achievement.title}</Text><Text style={{ color: colors.muted, marginTop: 4, fontSize: 12 }}>{achievement.earned ? "Earned" : achievement.description}</Text></Card>)}
+            {achievements.map((achievement) => <Card key={achievement.id} onPress={() => router.push({ pathname: "/achievement", params: { id: achievement.id } } as never)} style={{ width: "47%", opacity: achievement.earned ? 1 : 0.5 }}><Text style={{ color: colors.primary, fontSize: 22 }}>{achievement.icon}</Text><Text style={{ color: colors.foreground, fontWeight: "800", marginTop: 6 }}>{achievement.title}</Text><Text style={{ color: colors.muted, marginTop: 4, fontSize: 12 }}>{achievement.earned ? "Earned" : achievement.description}</Text><View style={{ marginTop: 8 }}><ProgressBar value={achievementProgress(achievement, learning)} /></View></Card>)}
           </View>
         </View>
         <View style={{ marginTop: 24 }}>

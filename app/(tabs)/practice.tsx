@@ -6,6 +6,7 @@ import { checkNumericAnswer, projectile } from "@/lib/physics";
 import { useColors } from "@/hooks/use-colors";
 import { recordAttempt } from "@/lib/progress-store";
 import { DraftRecovery } from "@/components/draft-recovery";
+import { useDraftAutosave } from "@/hooks/use-draft-autosave";
 
 const QUESTIONS = [
   { prompt: "A ball is launched at 18 m/s at 42° from level ground. What is its horizontal range?", unit: "m", solve: () => projectile({ speed: 18, angleDeg: 42, height: 0 }).range, concept: "Projectile motion" },
@@ -19,6 +20,7 @@ export default function PracticeScreen() {
   const [feedback, setFeedback] = useState<"correct" | "incorrect" | null>(null);
   const [hint, setHint] = useState(false);
   const question = QUESTIONS[index % QUESTIONS.length];
+  useDraftAutosave("practice", { index, answer });
   const expected = useMemo(() => question.solve(), [question]);
   const submit = () => { const numeric = Number(answer.replace(",", ".")); const isCorrect = checkNumericAnswer(numeric, expected); setFeedback(isCorrect ? "correct" : "incorrect"); void recordAttempt(isCorrect, question.concept); };
   const next = () => { setIndex((value) => value + 1); setAnswer(""); setFeedback(null); setHint(false); };
