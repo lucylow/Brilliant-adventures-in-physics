@@ -166,3 +166,7 @@
 - [x] Add mounted-state or duplicate-submit guards where asynchronous actions update UI
 - [x] Re-check the dependency deprecation warning and document or safely mitigate it
 - [x] Add deterministic tests for async failure recovery and duplicate-action prevention
+- [x] Audit Lesson, Settings, Lens, and draft-recovery async actions for rejected promises
+- [x] Add lifecycle-safe async state updates and explicit persistence feedback
+- [x] Re-check recent runtime logs for new warnings or bundle failures
+- [x] Add deterministic regression coverage for lifecycle-safe persistence handling

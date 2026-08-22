@@ -4,14 +4,16 @@ import { router } from "expo-router";
 import { ScreenContainer } from "@/components/screen-container";
 import { Card, SecondaryButton, SectionHeader } from "@/components/physica-ui";
 import { loadPreferences, savePreferences, type Preferences } from "@/lib/preferences";
+import { persistSafely, persistenceRecoveryMessage } from "@/lib/persistence";
 import { useColors } from "@/hooks/use-colors";
 import { PersistenceDiagnostics } from "@/components/persistence-diagnostics";
 
 export default function SettingsScreen() {
   const colors = useColors();
   const [preferences, setPreferences] = useState<Preferences>({ streakEnabled: true, reducedMotion: false, hapticsEnabled: true });
+  const [saveMessage, setSaveMessage] = useState<string | null>(null);
   useEffect(() => { void loadPreferences().then(setPreferences); }, []);
-  const update = (key: keyof Preferences, value: boolean) => { void savePreferences({ ...preferences, [key]: value }).then(setPreferences); };
+  const update = (key: keyof Preferences, value: boolean) => { const next = { ...preferences, [key]: value }; void persistSafely(savePreferences(next)).then((saved) => { setSaveMessage(persistenceRecoveryMessage(saved)); if (saved.ok) setPreferences(saved.data); }); };
   return (
     <ScreenContainer edges={["top", "bottom", "left", "right"]} className="p-5">
       <ScrollView contentContainerStyle={{ paddingBottom: 32 }}>
@@ -36,7 +38,7 @@ export default function SettingsScreen() {
         </Card>
         <Pressable accessibilityRole="button" onPress={() => router.push("/privacy" as never)} style={({ pressed }) => ({ marginTop: 12, opacity: pressed ? 0.7 : 1 })}>
           <Card><Text style={{ color: colors.foreground, fontWeight: "800" }}>Privacy and local data</Text><Text style={{ color: colors.muted, marginTop: 4 }}>Review, export, or clear device-only study data.</Text><PersistenceDiagnostics /></Card></Pressable>
-        <View style={{ marginTop: 20 }}><SecondaryButton label="Done" onPress={() => router.back()} /></View>
+        {saveMessage && <Text accessibilityLiveRegion="assertive" style={{ marginTop: 12, color: colors.warning }}>{saveMessage}</Text>}<View style={{ marginTop: 20 }}><SecondaryButton label="Done" onPress={() => router.back()} /></View>
       </ScrollView>
     </ScreenContainer>
   );
