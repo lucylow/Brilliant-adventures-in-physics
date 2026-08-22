@@ -4,8 +4,9 @@ import { router } from "expo-router";
 import { ScreenContainer } from "@/components/screen-container";
 import { Card, Pill, PrimaryButton, SecondaryButton, SectionHeader } from "@/components/physica-ui";
 import { useColors } from "@/hooks/use-colors";
-import { firstActionForGoal, saveOnboarding, type LearnerGoal, type LearnerLevel } from "@/lib/onboarding";
+import { firstActionForGoal, loadOnboarding, saveOnboarding, type LearnerGoal, type LearnerLevel } from "@/lib/onboarding";
 import { persistSafely, persistenceRecoveryMessage } from "@/lib/persistence";
+import { useEffect } from "react";
 
 const levels: Array<{ value: LearnerLevel; title: string; body: string }> = [
   { value: "new", title: "I’m new to physics", body: "Start with concepts and gentle examples." },
@@ -23,9 +24,11 @@ export default function OnboardingScreen() {
   const [step, setStep] = useState<0 | 1 | 2>(0);
   const [level, setLevel] = useState<LearnerLevel>("new");
   const [goal, setGoal] = useState<LearnerGoal>("understand");
+  useEffect(() => { void loadOnboarding().then((profile) => { if (!profile.completed) { setStep(profile.step); setLevel(profile.level); setGoal(profile.goal); } }); }, []);
+  useEffect(() => { void persistSafely(saveOnboarding({ completed: false, level, goal, step })); }, [goal, level, step]);
   const [error, setError] = useState<string | null>(null);
   const finish = async (skip = false) => {
-    const result = await persistSafely(saveOnboarding({ completed: true, level: skip ? "new" : level, goal: skip ? "understand" : goal }));
+    const result = await persistSafely(saveOnboarding({ completed: true, level: skip ? "new" : level, goal: skip ? "understand" : goal, step: 2 }));
     if (result.ok) { router.replace(firstActionForGoal(skip ? "understand" : goal) as never); return; }
     setError(persistenceRecoveryMessage(result));
   };

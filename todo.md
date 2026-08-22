@@ -196,3 +196,7 @@
 - [x] Add accessible step navigation, skip behavior, and completion feedback
 - [x] Route onboarding completion into a useful first physics activity
 - [x] Add deterministic onboarding migration and routing tests
+- [x] Persist incomplete onboarding step and selections for mid-flow resume
+- [x] Improve selected-state semantics and screen-reader feedback for onboarding choices
+- [x] Add Settings actions to revisit or reset onboarding profile
+- [x] Add deterministic tests for onboarding resume and reset behavior
