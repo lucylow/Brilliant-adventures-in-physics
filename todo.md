@@ -89,3 +89,8 @@
 - [x] Add achievement progress bars showing distance to each milestone
 - [x] Add mobile-safe keyboard dismissal and resilient empty states
 - [x] Add deterministic tests for autosave payloads and achievement progress calculations
+- [x] Automatically delete Tutor, Practice, and Lens drafts after successful completion or explicit discard
+- [x] Add autosave retry state and user-visible offline persistence feedback
+- [x] Add keyboard dismissal and safe-area validation helpers for mobile flows
+- [x] Add screen-reader labels and announcements for recovery, success, and retry states
+- [x] Add deterministic regression tests for draft cleanup, retry feedback, and accessibility contracts
