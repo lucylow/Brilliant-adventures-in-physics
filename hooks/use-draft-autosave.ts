@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { saveDraft } from "@/lib/progress-store";
 import { enqueueRetry, markLastSave, type RetryItem } from "@/lib/retry-queue";
+import { retryAsync } from "@/lib/retry-policy";
 
 export type DraftSaveStatus = "idle" | "saving" | "saved" | "retrying" | "offline";
 
@@ -20,12 +21,15 @@ export function useDraftAutosave<T>(id: string, data: T, enabled = true): DraftS
         if (cancelled) return;
         setStatus("retrying");
         try {
-          await new Promise((resolve) => setTimeout(resolve, 500));
-          await saveDraft({ id, data, updatedAt: Date.now() });
+          await retryAsync(() => saveDraft({ id, data, updatedAt: Date.now() }), { maxRetries: 1, delayMs: 500 });
           await markLastSave();
           if (!cancelled) setStatus("saved");
         } catch {
-          await enqueueRetry(item);
+          try {
+            await enqueueRetry(item);
+          } catch {
+            // Keep the failure recoverable in the UI if the retry queue is unavailable.
+          }
           if (!cancelled) setStatus("offline");
         }
       }

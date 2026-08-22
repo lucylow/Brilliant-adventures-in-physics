@@ -273,3 +273,6 @@
 - [x] Add deterministic coverage for the shared accessibility contract
 - [x] Add explicit screen-reader roles, hints, and disabled states to Lab slider step controls
 - [x] Add deterministic coverage for slider boundary clamping behavior
+- [x] Centralize bounded async retry behavior for autosave persistence
+- [x] Prevent autosave retry failures from becoming unhandled rejections
+- [x] Add deterministic tests for retry success, exhaustion, and invalid retry settings
