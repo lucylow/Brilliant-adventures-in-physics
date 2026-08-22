@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { angularSpeedFromRpm, centripetalAcceleration, checkNumericAnswer, coulombForce, criticalAngleDeg, electricField, impulse, kineticEnergy, momentum, projectile, refraction, tangentialSpeed, temperatureChangeFromEnergy, thermalEnergy, velocityChangeFromImpulse, wave, waveFrequency, wavePeriod, waveSpeed } from "../lib/physics";
+import { angularSpeedFromRpm, centripetalAcceleration, checkNumericAnswer, coulombForce, criticalAngleDeg, electricField, impulse, kineticEnergy, momentum, ohmsLaw, powerFromCurrentResistance, projectile, refraction, resistanceFromVoltageCurrent, tangentialSpeed, temperatureChangeFromEnergy, thermalEnergy, velocityChangeFromImpulse, wave, waveFrequency, wavePeriod, waveSpeed } from "../lib/physics";
 import { createMockTutorAnswer, validateTutorAnswer } from "../lib/ai";
 
 describe("physics engine", () => {
@@ -96,6 +96,19 @@ describe("physics engine", () => {
   it("rejects invalid electrostatics parameters", () => {
     expect(() => coulombForce(1, 2, 0)).toThrow("distanceM must be positive");
     expect(() => electricField(Number.NaN, 1)).toThrow("chargeC must be finite");
+  });
+
+  it("computes circuit quantities deterministically", () => {
+    expect(ohmsLaw(12, 4)).toEqual({ voltage: 12, resistance: 4, current: 3, power: 36 });
+    expect(resistanceFromVoltageCurrent(12, 3)).toBe(4);
+    expect(powerFromCurrentResistance(3, 4)).toBe(36);
+  });
+
+  it("rejects invalid circuit parameters", () => {
+    expect(() => ohmsLaw(Number.NaN, 4)).toThrow("voltage must be finite");
+    expect(() => ohmsLaw(12, 0)).toThrow("resistance must be positive");
+    expect(() => resistanceFromVoltageCurrent(12, 0)).toThrow("current must be non-zero");
+    expect(() => powerFromCurrentResistance(3, -1)).toThrow("resistance must be positive");
   });
 });
 

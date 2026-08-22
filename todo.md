@@ -243,3 +243,6 @@
 - [x] Add validated deterministic Coulomb-force and electric-field helpers
 - [x] Add deterministic electrostatics regression tests including invalid-parameter handling
 - [x] Connect charge and field concepts to an accessible electrostatics Lab experiment
+- [x] Add validated deterministic circuit helpers for current, resistance, and power
+- [x] Add deterministic circuit regression tests including invalid-parameter handling
+- [x] Connect circuit concepts to an accessible circuit experiment in the Lab

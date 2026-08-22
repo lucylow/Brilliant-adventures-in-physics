@@ -244,9 +244,21 @@ export function electricField(chargeC: number, distanceM: number): number {
 }
 
 export function ohmsLaw(voltage: number, resistance: number) {
-  if (!Number.isFinite(resistance) || resistance <= 0) throw new Error("Resistance must be positive");
-  const current = voltage / resistance;
-  return { current, power: voltage * current };
+  const safeVoltage = finite(voltage, "voltage");
+  const safeResistance = positive(resistance, "resistance");
+  const current = safeVoltage / safeResistance;
+  return { voltage: safeVoltage, resistance: safeResistance, current, power: safeVoltage * current };
+}
+
+export function resistanceFromVoltageCurrent(voltage: number, current: number): number {
+  const safeVoltage = finite(voltage, "voltage");
+  const safeCurrent = finite(current, "current");
+  if (safeCurrent === 0) throw new Error("current must be non-zero");
+  return safeVoltage / safeCurrent;
+}
+
+export function powerFromCurrentResistance(current: number, resistance: number): number {
+  return finite(current, "current") ** 2 * positive(resistance, "resistance");
 }
 
 export function checkNumericAnswer(actual: number, expected: number, tolerance = 0.02): boolean {
