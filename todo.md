@@ -281,3 +281,6 @@
 - [x] Add deterministic coverage for retry-queue status copy and result handling
 - [x] Include queued offline autosaves and last-save metadata in clear-all-local-data
 - [x] Add deterministic coverage for complete local-data cleanup ownership
+- [x] Reconcile queued autosaves when the app becomes active
+- [x] Guard foreground reconciliation against duplicate runs and stale updates
+- [x] Add deterministic coverage for reconciliation decision behavior
