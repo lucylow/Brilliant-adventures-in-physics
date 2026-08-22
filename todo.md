@@ -94,3 +94,14 @@
 - [x] Add keyboard dismissal and safe-area validation helpers for mobile flows
 - [x] Add screen-reader labels and announcements for recovery, success, and retry states
 - [x] Add deterministic regression tests for draft cleanup, retry feedback, and accessibility contracts
+- [ ] Persist failed autosave payloads in a bounded local retry queue
+- [ ] Add explicit retry and queue-drain helpers for later reconnect attempts
+- [ ] Track the last successful local save time without telemetry
+- [ ] Show queued retry count and last-save diagnostics in the relevant UI
+- [ ] Add deterministic tests for queue bounds, retry draining, and diagnostics formatting
+- [x] Add shared responsive layout tokens and mobile-safe sizing helpers
+- [x] Add reusable screen state patterns for loading, error, empty, offline, and success states
+- [x] Add accessible button, input, announcement, and touch-target conventions across core screens
+- [ ] Add functional search/filter affordances for concept and achievement discovery
+- [x] Apply responsive keyboard and safe-area behavior to Tutor, Practice, Lens, and Settings
+- [x] Add deterministic UI/UX tests for state rendering and accessibility contracts

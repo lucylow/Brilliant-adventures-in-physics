@@ -5,6 +5,7 @@ import { ScreenContainer } from "@/components/screen-container";
 import { Card, SecondaryButton, SectionHeader } from "@/components/physica-ui";
 import { loadPreferences, savePreferences, type Preferences } from "@/lib/preferences";
 import { useColors } from "@/hooks/use-colors";
+import { PersistenceDiagnostics } from "@/components/persistence-diagnostics";
 
 export default function SettingsScreen() {
   const colors = useColors();
@@ -28,8 +29,7 @@ export default function SettingsScreen() {
           </View>
         </Card>
         <Pressable accessibilityRole="button" onPress={() => router.push("/privacy" as never)} style={({ pressed }) => ({ marginTop: 12, opacity: pressed ? 0.7 : 1 })}>
-          <Card><Text style={{ color: colors.foreground, fontWeight: "800" }}>Privacy and local data</Text><Text style={{ color: colors.muted, marginTop: 4 }}>Review, export, or clear device-only study data.</Text></Card>
-        </Pressable>
+          <Card><Text style={{ color: colors.foreground, fontWeight: "800" }}>Privacy and local data</Text><Text style={{ color: colors.muted, marginTop: 4 }}>Review, export, or clear device-only study data.</Text><PersistenceDiagnostics /></Card></Pressable>
         <View style={{ marginTop: 20 }}><SecondaryButton label="Done" onPress={() => router.back()} /></View>
       </ScrollView>
     </ScreenContainer>
