@@ -326,3 +326,5 @@
 - [x] Render accessible context copy in Concepts results with deterministic coverage
 - [x] Add deterministic concept-focused practice handoff from Lab and Concepts
 - [x] Validate practice route parameters and preserve local-only question generation
+- [x] Expand deterministic local practice questions across core physics domains
+- [x] Add regression coverage for new question concepts and exact solutions
