@@ -174,3 +174,7 @@
 - [x] Add validation and safe fallback handling for malformed persisted records
 - [x] Add accessible recovery feedback for Lens save and draft-loading failures
 - [x] Add deterministic regression tests for malformed persistence data and failure recovery
+- [x] Validate malformed learning-state records and nested topic mastery values
+- [x] Validate draft shape, timestamps, and expiry before restoring sessions
+- [x] Add safe recovery behavior for invalid persisted learning data
+- [x] Add deterministic regression tests for malformed learning-state and drafts
