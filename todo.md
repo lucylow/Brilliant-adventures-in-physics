@@ -1,0 +1,21 @@
+# Project TODO
+
+- [x] Replace the starter Home screen with the PhysicaAI dashboard and quick actions
+- [x] Add the PhysicaAI design tokens and accessible reusable UI primitives
+- [x] Add Tutor, Lab, Practice, and Progress primary navigation
+- [x] Implement unit-aware deterministic physics utilities for core formulas
+- [x] Add structured tutor response contracts, sanitization, and mock AI fallback
+- [x] Add local persistence for onboarding, attempts, saved problems, and progress
+- [x] Implement typed Tutor flow with hint ladder and verified calculation cards
+- [x] Implement Scan Problem manual review flow with editable variables and units
+- [ ] Implement Physics Lens manual experiment flow with data table and graph summary
+- [x] Implement interactive projectile and kinematics simulation controls
+- [x] Implement adaptive practice with deterministic answer checking
+- [x] Implement progress summaries, mastery scoring, misconception signals, and recommendations
+- [x] Generate and apply the PhysicaAI app icon branding before the first new checkpoint
+- [x] Add unit and integration tests for physics calculations and learning state transitions
+- [ ] Run typecheck, lint, tests, and critical mobile journey validation
+- [x] Add provider-agnostic monetization models, product catalog abstraction, and entitlement gates
+- [ ] Add transparent contextual upgrade card and subscription status UI without fake scarcity
+- [ ] Add usage limits and graceful free-tier fallback for premium AI features
+- [ ] Add restore-purchases and purchase-state abstractions without hardcoded store prices

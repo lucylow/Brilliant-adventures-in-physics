@@ -1,48 +1,18 @@
-import { ScrollView, Text, View, TouchableOpacity } from "react-native";
-
+import { router } from "expo-router";
+import { ScrollView, Text, View } from "react-native";
 import { ScreenContainer } from "@/components/screen-container";
+import { Card, MasteryRing, Pill, PrimaryButton, ProgressBar, SectionHeader } from "@/components/physica-ui";
+import { useColors } from "@/hooks/use-colors";
 
-/**
- * Home Screen - NativeWind Example
- *
- * This template uses NativeWind (Tailwind CSS for React Native).
- * You can use familiar Tailwind classes directly in className props.
- *
- * Key patterns:
- * - Use `className` instead of `style` for most styling
- * - Theme colors: use tokens directly (bg-background, text-foreground, bg-primary, etc.); no dark: prefix needed
- * - Responsive: standard Tailwind breakpoints work on web
- * - Custom colors defined in tailwind.config.js
- */
 export default function HomeScreen() {
-  return (
-    <ScreenContainer className="p-6">
-      <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
-        <View className="flex-1 gap-8">
-          {/* Hero Section */}
-          <View className="items-center gap-2">
-            <Text className="text-4xl font-bold text-foreground">Welcome</Text>
-            <Text className="text-base text-muted text-center">
-              Edit app/(tabs)/index.tsx to get started
-            </Text>
-          </View>
-
-          {/* Example Card */}
-          <View className="w-full max-w-sm self-center bg-surface rounded-2xl p-6 shadow-sm border border-border">
-            <Text className="text-lg font-semibold text-foreground mb-2">NativeWind Ready</Text>
-            <Text className="text-sm text-muted leading-relaxed">
-              Use Tailwind CSS classes directly in your React Native components.
-            </Text>
-          </View>
-
-          {/* Example Button */}
-          <View className="items-center">
-            <TouchableOpacity className="bg-primary px-6 py-3 rounded-full active:opacity-80">
-              <Text className="text-background font-semibold">Get Started</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      </ScrollView>
-    </ScreenContainer>
-  );
+  const colors = useColors();
+  return <ScreenContainer className="p-5"><ScrollView contentContainerStyle={{ paddingBottom: 32 }} showsVerticalScrollIndicator={false}>
+    <View style={{ gap: 22 }}>
+      <View><Text style={{ fontSize: 30, fontWeight: "800", color: colors.foreground }}>Hi, physicist</Text><Text style={{ marginTop: 5, color: colors.muted, fontSize: 16 }}>Let’s understand some physics today.</Text></View>
+      <Card><Pill label="TODAY’S PLAN" active /><Text style={{ marginTop: 12, fontSize: 22, fontWeight: "800", color: colors.foreground }}>Master projectile motion</Text><Text style={{ marginTop: 7, color: colors.muted, lineHeight: 21 }}>One concept, one simulation, one practice set.</Text><View style={{ marginTop: 16 }}><PrimaryButton label="Start today’s plan" onPress={() => router.push("/lab" as never)} /></View></Card>
+      <View><SectionHeader title="Quick actions" subtitle="Choose a focused way to learn." /><View style={{ flexDirection: "row", gap: 10 }}><Card style={{ flex: 1 }} onPress={() => router.push("/tutor" as never)}><Text style={{ fontSize: 24 }}>✦</Text><Text style={{ marginTop: 8, fontWeight: "800", color: colors.foreground }}>Ask Tutor</Text><Text style={{ marginTop: 4, color: colors.muted, fontSize: 12 }}>Work it out</Text></Card><Card style={{ flex: 1 }} onPress={() => router.push("/practice" as never)}><Text style={{ fontSize: 24 }}>✓</Text><Text style={{ marginTop: 8, fontWeight: "800", color: colors.foreground }}>Practice</Text><Text style={{ marginTop: 4, color: colors.muted, fontSize: 12 }}>Build mastery</Text></Card><Card style={{ flex: 1 }} onPress={() => router.push("/lab" as never)}><Text style={{ fontSize: 24 }}>◌</Text><Text style={{ marginTop: 8, fontWeight: "800", color: colors.foreground }}>Physics Lab</Text><Text style={{ marginTop: 4, color: colors.muted, fontSize: 12 }}>Test a model</Text></Card><Card style={{ flex: 1 }} onPress={() => router.push("/scan" as never)}><Text style={{ fontSize: 24 }}>⌁</Text><Text style={{ marginTop: 8, fontWeight: "800", color: colors.foreground }}>Scan</Text><Text style={{ marginTop: 4, color: colors.muted, fontSize: 12 }}>Check a problem</Text></Card></View></View>
+      <Card><View style={{ flexDirection: "row", alignItems: "center", gap: 16 }}><MasteryRing value={0.62} /><View style={{ flex: 1 }}><Text style={{ fontSize: 18, fontWeight: "800", color: colors.foreground }}>Your physics map</Text><Text style={{ marginTop: 4, color: colors.muted }}>Kinematics is your next best opportunity.</Text><View style={{ marginTop: 12 }}><ProgressBar value={0.62} /></View></View></View></Card>
+      <View><SectionHeader title="Recent activity" action="View all" onAction={() => router.push("/progress" as never)} /><Card onPress={() => router.push("/practice" as never)}><Text style={{ fontWeight: "800", color: colors.foreground }}>Projectile motion practice</Text><Text style={{ marginTop: 5, color: colors.muted }}>2 of 5 questions completed · Continue where you left off.</Text></Card></View>
+    </View>
+  </ScrollView></ScreenContainer>;
 }
