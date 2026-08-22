@@ -8,14 +8,20 @@
 - [x] Add local persistence for onboarding, attempts, saved problems, and progress
 - [x] Implement typed Tutor flow with hint ladder and verified calculation cards
 - [x] Implement Scan Problem manual review flow with editable variables and units
-- [ ] Implement Physics Lens manual experiment flow with data table and graph summary
+- [x] Implement Physics Lens manual experiment flow with data table and graph summary
 - [x] Implement interactive projectile and kinematics simulation controls
 - [x] Implement adaptive practice with deterministic answer checking
 - [x] Implement progress summaries, mastery scoring, misconception signals, and recommendations
 - [x] Generate and apply the PhysicaAI app icon branding before the first new checkpoint
 - [x] Add unit and integration tests for physics calculations and learning state transitions
-- [ ] Run typecheck, lint, tests, and critical mobile journey validation
+- [x] Run typecheck, lint, tests, and critical mobile journey validation
 - [x] Add provider-agnostic monetization models, product catalog abstraction, and entitlement gates
-- [ ] Add transparent contextual upgrade card and subscription status UI without fake scarcity
+- [x] Add transparent contextual upgrade card and subscription status UI without fake scarcity
 - [ ] Add usage limits and graceful free-tier fallback for premium AI features
 - [ ] Add restore-purchases and purchase-state abstractions without hardcoded store prices
+- [ ] Add Physics Lens manual experiment setup with safe measurement guidance
+- [ ] Add Physics Lens data table, graph summary, and deterministic analysis
+- [x] Connect Progress summaries to persisted attempt records instead of seeded values
+- [ ] Add transparent premium upgrade screen using entitlement gates and non-deceptive copy
+- [ ] Add free-tier usage meter and graceful premium feature fallback
+- [x] Add tests for Physics Lens calculations, persisted mastery, and entitlement gating
