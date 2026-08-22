@@ -94,14 +94,20 @@
 - [x] Add keyboard dismissal and safe-area validation helpers for mobile flows
 - [x] Add screen-reader labels and announcements for recovery, success, and retry states
 - [x] Add deterministic regression tests for draft cleanup, retry feedback, and accessibility contracts
-- [ ] Persist failed autosave payloads in a bounded local retry queue
-- [ ] Add explicit retry and queue-drain helpers for later reconnect attempts
-- [ ] Track the last successful local save time without telemetry
-- [ ] Show queued retry count and last-save diagnostics in the relevant UI
-- [ ] Add deterministic tests for queue bounds, retry draining, and diagnostics formatting
+- [x] Persist failed autosave payloads in a bounded local retry queue
+- [x] Add explicit retry and queue-drain helpers for later reconnect attempts
+- [x] Track the last successful local save time without telemetry
+- [x] Show queued retry count and last-save diagnostics in the relevant UI
+- [x] Add deterministic tests for queue bounds, retry draining, and diagnostics formatting
 - [x] Add shared responsive layout tokens and mobile-safe sizing helpers
 - [x] Add reusable screen state patterns for loading, error, empty, offline, and success states
 - [x] Add accessible button, input, announcement, and touch-target conventions across core screens
-- [ ] Add functional search/filter affordances for concept and achievement discovery
+- [x] Add functional search/filter affordances for concept and achievement discovery
 - [x] Apply responsive keyboard and safe-area behavior to Tutor, Practice, Lens, and Settings
 - [x] Add deterministic UI/UX tests for state rendering and accessibility contracts
+- [x] Add a grounded physics concept registry with hierarchy, prerequisites, and mastery states
+- [x] Add searchable concept discovery helpers for topics and achievements
+- [x] Add a manual retry action and queue-drain helper for offline autosaves
+- [ ] Add achievement filtering by earned and in-progress status
+- [ ] Apply consistent loading, empty, error, and offline states to secondary screens
+- [x] Add deterministic tests for concepts, search, queue recovery, and filters
