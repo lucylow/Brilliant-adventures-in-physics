@@ -237,3 +237,6 @@
 - [x] Add validated deterministic kinetic-energy, momentum, and impulse helpers
 - [x] Add deterministic mechanics regression tests including invalid-parameter handling
 - [x] Connect energy and impulse examples to concepts and learning content
+- [x] Add validated deterministic angular-speed, centripetal-acceleration, and tangential-speed helpers
+- [x] Add deterministic rotational-mechanics regression tests including invalid-parameter handling
+- [x] Connect rotational mechanics to concepts and an accessible circular-motion Lab experiment

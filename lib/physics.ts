@@ -193,6 +193,18 @@ export function refraction(input: RefractionInput): RefractionResult {
   };
 }
 
+export function angularSpeedFromRpm(revolutionsPerMinute: number): number {
+  return finite(revolutionsPerMinute, "revolutionsPerMinute") * 2 * Math.PI / 60;
+}
+
+export function tangentialSpeed(angularSpeedRadS: number, radiusM: number): number {
+  return finite(angularSpeedRadS, "angularSpeedRadS") * positive(radiusM, "radiusM");
+}
+
+export function centripetalAcceleration(speedMps: number, radiusM: number): number {
+  return finite(speedMps, "speedMps") ** 2 / positive(radiusM, "radiusM");
+}
+
 export function kineticEnergy(massKg: number, velocityMps: number): number {
   return 0.5 * positive(massKg, "massKg") * finite(velocityMps, "velocityMps") ** 2;
 }

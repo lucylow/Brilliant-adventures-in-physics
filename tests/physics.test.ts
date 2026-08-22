@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { checkNumericAnswer, criticalAngleDeg, impulse, kineticEnergy, momentum, projectile, refraction, temperatureChangeFromEnergy, thermalEnergy, velocityChangeFromImpulse, wave, waveFrequency, wavePeriod, waveSpeed } from "../lib/physics";
+import { angularSpeedFromRpm, centripetalAcceleration, checkNumericAnswer, criticalAngleDeg, impulse, kineticEnergy, momentum, projectile, refraction, tangentialSpeed, temperatureChangeFromEnergy, thermalEnergy, velocityChangeFromImpulse, wave, waveFrequency, wavePeriod, waveSpeed } from "../lib/physics";
 import { createMockTutorAnswer, validateTutorAnswer } from "../lib/ai";
 
 describe("physics engine", () => {
@@ -72,6 +72,19 @@ describe("physics engine", () => {
     expect(() => momentum(1, Number.NaN)).toThrow("velocityMps must be finite");
     expect(() => impulse(2, 0)).toThrow("durationS must be positive");
     expect(() => velocityChangeFromImpulse(2, -1)).toThrow("massKg must be positive");
+  });
+
+  it("computes circular motion deterministically", () => {
+    const omega = angularSpeedFromRpm(60);
+    expect(omega).toBeCloseTo(2 * Math.PI, 8);
+    expect(tangentialSpeed(omega, 2)).toBeCloseTo(4 * Math.PI, 8);
+    expect(centripetalAcceleration(4, 2)).toBe(8);
+  });
+
+  it("rejects invalid circular-motion parameters", () => {
+    expect(() => angularSpeedFromRpm(Number.NaN)).toThrow("revolutionsPerMinute must be finite");
+    expect(() => tangentialSpeed(2, 0)).toThrow("radiusM must be positive");
+    expect(() => centripetalAcceleration(4, -1)).toThrow("radiusM must be positive");
   });
 });
 
