@@ -142,6 +142,23 @@ export function wavePeriod(frequencyHz: number): number {
   return 1 / positive(frequencyHz, "frequencyHz");
 }
 
+export function harmonicDisplacement(amplitudeM: number, frequencyHz: number, timeS: number, phaseRad = 0): number {
+  const amplitude = positive(amplitudeM, "amplitudeM");
+  const frequency = positive(frequencyHz, "frequencyHz");
+  const time = finite(timeS, "timeS");
+  const phase = finite(phaseRad, "phaseRad");
+  return amplitude * Math.cos(2 * Math.PI * frequency * time + phase);
+}
+
+export function harmonicVelocity(amplitudeM: number, frequencyHz: number, timeS: number, phaseRad = 0): number {
+  const amplitude = positive(amplitudeM, "amplitudeM");
+  const frequency = positive(frequencyHz, "frequencyHz");
+  const time = finite(timeS, "timeS");
+  const phase = finite(phaseRad, "phaseRad");
+  const angularFrequency = 2 * Math.PI * frequency;
+  return -amplitude * angularFrequency * Math.sin(angularFrequency * time + phase);
+}
+
 export function wave(input: WaveInput): WaveResult {
   const frequencyHz = positive(input.frequencyHz, "frequencyHz");
   const wavelengthM = positive(input.wavelengthM, "wavelengthM");

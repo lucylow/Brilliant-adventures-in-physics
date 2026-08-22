@@ -249,3 +249,6 @@
 - [x] Add validated deterministic fluid helpers for pressure, buoyant force, and volumetric flow
 - [x] Add deterministic fluid regression tests including invalid-parameter handling
 - [x] Connect fluid concepts to an accessible fluid experiment in the Lab
+- [x] Add validated deterministic simple-harmonic displacement and velocity helpers
+- [x] Add deterministic oscillation regression tests including invalid-parameter handling
+- [x] Connect oscillation content to an accessible harmonic-motion experiment in the Lab

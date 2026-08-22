@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { angularSpeedFromRpm, buoyantForce, centripetalAcceleration, checkNumericAnswer, coulombForce, criticalAngleDeg, electricField, hydrostaticPressure, impulse, kineticEnergy, momentum, ohmsLaw, powerFromCurrentResistance, projectile, refraction, resistanceFromVoltageCurrent, tangentialSpeed, temperatureChangeFromEnergy, thermalEnergy, velocityChangeFromImpulse, volumetricFlowRate, wave, waveFrequency, wavePeriod, waveSpeed } from "../lib/physics";
+import { angularSpeedFromRpm, buoyantForce, centripetalAcceleration, checkNumericAnswer, coulombForce, criticalAngleDeg, electricField, harmonicDisplacement, harmonicVelocity, hydrostaticPressure, impulse, kineticEnergy, momentum, ohmsLaw, powerFromCurrentResistance, projectile, refraction, resistanceFromVoltageCurrent, tangentialSpeed, temperatureChangeFromEnergy, thermalEnergy, velocityChangeFromImpulse, volumetricFlowRate, wave, waveFrequency, wavePeriod, waveSpeed } from "../lib/physics";
 import { createMockTutorAnswer, validateTutorAnswer } from "../lib/ai";
 
 describe("physics engine", () => {
@@ -122,6 +122,21 @@ describe("physics engine", () => {
     expect(() => buoyantForce(1000, -1)).toThrow("displacedVolumeM3 must be positive");
     expect(() => volumetricFlowRate(0, 3)).toThrow("areaM2 must be positive");
     expect(() => volumetricFlowRate(1, Number.NaN)).toThrow("speedMps must be finite");
+  });
+
+  it("computes harmonic motion deterministically", () => {
+    expect(harmonicDisplacement(0.2, 1, 0)).toBeCloseTo(0.2, 8);
+    expect(harmonicDisplacement(0.2, 1, 0.25)).toBeCloseTo(0, 8);
+    expect(harmonicVelocity(0.2, 1, 0)).toBeCloseTo(0, 8);
+    expect(harmonicVelocity(0.2, 1, 0.25)).toBeCloseTo(-0.4 * Math.PI, 8);
+    expect(harmonicDisplacement(0.2, 1, 0, Math.PI / 2)).toBeCloseTo(0, 8);
+  });
+
+  it("rejects invalid harmonic-motion parameters", () => {
+    expect(() => harmonicDisplacement(0, 1, 0)).toThrow("amplitudeM must be positive");
+    expect(() => harmonicVelocity(1, -1, 0)).toThrow("frequencyHz must be positive");
+    expect(() => harmonicDisplacement(1, 1, Number.NaN)).toThrow("timeS must be finite");
+    expect(() => harmonicVelocity(1, 1, 0, Number.NaN)).toThrow("phaseRad must be finite");
   });
 });
 
