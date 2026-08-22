@@ -183,6 +183,16 @@ export function deBroglieWavelength(massKg: number, speedMps: number): number {
   return PHYSICS.h / (positive(massKg, "massKg") * positive(speedMps, "speedMps"));
 }
 
+export function relativisticKineticEnergy(massKg: number, speedMps: number): number {
+  const mass = positive(massKg, "massKg");
+  const speed = finite(speedMps, "speedMps");
+  if (speed < 0 || speed >= PHYSICS.c) throw new Error("speedMps must be between zero and the speed of light");
+  if (speed === 0) return 0;
+  const beta = speed / PHYSICS.c;
+  const gamma = 1 / Math.sqrt(1 - beta ** 2);
+  return mass * PHYSICS.c ** 2 * (gamma - 1);
+}
+
 export type ElasticCollisionResult = {
   finalVelocity1Mps: number;
   finalVelocity2Mps: number;

@@ -32,6 +32,7 @@ export const conceptRegistry: PhysicsConcept[] = [
   { id: "circuits", title: "Circuits", domain: "Electricity", level: "core", prerequisites: ["charge", "field"], intuition: "Charges transfer energy through a connected path.", equation: "V = IR", units: "V, A, Ω" },
   { id: "modern-energy", title: "Photons and Mass–Energy", domain: "Modern Physics", level: "advanced", prerequisites: ["wave-motion", "energy"], intuition: "Photon energy depends on frequency or wavelength, while mass–energy equivalence describes the energy associated with rest mass.", equation: "E = hc/λ, E = mc²", units: "J, m, kg" },
   { id: "photoelectric-effect", title: "Photoelectric Effect", domain: "Modern Physics", level: "advanced", prerequisites: ["modern-energy"], intuition: "Light can eject an electron only when each photon exceeds a material’s work function; above threshold, excess photon energy becomes electron kinetic energy.", equation: "K_max = hf − φ", units: "J, Hz, eV" },
+  { id: "relativistic-energy", title: "Relativistic Energy", domain: "Modern Physics", level: "advanced", prerequisites: ["kinematics", "energy"], intuition: "As speed approaches the speed of light, the relativistic kinetic-energy result grows beyond the classical estimate and light speed remains an upper boundary.", equation: "K = (γ − 1)mc²", units: "J, kg, m/s" },
 ];
 
 export function findConcept(id: string): PhysicsConcept | undefined { return conceptRegistry.find((concept) => concept.id === id); }
