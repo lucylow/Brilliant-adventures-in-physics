@@ -158,3 +158,7 @@
 - [x] Add safe error normalization for persistence and service boundaries
 - [x] Add screen-level recovery handling for Tutor and Lab actions
 - [x] Add deterministic regression tests for error normalization and fallbacks
+- [x] Re-check current typecheck, bundle, and runtime diagnostics
+- [x] Fix any actionable source-level warnings or errors found
+- [x] Add defensive fallbacks for persistence and user-triggered actions
+- [x] Add deterministic regression coverage for the newly fixed failure paths
