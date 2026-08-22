@@ -284,3 +284,6 @@
 - [x] Reconcile queued autosaves when the app becomes active
 - [x] Guard foreground reconciliation against duplicate runs and stale updates
 - [x] Add deterministic coverage for reconciliation decision behavior
+- [x] Reject malformed autosave queue records before retrying them
+- [x] Bound queued retry records and normalize invalid last-save metadata
+- [x] Add deterministic coverage for queue parsing and safe last-save copy
