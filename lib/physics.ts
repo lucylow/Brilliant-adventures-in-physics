@@ -179,6 +179,10 @@ export function photoelectricEffect(frequencyHz: number, workFunctionEv: number)
   };
 }
 
+export function deBroglieWavelength(massKg: number, speedMps: number): number {
+  return PHYSICS.h / (positive(massKg, "massKg") * positive(speedMps, "speedMps"));
+}
+
 export type ElasticCollisionResult = {
   finalVelocity1Mps: number;
   finalVelocity2Mps: number;

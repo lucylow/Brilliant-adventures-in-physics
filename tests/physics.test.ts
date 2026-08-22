@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { angularSpeedFromRpm, averagePowerFromWork, buoyantForce, centripetalAcceleration, checkNumericAnswer, coulombForce, criticalAngleDeg, electricField, elasticCollision1D, elasticPotentialEnergy, gravitationalPotentialEnergy, harmonicDisplacement, harmonicVelocity, hydrostaticPressure, impulse, kineticEnergy, massEnergyEquivalent, momentum, ohmsLaw, photonEnergyFromFrequency, photonEnergyFromWavelength, photoelectricEffect, powerFromCurrentResistance, projectile, refraction, resistanceFromVoltageCurrent, rotationalKineticEnergy, solidDiskMomentOfInertia, springForce, tangentialSpeed, temperatureChangeFromEnergy, thermalEnergy, velocityChangeFromImpulse, volumetricFlowRate, wave, waveFrequency, wavePeriod, waveSpeed, weightForce, workFromForce } from "../lib/physics";
+import { angularSpeedFromRpm, averagePowerFromWork, buoyantForce, centripetalAcceleration, checkNumericAnswer, coulombForce, criticalAngleDeg, deBroglieWavelength, electricField, elasticCollision1D, elasticPotentialEnergy, gravitationalPotentialEnergy, harmonicDisplacement, harmonicVelocity, hydrostaticPressure, impulse, kineticEnergy, massEnergyEquivalent, momentum, ohmsLaw, photonEnergyFromFrequency, photonEnergyFromWavelength, photoelectricEffect, powerFromCurrentResistance, projectile, refraction, resistanceFromVoltageCurrent, rotationalKineticEnergy, solidDiskMomentOfInertia, springForce, tangentialSpeed, temperatureChangeFromEnergy, thermalEnergy, velocityChangeFromImpulse, volumetricFlowRate, wave, waveFrequency, wavePeriod, waveSpeed, weightForce, workFromForce } from "../lib/physics";
 import { createMockTutorAnswer, validateTutorAnswer } from "../lib/ai";
 
 describe("physics engine", () => {
@@ -34,6 +34,11 @@ describe("physics engine", () => {
     expect(massEnergyEquivalent(1e-9)).toBeCloseTo(8.987551787368177e7, 4);
   });
 
+  it("computes de Broglie wavelength deterministically", () => {
+    expect(deBroglieWavelength(1e-12, 1e4)).toBeCloseTo(6.62607015e-26, 34);
+    expect(deBroglieWavelength(2e-12, 1e4)).toBeCloseTo(3.313035075e-26, 34);
+  });
+
   it("computes photoelectric emission threshold and excess energy", () => {
     const below = photoelectricEffect(4e14, 2.3);
     expect(below.emitted).toBe(false);
@@ -48,6 +53,8 @@ describe("physics engine", () => {
     expect(() => photonEnergyFromFrequency(0)).toThrow("frequencyHz must be positive");
     expect(() => photonEnergyFromWavelength(-1)).toThrow("wavelengthM must be positive");
     expect(() => massEnergyEquivalent(0)).toThrow("massKg must be positive");
+    expect(() => deBroglieWavelength(0, 1)).toThrow("massKg must be positive");
+    expect(() => deBroglieWavelength(1, 0)).toThrow("speedMps must be positive");
   });
 
   it("computes refraction using Snell's law", () => {

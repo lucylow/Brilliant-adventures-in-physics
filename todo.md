@@ -302,6 +302,8 @@
 - [x] Add an accessible modern-physics Lab experiment and concept entry
 - [x] Add deterministic photoelectric-effect calculations with threshold handling
 - [x] Add an accessible photoelectric-effect Lab experiment and concept coverage
+- [x] Add deterministic de Broglie wavelength calculations with strict input validation
+- [x] Add an accessible matter-wave Lab experiment and concept coverage
 - [x] Install and wire the Expo network-state listener for autosave reconciliation
 - [x] Add deterministic coverage for connectivity-gated reconciliation decisions
 - [x] Add a global accessible network-status banner for offline and checking states
