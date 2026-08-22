@@ -132,3 +132,8 @@
 - [x] Add visual state labels for idle, running, paused, complete, empty, and error
 - [ ] Add a compact visual concept block to the projectile lesson
 - [x] Add deterministic tests for trajectory mapping, vector overlays, and visual state transitions
+- [x] Add shared motion tokens and reduced-motion-safe duration helpers
+- [x] Add a haptic abstraction that degrades safely on web and unsupported devices
+- [x] Add focused animated primitives for press feedback, progress, simulation playhead, and vector growth
+- [x] Integrate restrained motion into Lab controls and learning feedback states
+- [x] Add deterministic tests for motion preferences and animation contracts
