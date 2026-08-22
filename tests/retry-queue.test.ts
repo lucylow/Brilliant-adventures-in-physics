@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { formatLastSave, formatRetryResult, parseRetryQueue } from "../lib/retry-queue";
+import { formatLastSave, formatRetryResult, parseRetryQueue, RETRY_QUEUE_DISCARD_COPY, RETRY_QUEUE_DISCARDED_COPY } from "../lib/retry-queue";
 
 describe("retry queue copy", () => {
   it("describes recovered, pending, and empty queue outcomes", () => {
@@ -23,5 +23,11 @@ describe("retry queue copy", () => {
   it("falls back when last-save metadata is invalid", () => {
     expect(formatLastSave("not-a-date")).toBe("No successful local save recorded yet.");
     expect(formatLastSave(null)).toBe("No successful local save recorded yet.");
+  });
+
+  it("keeps queue discard copy scoped to autosaves", () => {
+    expect(RETRY_QUEUE_DISCARD_COPY).toContain("only queued autosaves");
+    expect(RETRY_QUEUE_DISCARD_COPY).toContain("learning history");
+    expect(RETRY_QUEUE_DISCARDED_COPY).toContain("Learning history was kept");
   });
 });

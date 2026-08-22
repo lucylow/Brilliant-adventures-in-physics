@@ -287,3 +287,6 @@
 - [x] Reject malformed autosave queue records before retrying them
 - [x] Bound queued retry records and normalize invalid last-save metadata
 - [x] Add deterministic coverage for queue parsing and safe last-save copy
+- [x] Add a confirmed Settings action to discard only queued offline autosaves
+- [x] Preserve learning history and preferences when queued autosaves are discarded
+- [x] Add deterministic coverage for queue-discard copy and scope

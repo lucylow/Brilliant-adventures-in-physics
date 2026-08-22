@@ -3,6 +3,8 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 const QUEUE_KEY = "physicaai.autosave.queue.v1";
 const LAST_SAVE_KEY = "physicaai.autosave.last-save.v1";
 const MAX_ITEMS = 10;
+export const RETRY_QUEUE_DISCARD_COPY = "This removes only queued autosaves and keeps your learning history and preferences.";
+export const RETRY_QUEUE_DISCARDED_COPY = "Queued offline saves discarded. Learning history was kept.";
 export type RetryItem = { id: string; payload: unknown; queuedAt: number };
 
 export function parseRetryQueue(input: unknown): RetryItem[] {
