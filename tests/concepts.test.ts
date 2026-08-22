@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { conceptState, detectMisconception, missingPrerequisites, searchConcepts } from "../lib/concepts";
+import { conceptState, detectMisconception, findConcept, missingPrerequisites, searchConcepts } from "../lib/concepts";
 
 describe("physics concept intelligence", () => {
   it("searches grounded concepts", () => {
@@ -23,6 +23,9 @@ describe("physics concept intelligence", () => {
   it("links the photoelectric effect to photon prerequisites", () => {
     expect(searchConcepts("photoelectric")[0]?.id).toBe("photoelectric-effect");
     expect(missingPrerequisites("photoelectric-effect", { "modern-energy": 0.8 })).toEqual([]);
+  });
+  it("resolves every Lab-linked concept identifier", () => {
+    ["wave-motion", "optics", "heat", "energy", "rotation", "coulomb-law", "circuits", "fluids", "oscillation", "collisions", "work", "elasticity", "gravitational-energy", "rotational-energy", "modern-energy", "relativistic-energy", "relativistic-momentum"].forEach((id) => expect(findConcept(id)?.id).toBe(id));
   });
   it("checks prerequisites and mastery state", () => {
     expect(missingPrerequisites("forces", {})).toEqual(["kinematics"]);

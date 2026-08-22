@@ -320,3 +320,5 @@
 - [x] Add accessible progress and completion feedback while draining queued saves
 - [x] Add concept-linked learning actions from Lab experiment cards
 - [x] Add deterministic route and concept-link contract coverage
+- [x] Add accessible concept links to the remaining core Lab experiments
+- [x] Validate all added Lab concept identifiers through deterministic contract tests
