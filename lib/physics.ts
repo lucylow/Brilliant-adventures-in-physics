@@ -193,6 +193,20 @@ export function refraction(input: RefractionInput): RefractionResult {
   };
 }
 
+export type ThermalInput = {
+  massKg: number;
+  specificHeatJPerKgK: number;
+  temperatureChangeK: number;
+};
+
+export function thermalEnergy(input: ThermalInput): number {
+  return positive(input.massKg, "massKg") * positive(input.specificHeatJPerKgK, "specificHeatJPerKgK") * finite(input.temperatureChangeK, "temperatureChangeK");
+}
+
+export function temperatureChangeFromEnergy(energyJ: number, massKg: number, specificHeatJPerKgK: number): number {
+  return finite(energyJ, "energyJ") / (positive(massKg, "massKg") * positive(specificHeatJPerKgK, "specificHeatJPerKgK"));
+}
+
 export function ohmsLaw(voltage: number, resistance: number) {
   if (!Number.isFinite(resistance) || resistance <= 0) throw new Error("Resistance must be positive");
   const current = voltage / resistance;

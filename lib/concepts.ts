@@ -13,6 +13,9 @@ export const conceptRegistry: PhysicsConcept[] = [
   { id: "sound", title: "Sound", domain: "Waves", level: "core", prerequisites: ["wave-motion"], intuition: "Sound is a mechanical wave whose frequency relates to pitch and whose amplitude relates to perceived loudness.", equation: "v = fλ", units: "Hz, m/s" },
   { id: "optics", title: "Optics", domain: "Waves", level: "core", prerequisites: ["wave-motion"], intuition: "Light changes direction at a boundary according to the refractive indices of the two media.", equation: "n₁ sin θ₁ = n₂ sin θ₂", units: "degrees" },
   { id: "total-internal-reflection", title: "Total Internal Reflection", domain: "Waves", level: "advanced", prerequisites: ["optics"], intuition: "When light travels into a lower-index medium beyond the critical angle, it reflects instead of refracting.", equation: "sin θc = n₂/n₁", units: "degrees" },
+  { id: "temperature", title: "Temperature", domain: "Thermal", level: "foundation", prerequisites: [], intuition: "Temperature describes the average thermal state of a system, while heat describes energy transferred because of a temperature difference.", units: "K, °C" },
+  { id: "heat", title: "Heat Capacity", domain: "Thermal", level: "core", prerequisites: ["temperature"], intuition: "The energy needed for a temperature change depends on mass and the material’s specific heat capacity.", equation: "Q = mcΔT", units: "J" },
+  { id: "gas-laws", title: "Gas Laws", domain: "Thermal", level: "core", prerequisites: ["temperature"], intuition: "Pressure, volume, and temperature describe predictable relationships in an idealized gas.", equation: "PV = nRT", units: "Pa, m³, K" },
   { id: "circuits", title: "Circuits", domain: "Electricity", level: "core", prerequisites: ["charge", "field"], intuition: "Charges transfer energy through a connected path.", equation: "V = IR", units: "V, A, Ω" },
 ];
 

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { checkNumericAnswer, criticalAngleDeg, projectile, refraction, wave, waveFrequency, wavePeriod, waveSpeed } from "../lib/physics";
+import { checkNumericAnswer, criticalAngleDeg, projectile, refraction, temperatureChangeFromEnergy, thermalEnergy, wave, waveFrequency, wavePeriod, waveSpeed } from "../lib/physics";
 import { createMockTutorAnswer, validateTutorAnswer } from "../lib/ai";
 
 describe("physics engine", () => {
@@ -47,6 +47,17 @@ describe("physics engine", () => {
   it("rejects invalid optical parameters", () => {
     expect(() => refraction({ incidentAngleDeg: 90, refractiveIndexFrom: 1, refractiveIndexTo: 1.5 })).toThrow("incidentAngleDeg must be in the range");
     expect(() => criticalAngleDeg(0, 1)).toThrow("refractiveIndexFrom must be positive");
+  });
+
+  it("computes thermal energy and temperature change deterministically", () => {
+    expect(thermalEnergy({ massKg: 2, specificHeatJPerKgK: 4186, temperatureChangeK: 5 })).toBe(41860);
+    expect(temperatureChangeFromEnergy(41860, 2, 4186)).toBe(5);
+  });
+
+  it("rejects invalid thermal parameters", () => {
+    expect(() => thermalEnergy({ massKg: 0, specificHeatJPerKgK: 4186, temperatureChangeK: 5 })).toThrow("massKg must be positive");
+    expect(() => temperatureChangeFromEnergy(100, 1, -1)).toThrow("specificHeatJPerKgK must be positive");
+    expect(() => thermalEnergy({ massKg: 1, specificHeatJPerKgK: 1, temperatureChangeK: Number.NaN })).toThrow("temperatureChangeK must be finite");
   });
 });
 

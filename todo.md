@@ -231,3 +231,6 @@
 - [x] Add validated deterministic refraction and critical-angle helpers
 - [x] Add deterministic optics regression tests including total-internal-reflection handling
 - [x] Connect optics concepts and an accessible refraction experiment to the Lab
+- [x] Add validated deterministic thermal energy and temperature-change helpers
+- [x] Add deterministic thermal regression tests including invalid-parameter handling
+- [x] Connect thermal concepts and an accessible heat experiment to the Lab
