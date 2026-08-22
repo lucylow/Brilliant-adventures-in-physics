@@ -11,6 +11,7 @@ export const PHYSICS = {
   k: 8.9875517923e9,
   c: 299_792_458,
   h: 6.62607015e-34,
+  elementaryCharge: 1.602176634e-19,
 } as const;
 
 const UNIT_SCALE: Record<string, number> = {
@@ -154,6 +155,28 @@ export function photonEnergyFromWavelength(wavelengthM: number): number {
 
 export function massEnergyEquivalent(massKg: number): number {
   return positive(massKg, "massKg") * PHYSICS.c ** 2;
+}
+
+export type PhotoelectricResult = {
+  photonEnergyJ: number;
+  workFunctionJ: number;
+  thresholdFrequencyHz: number;
+  maximumKineticEnergyJ: number;
+  emitted: boolean;
+};
+
+export function photoelectricEffect(frequencyHz: number, workFunctionEv: number): PhotoelectricResult {
+  const frequency = positive(frequencyHz, "frequencyHz");
+  const workFunctionEvSafe = positive(workFunctionEv, "workFunctionEv");
+  const workFunctionJ = workFunctionEvSafe * PHYSICS.elementaryCharge;
+  const photonEnergyJ = photonEnergyFromFrequency(frequency);
+  return {
+    photonEnergyJ,
+    workFunctionJ,
+    thresholdFrequencyHz: workFunctionJ / PHYSICS.h,
+    maximumKineticEnergyJ: Math.max(0, photonEnergyJ - workFunctionJ),
+    emitted: photonEnergyJ >= workFunctionJ,
+  };
 }
 
 export type ElasticCollisionResult = {

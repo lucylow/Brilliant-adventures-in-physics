@@ -31,6 +31,7 @@ export const conceptRegistry: PhysicsConcept[] = [
   { id: "fluid-flow", title: "Fluid Flow", domain: "Fluids", level: "core", prerequisites: ["fluids"], intuition: "Volumetric flow rate is the cross-sectional area multiplied by average flow speed.", equation: "Q = Av", units: "m³/s" },
   { id: "circuits", title: "Circuits", domain: "Electricity", level: "core", prerequisites: ["charge", "field"], intuition: "Charges transfer energy through a connected path.", equation: "V = IR", units: "V, A, Ω" },
   { id: "modern-energy", title: "Photons and Mass–Energy", domain: "Modern Physics", level: "advanced", prerequisites: ["wave-motion", "energy"], intuition: "Photon energy depends on frequency or wavelength, while mass–energy equivalence describes the energy associated with rest mass.", equation: "E = hc/λ, E = mc²", units: "J, m, kg" },
+  { id: "photoelectric-effect", title: "Photoelectric Effect", domain: "Modern Physics", level: "advanced", prerequisites: ["modern-energy"], intuition: "Light can eject an electron only when each photon exceeds a material’s work function; above threshold, excess photon energy becomes electron kinetic energy.", equation: "K_max = hf − φ", units: "J, Hz, eV" },
 ];
 
 export function findConcept(id: string): PhysicsConcept | undefined { return conceptRegistry.find((concept) => concept.id === id); }

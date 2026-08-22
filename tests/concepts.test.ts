@@ -12,6 +12,10 @@ describe("physics concept intelligence", () => {
     expect(result[0]?.id).toBe("modern-energy");
     expect(missingPrerequisites("modern-energy", {})).toEqual(["wave-motion", "energy"]);
   });
+  it("links the photoelectric effect to photon prerequisites", () => {
+    expect(searchConcepts("photoelectric")[0]?.id).toBe("photoelectric-effect");
+    expect(missingPrerequisites("photoelectric-effect", { "modern-energy": 0.8 })).toEqual([]);
+  });
   it("checks prerequisites and mastery state", () => {
     expect(missingPrerequisites("forces", {})).toEqual(["kinematics"]);
     expect(missingPrerequisites("forces", { kinematics: 0.8 })).toEqual([]);

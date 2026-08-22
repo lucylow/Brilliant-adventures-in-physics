@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { angularSpeedFromRpm, averagePowerFromWork, buoyantForce, centripetalAcceleration, checkNumericAnswer, coulombForce, criticalAngleDeg, electricField, elasticCollision1D, elasticPotentialEnergy, gravitationalPotentialEnergy, harmonicDisplacement, harmonicVelocity, hydrostaticPressure, impulse, kineticEnergy, massEnergyEquivalent, momentum, ohmsLaw, photonEnergyFromFrequency, photonEnergyFromWavelength, powerFromCurrentResistance, projectile, refraction, resistanceFromVoltageCurrent, rotationalKineticEnergy, solidDiskMomentOfInertia, springForce, tangentialSpeed, temperatureChangeFromEnergy, thermalEnergy, velocityChangeFromImpulse, volumetricFlowRate, wave, waveFrequency, wavePeriod, waveSpeed, weightForce, workFromForce } from "../lib/physics";
+import { angularSpeedFromRpm, averagePowerFromWork, buoyantForce, centripetalAcceleration, checkNumericAnswer, coulombForce, criticalAngleDeg, electricField, elasticCollision1D, elasticPotentialEnergy, gravitationalPotentialEnergy, harmonicDisplacement, harmonicVelocity, hydrostaticPressure, impulse, kineticEnergy, massEnergyEquivalent, momentum, ohmsLaw, photonEnergyFromFrequency, photonEnergyFromWavelength, photoelectricEffect, powerFromCurrentResistance, projectile, refraction, resistanceFromVoltageCurrent, rotationalKineticEnergy, solidDiskMomentOfInertia, springForce, tangentialSpeed, temperatureChangeFromEnergy, thermalEnergy, velocityChangeFromImpulse, volumetricFlowRate, wave, waveFrequency, wavePeriod, waveSpeed, weightForce, workFromForce } from "../lib/physics";
 import { createMockTutorAnswer, validateTutorAnswer } from "../lib/ai";
 
 describe("physics engine", () => {
@@ -32,6 +32,16 @@ describe("physics engine", () => {
     expect(photonEnergyFromFrequency(1e14)).toBeCloseTo(6.62607015e-20, 28);
     expect(photonEnergyFromWavelength(500e-9)).toBeCloseTo(3.972891714e-19, 28);
     expect(massEnergyEquivalent(1e-9)).toBeCloseTo(8.987551787368177e7, 4);
+  });
+
+  it("computes photoelectric emission threshold and excess energy", () => {
+    const below = photoelectricEffect(4e14, 2.3);
+    expect(below.emitted).toBe(false);
+    expect(below.maximumKineticEnergyJ).toBe(0);
+    const above = photoelectricEffect(7e14, 2.3);
+    expect(above.emitted).toBe(true);
+    expect(above.maximumKineticEnergyJ).toBeGreaterThan(0);
+    expect(above.thresholdFrequencyHz).toBeCloseTo(5.561375256795311e14, 3);
   });
 
   it("rejects non-positive modern-physics parameters", () => {

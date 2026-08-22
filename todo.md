@@ -300,6 +300,8 @@
 - [x] Preserve queued work and expose accessible per-draft retry feedback
 - [x] Add deterministic photon-energy and mass-energy physics helpers
 - [x] Add an accessible modern-physics Lab experiment and concept entry
+- [x] Add deterministic photoelectric-effect calculations with threshold handling
+- [x] Add an accessible photoelectric-effect Lab experiment and concept coverage
 - [x] Install and wire the Expo network-state listener for autosave reconciliation
 - [x] Add deterministic coverage for connectivity-gated reconciliation decisions
 - [x] Add a global accessible network-status banner for offline and checking states
