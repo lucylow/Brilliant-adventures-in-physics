@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { formatLastSave, formatRetryItemAge, formatRetryItemResult, formatRetryResult, parseRetryQueue, removeRetryItem, RETRY_ITEM_DISCARD_COPY, RETRY_ITEM_DISCARDED_COPY, RETRY_QUEUE_DISCARD_COPY, RETRY_QUEUE_DISCARDED_COPY } from "../lib/retry-queue";
+import { formatLastSave, formatRetryItemAge, formatRetryItemResult, formatRetryProgress, formatRetryResult, parseRetryQueue, removeRetryItem, RETRY_ITEM_DISCARD_COPY, RETRY_ITEM_DISCARDED_COPY, RETRY_QUEUE_DISCARD_COPY, RETRY_QUEUE_DISCARDED_COPY } from "../lib/retry-queue";
 
 describe("retry queue copy", () => {
   it("describes recovered, pending, and empty queue outcomes", () => {
@@ -49,5 +49,10 @@ describe("retry queue copy", () => {
     expect(formatRetryItemResult(0, true, 2)).toBe("Recovered draft 1. 2 still waiting.");
     expect(formatRetryItemResult(1, false, 2)).toBe("Draft 2 is still waiting. Your queued work was kept.");
     expect(() => formatRetryItemResult(-1, true, 0)).toThrow("invalid retry item result");
+  });
+
+  it("formats retry progress for accessible live feedback", () => {
+    expect(formatRetryProgress({ processed: 1, total: 3, saved: 1 })).toBe("Recovering offline saves: 1 of 3 checked; 1 saved.");
+    expect(() => formatRetryProgress({ processed: 4, total: 3, saved: 1 })).toThrow("invalid retry progress");
   });
 });

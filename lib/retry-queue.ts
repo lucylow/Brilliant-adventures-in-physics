@@ -18,7 +18,8 @@ export function parseRetryQueue(input: unknown): RetryItem[] {
 
 async function readQueue(): Promise<RetryItem[]> { try { const raw = await AsyncStorage.getItem(QUEUE_KEY); return parseRetryQueue(raw ? JSON.parse(raw) : []); } catch { return []; } }
 export async function enqueueRetry(item: RetryItem): Promise<number> { const current = (await readQueue()).filter((entry) => entry.id !== item.id); const next = [...current, item].slice(-MAX_ITEMS); await AsyncStorage.setItem(QUEUE_KEY, JSON.stringify(next)); return next.length; }
-export async function retryQueue(save: (item: RetryItem) => Promise<void>): Promise<{ saved: number; remaining: number }> { const current = await readQueue(); const remaining: RetryItem[] = []; let saved = 0; for (const item of current) { try { await save(item); saved += 1; } catch { remaining.push(item); } } await AsyncStorage.setItem(QUEUE_KEY, JSON.stringify(remaining)); return { saved, remaining: remaining.length }; }
+export type RetryProgress = { processed: number; total: number; saved: number };
+export async function retryQueue(save: (item: RetryItem) => Promise<void>, onProgress?: (progress: RetryProgress) => void): Promise<{ saved: number; remaining: number }> { const current = await readQueue(); const remaining: RetryItem[] = []; let saved = 0; onProgress?.({ processed: 0, total: current.length, saved }); for (const item of current) { try { await save(item); saved += 1; } catch { remaining.push(item); } onProgress?.({ processed: saved + remaining.length, total: current.length, saved }); } await AsyncStorage.setItem(QUEUE_KEY, JSON.stringify(remaining)); return { saved, remaining: remaining.length }; }
 export async function getRetryCount(): Promise<number> { return (await readQueue()).length; }
 export async function getRetryItems(): Promise<RetryItem[]> { return readQueue(); }
 export async function removeRetryItem(id: string): Promise<number> {
@@ -56,6 +57,10 @@ export async function clearRetryQueue(): Promise<void> { await Promise.all([Asyn
 export async function markLastSave(): Promise<void> { await AsyncStorage.setItem(LAST_SAVE_KEY, new Date().toISOString()); }
 export async function getLastSave(): Promise<string | null> { return AsyncStorage.getItem(LAST_SAVE_KEY); }
 export function formatLastSave(value: string | null): string { const timestamp = value ? Date.parse(value) : Number.NaN; return Number.isFinite(timestamp) ? `Last local save: ${new Date(timestamp).toLocaleString()}` : "No successful local save recorded yet."; }
+export function formatRetryProgress(progress: RetryProgress): string {
+  if (!Number.isInteger(progress.processed) || progress.processed < 0 || !Number.isInteger(progress.total) || progress.total < 0 || progress.processed > progress.total || !Number.isInteger(progress.saved) || progress.saved < 0 || progress.saved > progress.processed) throw new Error("invalid retry progress");
+  return `Recovering offline saves: ${progress.processed} of ${progress.total} checked; ${progress.saved} saved.`;
+}
 export function formatRetryResult(saved: number, remaining: number): string {
   if (!Number.isInteger(saved) || saved < 0 || !Number.isInteger(remaining) || remaining < 0) throw new Error("retry counts must be non-negative integers");
   if (remaining === 0) return saved > 0 ? `Recovered ${saved} offline save${saved === 1 ? "" : "s"}.` : "No pending offline saves.";

@@ -306,3 +306,5 @@
 - [x] Add deterministic feedback coverage for manual connection checks
 - [x] Automatically reconcile queued autosaves after a confirmed online manual check
 - [x] Preserve queued work when manual-check reconciliation cannot complete
+- [x] Add progress callbacks to bounded autosave reconciliation
+- [x] Expose accessible progress and completion feedback while draining queued saves
