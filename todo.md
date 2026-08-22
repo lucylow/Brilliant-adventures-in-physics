@@ -304,3 +304,5 @@
 - [x] Add deterministic copy and status-mapping coverage for the banner
 - [x] Add a manual connection-check action in Settings
 - [x] Add deterministic feedback coverage for manual connection checks
+- [x] Automatically reconcile queued autosaves after a confirmed online manual check
+- [x] Preserve queued work when manual-check reconciliation cannot complete

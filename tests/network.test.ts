@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { manualNetworkCheckMessage, networkStateToStatus, networkStatusLabel, networkStatusMessage, recoveryMessage, serviceErrorNetworkStatus } from "../lib/network";
+import { manualNetworkCheckMessage, networkStateToStatus, networkStatusLabel, shouldRetryAfterManualCheck, networkStatusMessage, recoveryMessage, serviceErrorNetworkStatus } from "../lib/network";
 
 describe("network recovery contracts", () => {
   it("classifies transport failures without treating validation as offline", () => {
@@ -33,5 +33,11 @@ describe("network recovery contracts", () => {
     expect(manualNetworkCheckMessage("offline")).toContain("remain on this device");
     expect(manualNetworkCheckMessage("checking")).toContain("still being checked");
     expect(manualNetworkCheckMessage("unknown")).toContain("could not confirm");
+  });
+  it("retries queued work only when online work is waiting", () => {
+    expect(shouldRetryAfterManualCheck("online", 1)).toBe(true);
+    expect(shouldRetryAfterManualCheck("online", 0)).toBe(false);
+    expect(shouldRetryAfterManualCheck("offline", 1)).toBe(false);
+    expect(() => shouldRetryAfterManualCheck("online", -1)).toThrow("queued count must be a non-negative integer");
   });
 });

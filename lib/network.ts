@@ -26,6 +26,11 @@ export function manualNetworkCheckMessage(status: NetworkStatus): string {
   return "We could not confirm the connection. Your queued saves remain on this device.";
 }
 
+export function shouldRetryAfterManualCheck(status: NetworkStatus, queuedCount: number): boolean {
+  if (!Number.isInteger(queuedCount) || queuedCount < 0) throw new Error("queued count must be a non-negative integer");
+  return status === "online" && queuedCount > 0;
+}
+
 export function serviceErrorNetworkStatus(error: Pick<ServiceError, "code">): NetworkStatus {
   if (error.code === "OFFLINE") return "offline";
   if (error.code === "TIMEOUT" || error.code === "RETRYABLE_ERROR" || error.code === "UNEXPECTED_ERROR") return "unknown";
