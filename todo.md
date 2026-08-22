@@ -137,3 +137,6 @@
 - [x] Add focused animated primitives for press feedback, progress, simulation playhead, and vector growth
 - [x] Integrate restrained motion into Lab controls and learning feedback states
 - [x] Add deterministic tests for motion preferences and animation contracts
+- [x] Add reduced-motion-safe animated progress feedback to Progress
+- [x] Add accessible lesson step or equation reveal motion
+- [x] Add deterministic tests for learning-feedback animation contracts

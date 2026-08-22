@@ -9,6 +9,14 @@ export function MotionPressable({ children, reducedMotion = false, style, ...pro
   return <Pressable {...props} onPressIn={(event) => { scale.value = withTiming(reducedMotion ? 1 : 0.97, { duration: motionDuration(100, { reducedMotion }) }); props.onPressIn?.(event); }} onPressOut={(event) => { scale.value = withTiming(1, { duration: motionDuration(motion.fast, { reducedMotion }) }); props.onPressOut?.(event); }} style={style}><Animated.View style={animatedStyle}>{children}</Animated.View></Pressable>;
 }
 
+export function RevealBlock({ children, index = 0, preferences }: { children: ReactNode; index?: number; preferences: Pick<MotionPrefs, "reducedMotion"> }) {
+  const opacity = useSharedValue(preferences.reducedMotion ? 1 : 0);
+  const translateY = useSharedValue(preferences.reducedMotion ? 0 : 12);
+  useEffect(() => { opacity.value = withTiming(1, { duration: motionDuration(180 + index * 45, preferences) }); translateY.value = withTiming(0, { duration: motionDuration(180 + index * 45, preferences) }); }, [index, opacity, preferences, translateY]);
+  const style = useAnimatedStyle(() => ({ opacity: opacity.value, transform: [{ translateY: translateY.value }] }));
+  return <Animated.View style={style}>{children}</Animated.View>;
+}
+
 export function AnimatedProgress({ value, preferences }: { value: number; preferences: Pick<MotionPrefs, "reducedMotion"> }) {
   const progress = useSharedValue(0);
   useEffect(() => { progress.value = withTiming(Math.max(0, Math.min(1, value)), { duration: motionDuration(360, preferences) }); }, [preferences, value, progress]);
