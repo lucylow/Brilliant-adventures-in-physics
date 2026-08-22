@@ -5,6 +5,8 @@ const LAST_SAVE_KEY = "physicaai.autosave.last-save.v1";
 const MAX_ITEMS = 10;
 export const RETRY_QUEUE_DISCARD_COPY = "This removes only queued autosaves and keeps your learning history and preferences.";
 export const RETRY_QUEUE_DISCARDED_COPY = "Queued offline saves discarded. Learning history was kept.";
+export const RETRY_ITEM_DISCARD_COPY = "This removes only the selected queued autosave. Other queued saves and learning history stay available.";
+export const RETRY_ITEM_DISCARDED_COPY = "Queued autosave discarded. Other local data was kept.";
 export type RetryItem = { id: string; payload: unknown; queuedAt: number };
 
 export function parseRetryQueue(input: unknown): RetryItem[] {
@@ -19,6 +21,12 @@ export async function enqueueRetry(item: RetryItem): Promise<number> { const cur
 export async function retryQueue(save: (item: RetryItem) => Promise<void>): Promise<{ saved: number; remaining: number }> { const current = await readQueue(); const remaining: RetryItem[] = []; let saved = 0; for (const item of current) { try { await save(item); saved += 1; } catch { remaining.push(item); } } await AsyncStorage.setItem(QUEUE_KEY, JSON.stringify(remaining)); return { saved, remaining: remaining.length }; }
 export async function getRetryCount(): Promise<number> { return (await readQueue()).length; }
 export async function getRetryItems(): Promise<RetryItem[]> { return readQueue(); }
+export async function removeRetryItem(id: string): Promise<number> {
+  if (typeof id !== "string" || id.trim().length === 0) throw new Error("retry item id is required");
+  const next = (await readQueue()).filter((item) => item.id !== id);
+  await AsyncStorage.setItem(QUEUE_KEY, JSON.stringify(next));
+  return next.length;
+}
 export function formatRetryItemAge(queuedAt: number, now: number): string {
   if (!Number.isFinite(queuedAt) || !Number.isFinite(now) || queuedAt < 0) return "age unavailable";
   const elapsedMs = Math.max(0, now - queuedAt);

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { formatLastSave, formatRetryItemAge, formatRetryResult, parseRetryQueue, RETRY_QUEUE_DISCARD_COPY, RETRY_QUEUE_DISCARDED_COPY } from "../lib/retry-queue";
+import { formatLastSave, formatRetryItemAge, formatRetryResult, parseRetryQueue, removeRetryItem, RETRY_ITEM_DISCARD_COPY, RETRY_ITEM_DISCARDED_COPY, RETRY_QUEUE_DISCARD_COPY, RETRY_QUEUE_DISCARDED_COPY } from "../lib/retry-queue";
 
 describe("retry queue copy", () => {
   it("describes recovered, pending, and empty queue outcomes", () => {
@@ -36,5 +36,12 @@ describe("retry queue copy", () => {
     expect(formatRetryItemAge(now - 30_000, now)).toBe("just now");
     expect(formatRetryItemAge(now - 2 * 60 * 60 * 1000, now)).toBe("2 hours ago");
     expect(formatRetryItemAge(Number.NaN, now)).toBe("age unavailable");
+  });
+
+  it("validates individual discard requests and copy", async () => {
+    await expect(removeRetryItem(" ")).rejects.toThrow("retry item id is required");
+    expect(RETRY_ITEM_DISCARD_COPY).toContain("selected queued autosave");
+    expect(RETRY_ITEM_DISCARDED_COPY).toContain("Other local data was kept");
+    expect(RETRY_QUEUE_DISCARDED_COPY).toContain("Learning history was kept");
   });
 });

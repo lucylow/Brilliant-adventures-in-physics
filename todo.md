@@ -293,3 +293,6 @@
 - [x] Expose sanitized pending autosave details from the retry queue
 - [x] Show accessible draft age and identifier summaries in Settings
 - [x] Add deterministic coverage for queue-detail sanitization and formatting
+- [x] Add individual confirmation and discard controls for visible queued autosave drafts
+- [x] Preserve other queued drafts and successful-save metadata when one draft is discarded
+- [x] Add deterministic validation coverage for individual discard inputs and privacy copy
