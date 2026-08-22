@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { networkStateToStatus, networkStatusLabel, recoveryMessage, serviceErrorNetworkStatus } from "../lib/network";
+import { networkStateToStatus, networkStatusLabel, networkStatusMessage, recoveryMessage, serviceErrorNetworkStatus } from "../lib/network";
 
 describe("network recovery contracts", () => {
   it("classifies transport failures without treating validation as offline", () => {
@@ -21,5 +21,11 @@ describe("network recovery contracts", () => {
   it("gives actionable messages for offline and timeout states", () => {
     expect(recoveryMessage({ code: "OFFLINE", message: "failed" })).toContain("offline");
     expect(recoveryMessage({ code: "TIMEOUT", message: "failed" })).toContain("too long");
+  });
+  it("provides privacy-safe banner copy only when action is useful", () => {
+    expect(networkStatusMessage("offline")).toContain("stays on this device");
+    expect(networkStatusMessage("checking")).toContain("local work remains safe");
+    expect(networkStatusMessage("online")).toBeNull();
+    expect(networkStatusMessage("unknown")).toBeNull();
   });
 });

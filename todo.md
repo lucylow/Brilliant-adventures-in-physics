@@ -300,3 +300,5 @@
 - [x] Preserve queued work and expose accessible per-draft retry feedback
 - [x] Install and wire the Expo network-state listener for autosave reconciliation
 - [x] Add deterministic coverage for connectivity-gated reconciliation decisions
+- [x] Add a global accessible network-status banner for offline and checking states
+- [x] Add deterministic copy and status-mapping coverage for the banner
