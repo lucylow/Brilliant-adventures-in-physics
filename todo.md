@@ -191,3 +191,8 @@
 - [x] Add animated dashboard progress/activity states driven by persisted learning data
 - [x] Add purposeful animated feedback to Progress and Lab controls
 - [x] Add deterministic motion-contract tests and validate reduced-motion behavior
+- [x] Add a concise first-run onboarding flow explaining Tutor, Lab, Practice, and Progress
+- [x] Capture optional learner level and starting goal in local persistence
+- [x] Add accessible step navigation, skip behavior, and completion feedback
+- [x] Route onboarding completion into a useful first physics activity
+- [x] Add deterministic onboarding migration and routing tests
