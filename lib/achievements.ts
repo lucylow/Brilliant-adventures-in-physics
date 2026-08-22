@@ -9,6 +9,7 @@ export function evaluateAchievements(learning: LearningState): Achievement[] {
     { id: "first-step", title: "First step", description: "Complete your first practice attempt.", icon: "◇", earned: learning.attempts >= 1 },
     { id: "steady-reasoner", title: "Steady reasoner", description: "Complete five practice attempts.", icon: "◆", earned: learning.attempts >= 5 },
     { id: "topic-builder", title: "Topic builder", description: "Work across two physics topics.", icon: "◈", earned: topicCount >= 2 },
+    { id: "lesson-lab-loop", title: "Learn by doing", description: "Complete a lesson and a lab.", icon: "◎", earned: learning.lessonsCompleted >= 1 && learning.labsCompleted >= 1 },
     { id: "verified-thinking", title: "Verified thinking", description: "Reach 80% accuracy in a topic after three attempts.", icon: "✦", earned: strongTopics >= 1 },
   ];
 }

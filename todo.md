@@ -63,8 +63,12 @@
 - [x] Add evidence-based achievement evaluation from lessons, attempts, labs, and mastery
 - [x] Add achievement shelf and milestone feedback to Progress
 - [x] Add deterministic tests for privacy controls, draft actions, and achievement criteria
-- [ ] Show Resume/Discard draft actions in Tutor, Practice, and Physics Lens UI
-- [ ] Show topic mastery and hint-confidence feedback after practice completion
+- [x] Show Resume/Discard draft actions in Tutor, Practice, and Physics Lens UI
+- [x] Show topic mastery and hint-confidence feedback after practice completion
 - [x] Add local data export summary before clear-all deletion
-- [ ] Record lesson and lab completion events for achievement evaluation
+- [x] Record lesson and lab completion events for achievement evaluation
 - [x] Add tests for visible recovery prompts, export summaries, and learning events
+- [ ] Add visible Resume/Discard prompts for Tutor, Practice, and Physics Lens drafts
+- [ ] Persist lesson and lab completion events for achievement evaluation
+- [ ] Add user-controlled streak preference and privacy settings entry point
+- [x] Add deterministic tests for completion events and settings persistence

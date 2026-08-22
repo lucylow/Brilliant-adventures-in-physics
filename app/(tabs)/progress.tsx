@@ -17,7 +17,7 @@ const TOPICS = [
 
 export default function ProgressScreen() {
   const colors = useColors();
-  const [learning, setLearning] = useState<LearningState>({ attempts: 0, correct: 0, savedQuestions: [], topics: {}, streak: 0 });
+  const [learning, setLearning] = useState<LearningState>({ attempts: 0, correct: 0, savedQuestions: [], topics: {}, streak: 0, lessonsCompleted: 0, labsCompleted: 0 });
   useEffect(() => { void loadLearningState().then(setLearning); }, []);
   const accuracy = learning.attempts ? learning.correct / learning.attempts : 0;
   const level = levelProgress(learning.correct * 10);
