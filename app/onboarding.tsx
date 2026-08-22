@@ -24,8 +24,9 @@ export default function OnboardingScreen() {
   const [step, setStep] = useState<0 | 1 | 2>(0);
   const [level, setLevel] = useState<LearnerLevel>("new");
   const [goal, setGoal] = useState<LearnerGoal>("understand");
-  useEffect(() => { void loadOnboarding().then((profile) => { if (!profile.completed) { setStep(profile.step); setLevel(profile.level); setGoal(profile.goal); } }); }, []);
-  useEffect(() => { void persistSafely(saveOnboarding({ completed: false, level, goal, step })); }, [goal, level, step]);
+  const [hydrated, setHydrated] = useState(false);
+  useEffect(() => { let active = true; void loadOnboarding().then((profile) => { if (!active) return; if (!profile.completed) { setStep(profile.step); setLevel(profile.level); setGoal(profile.goal); } setHydrated(true); }); return () => { active = false; }; }, []);
+  useEffect(() => { if (!hydrated) return; void persistSafely(saveOnboarding({ completed: false, level, goal, step })); }, [goal, hydrated, level, step]);
   const [error, setError] = useState<string | null>(null);
   const finish = async (skip = false) => {
     const result = await persistSafely(saveOnboarding({ completed: true, level: skip ? "new" : level, goal: skip ? "understand" : goal, step: 2 }));

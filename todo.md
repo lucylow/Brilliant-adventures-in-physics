@@ -204,3 +204,7 @@
 - [x] Add an onboarding completion summary showing saved learner level and goal
 - [x] Personalize the dashboard recommended first action by learner goal
 - [x] Add deterministic tests for summary labels and personalized recommendation routing
+- [x] Audit personalized onboarding summary and Home recommendation loading failures
+- [x] Add safe fallback states for malformed or unavailable onboarding profile data
+- [x] Guard async dashboard and summary updates against stale or rejected promises
+- [x] Add deterministic regression tests for personalized-flow error handling
