@@ -1,0 +1,22 @@
+import { useEffect, useState } from "react";
+import { Keyboard, ScrollView, Text, TextInput, View } from "react-native";
+import { ScreenContainer } from "@/components/screen-container";
+import { Card, PrimaryButton, SecondaryButton, SectionHeader } from "@/components/physica-ui";
+import { useColors } from "@/hooks/use-colors";
+import { deleteNotebookEntry, loadNotebookEntries, notebookSummary, saveNotebookEntry, type NotebookEntry } from "@/lib/notebook";
+import { loadExperiments, type SavedExperiment } from "@/lib/experiments";
+import { persistSafely, persistenceRecoveryMessage } from "@/lib/persistence";
+
+export default function NotebookScreen() {
+  const colors = useColors();
+  const [entries, setEntries] = useState<NotebookEntry[]>([]);
+  const [experiments, setExperiments] = useState<SavedExperiment[]>([]);
+  const [reflection, setReflection] = useState("");
+  const [message, setMessage] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
+  const load = async () => { setLoading(true); const [nextEntries, nextExperiments] = await Promise.all([loadNotebookEntries(), loadExperiments()]); setEntries(nextEntries); setExperiments(nextExperiments); setLoading(false); };
+  useEffect(() => { void load(); }, []);
+  const saveReflection = async () => { Keyboard.dismiss(); if (!reflection.trim()) return; const result = await persistSafely(saveNotebookEntry({ title: "Physics reflection", type: "reflection", content: reflection.trim(), links: ["physics"] })); setMessage(persistenceRecoveryMessage(result)); if (result.ok) { setEntries((current) => [result.data, ...current].slice(0, 50)); setReflection(""); } };
+  const remove = async (id: string) => { const result = await persistSafely(deleteNotebookEntry(id)); setMessage(persistenceRecoveryMessage(result)); if (result.ok) setEntries((current) => current.filter((entry) => entry.id !== id)); };
+  return <ScreenContainer className="p-5"><ScrollView keyboardShouldPersistTaps="handled" contentContainerStyle={{ paddingBottom: 32 }}><SectionHeader title="Living Notebook" subtitle="Your experiments and reflections stay on this device." /><Card><Text style={{ color: colors.foreground, fontSize: 18, fontWeight: "800" }}>Add a reflection</Text><TextInput accessibilityLabel="Notebook reflection" value={reflection} onChangeText={setReflection} multiline placeholder="What did the evidence teach you?" placeholderTextColor={colors.muted} style={{ marginTop: 12, minHeight: 100, borderWidth: 1, borderColor: colors.border, borderRadius: 14, padding: 12, color: colors.foreground, textAlignVertical: "top" }} /><View style={{ marginTop: 12 }}><PrimaryButton label="Save reflection" disabled={!reflection.trim()} onPress={() => void saveReflection()} /></View></Card>{message && <Text accessibilityLiveRegion="assertive" style={{ marginTop: 10, color: colors.warning }}>{message}</Text>}<View style={{ marginTop: 20 }}><SectionHeader title="Notebook summary" subtitle={notebookSummary("your physics", entries)} />{loading ? <Card><Text style={{ color: colors.muted }}>Loading local notes…</Text></Card> : entries.length === 0 ? <Card><Text style={{ color: colors.muted }}>No notes yet. Save a reflection after an experiment.</Text></Card> : entries.slice(0, 10).map((entry) => <Card key={entry.id} style={{ marginBottom: 10 }}><Text style={{ color: colors.foreground, fontWeight: "800" }}>{entry.title}</Text><Text style={{ marginTop: 6, color: colors.muted, lineHeight: 20 }}>{entry.content}</Text><View style={{ marginTop: 8 }}><SecondaryButton label="Delete note" onPress={() => void remove(entry.id)} /></View></Card>)}</View><View style={{ marginTop: 20 }}><SectionHeader title="Saved experiments" subtitle="Experiment artifacts remain available from the Physics Lens." />{experiments.length === 0 ? <Card><Text style={{ color: colors.muted }}>No saved experiments yet.</Text></Card> : experiments.slice(0, 5).map((experiment) => <Card key={experiment.id} style={{ marginBottom: 10 }}><Text style={{ color: colors.foreground, fontWeight: "800" }}>{experiment.title}</Text><Text style={{ marginTop: 5, color: colors.muted }}>{experiment.summary}</Text></Card>)}</View></ScrollView></ScreenContainer>;
+}

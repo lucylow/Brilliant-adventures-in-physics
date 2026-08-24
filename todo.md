@@ -334,3 +334,6 @@
 - [x] Add deterministic contracts for experiment stages, teaching modes, and safe feature routing
 - [x] Add a local-first Physics Lens observe–predict–measure workflow
 - [x] Add deterministic Lens stage and measurement validation coverage
+- [x] Add bounded local Living Physics Notebook entries and reflection storage
+- [x] Add accessible Notebook navigation from Home and Lens
+- [x] Add deterministic Notebook persistence and summary coverage
