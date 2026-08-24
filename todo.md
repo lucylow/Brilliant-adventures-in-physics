@@ -330,3 +330,5 @@
 - [x] Add regression coverage for new question concepts and exact solutions
 - [x] Add deterministic Practice questions for optics, momentum, collisions, and modern physics
 - [x] Add regression coverage for cross-domain question mappings and exact solutions
+- [x] Integrate a validated shared feature registry from the attached specifications
+- [x] Add deterministic contracts for experiment stages, teaching modes, and safe feature routing
