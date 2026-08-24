@@ -332,3 +332,5 @@
 - [x] Add regression coverage for cross-domain question mappings and exact solutions
 - [x] Integrate a validated shared feature registry from the attached specifications
 - [x] Add deterministic contracts for experiment stages, teaching modes, and safe feature routing
+- [x] Add a local-first Physics Lens observe–predict–measure workflow
+- [x] Add deterministic Lens stage and measurement validation coverage
