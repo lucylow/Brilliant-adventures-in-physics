@@ -342,3 +342,5 @@
 - [x] Add reusable local save-to-Notebook operations for learning artifacts
 - [x] Add accessible save actions from Practice explanations and completed Lens sessions
 - [x] Add deterministic coverage for Notebook artifact validation and deduplication
+- [x] Add safe Concept links to saved Notebook entries
+- [x] Add deterministic route-parameter coverage for Notebook concept actions
