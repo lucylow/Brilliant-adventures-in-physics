@@ -337,3 +337,5 @@
 - [x] Add bounded local Living Physics Notebook entries and reflection storage
 - [x] Add accessible Notebook navigation from Home and Lens
 - [x] Add deterministic Notebook persistence and summary coverage
+- [x] Add a deterministic Concept Orbit prerequisite-trail helper
+- [x] Link Notebook reflections to verified concepts with accessible orbit context
