@@ -339,3 +339,6 @@
 - [x] Add deterministic Notebook persistence and summary coverage
 - [x] Add a deterministic Concept Orbit prerequisite-trail helper
 - [x] Link Notebook reflections to verified concepts with accessible orbit context
+- [x] Add reusable local save-to-Notebook operations for learning artifacts
+- [x] Add accessible save actions from Practice explanations and completed Lens sessions
+- [x] Add deterministic coverage for Notebook artifact validation and deduplication

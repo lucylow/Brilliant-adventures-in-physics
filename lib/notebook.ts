@@ -13,14 +13,19 @@ export function isNotebookEntry(value: unknown): value is NotebookEntry {
 
 export function parseNotebookEntries(value: unknown): NotebookEntry[] { return Array.isArray(value) ? value.filter(isNotebookEntry).slice(0, MAX_ENTRIES) : []; }
 
+export function sameNotebookEntry(a: Pick<NotebookEntry, "title" | "type" | "content" | "links">, b: Pick<NotebookEntry, "title" | "type" | "content" | "links">): boolean { return a.title.trim() === b.title.trim() && a.type === b.type && a.content.trim() === b.content.trim() && a.links.map((link) => link.trim()).filter(Boolean).join("|") === b.links.map((link) => link.trim()).filter(Boolean).join("|"); }
+
 export async function loadNotebookEntries(): Promise<NotebookEntry[]> {
   try { const raw = await AsyncStorage.getItem(STORAGE_KEY); return parseNotebookEntries(raw ? JSON.parse(raw) : []); } catch { return []; }
 }
 
 export async function saveNotebookEntry(entry: Omit<NotebookEntry, "id" | "createdAt">): Promise<NotebookEntry> {
-  if (!entry.title.trim() || !entry.content.trim() || !entry.links.every((link) => link.trim())) throw new Error("Notebook entry is invalid");
+  const normalized = { ...entry, title: entry.title.trim(), content: entry.content.trim(), links: entry.links.map((link) => link.trim()).filter(Boolean) };
+  if (!normalized.title || !normalized.content || !normalized.links.length) throw new Error("Notebook entry is invalid");
   const current = await loadNotebookEntries();
-  const next: NotebookEntry = { ...entry, id: `${Date.now()}-${Math.random().toString(16).slice(2)}`, createdAt: new Date().toISOString() };
+  const duplicate = current.find((item) => sameNotebookEntry(item, normalized));
+  if (duplicate) return duplicate;
+  const next: NotebookEntry = { ...normalized, id: `${Date.now()}-${Math.random().toString(16).slice(2)}`, createdAt: new Date().toISOString() };
   await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify([next, ...current].slice(0, MAX_ENTRIES)));
   return next;
 }
