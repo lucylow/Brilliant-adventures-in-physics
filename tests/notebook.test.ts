@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { isNotebookEntry, notebookSummary, parseNotebookEntries, sameNotebookEntry, type NotebookEntry } from "../lib/notebook";
+import { filterNotebookEntries, isNotebookEntry, notebookSummary, parseNotebookEntries, sameNotebookEntry, type NotebookEntry } from "../lib/notebook";
 
 const validEntry: NotebookEntry = { id: "n1", title: "Reflection", type: "reflection", content: "The evidence changed my prediction.", links: ["kinematics"], createdAt: "2026-08-24T00:00:00.000Z" };
 
@@ -20,6 +20,14 @@ describe("Living Notebook contracts", () => {
   it("deduplicates equivalent artifacts after normalization", () => {
     expect(sameNotebookEntry(validEntry, { ...validEntry, title: " Reflection ", content: " The evidence changed my prediction. ", links: [" kinematics "] })).toBe(true);
     expect(sameNotebookEntry(validEntry, { ...validEntry, type: "mistake" })).toBe(false);
+  });
+
+  it("filters entries by type and concept text", () => {
+    const experiment = { ...validEntry, id: "n2", type: "experiment" as const, title: "Energy experiment", links: ["energy"] };
+    const entries = [validEntry, experiment];
+    expect(filterNotebookEntries(entries, "experiment")).toEqual([experiment]);
+    expect(filterNotebookEntries(entries, "all", "energy")).toEqual([experiment]);
+    expect(filterNotebookEntries(entries, "mistake")).toEqual([]);
   });
 
   it("uses deterministic topic summaries", () => {

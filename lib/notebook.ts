@@ -34,4 +34,11 @@ export async function deleteNotebookEntry(id: string): Promise<void> { const cur
 
 export async function clearNotebook(): Promise<void> { await AsyncStorage.removeItem(STORAGE_KEY); }
 
+export type NotebookFilter = "all" | NotebookEntry["type"];
+
+export function filterNotebookEntries(entries: NotebookEntry[], filter: NotebookFilter, query = ""): NotebookEntry[] {
+  const term = query.trim().toLowerCase();
+  return entries.filter((entry) => (filter === "all" || entry.type === filter) && (!term || `${entry.title} ${entry.content} ${entry.links.join(" ")}`.toLowerCase().includes(term)));
+}
+
 export function notebookSummary(topic: string, entries: NotebookEntry[]): string { return entries.length ? `${entries.length} local ${entries.length === 1 ? "entry" : "entries"} connected to ${topic}.` : `No local notes yet for ${topic}.`; }

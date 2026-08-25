@@ -344,3 +344,5 @@
 - [x] Add deterministic coverage for Notebook artifact validation and deduplication
 - [x] Add safe Concept links to saved Notebook entries
 - [x] Add deterministic route-parameter coverage for Notebook concept actions
+- [x] Add deterministic Notebook filters for entry type and concept
+- [x] Add accessible filter controls and correct filtered empty states
