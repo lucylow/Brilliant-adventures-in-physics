@@ -200,6 +200,7 @@ export function createAppTranslations(): TranslationStore {
     "progress.reviewMastery": { en: "Principles reinforced through review: {{count}}", fr: "Principes renforcés par la révision : {{count}}", es: "Principios reforzados mediante el repaso: {{count}}" },
     "progress.topicReinforced": { en: "Reinforced through review: {{count}}", fr: "Renforcé par la révision : {{count}}", es: "Reforzado mediante el repaso: {{count}}" },
     "progress.topicReinforcedDelta": { en: "Review reinforcement: +{{count}}", fr: "Renforcement par révision : +{{count}}", es: "Refuerzo mediante repaso: +{{count}}" },
+    "progress.topicReinforcedPercent": { en: "Derived mastery signal: +{{percent}}%", fr: "Signal de maîtrise dérivé : +{{percent}} %", es: "Señal de dominio derivada: +{{percent}} %" },
     "progress.reviewHistory": { en: "Recent principles reinforced", fr: "Principes récemment renforcés", es: "Principios reforzados recientemente" },
     "progress.reviewHistoryItem": { en: "{{topic}} reinforced", fr: "{{topic}} renforcé", es: "{{topic}} reforzado" },
     "progress.reviewHistoryPrivacy": { en: "Only topics and dates are shown; raw answers stay private on this device.", fr: "Seuls les thèmes et les dates sont affichés ; les réponses brutes restent privées sur cet appareil.", es: "Solo se muestran temas y fechas; las respuestas originales permanecen privadas en este dispositivo." },

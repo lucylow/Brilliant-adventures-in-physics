@@ -630,3 +630,7 @@
 - [x] Add an accessible expandable history detail surface in Progress
 - [x] Keep displayed history bounded and exclude raw answers
 - [x] Add deterministic detail-summary coverage
+
+- [x] Add a deterministic derived percentage signal for successful review reinforcement
+- [x] Show localized mastery percentage deltas on affected topic cards
+- [x] Add regression coverage for capped percentage deltas and zero-state behavior

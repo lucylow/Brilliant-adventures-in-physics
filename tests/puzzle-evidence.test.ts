@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { loadPuzzleEvidence, loadResolvedPuzzleIds, missedPuzzleReviewQueue, recordPuzzleEvidence, resolvePuzzleEvidence, reviewHistorySummary, summarizePuzzleEvidence } from "../lib/puzzle-evidence";
+import { loadPuzzleEvidence, loadResolvedPuzzleIds, missedPuzzleReviewQueue, recordPuzzleEvidence, resolvePuzzleEvidence, reviewHistorySummary, reviewMasteryPercentDelta, summarizePuzzleEvidence } from "../lib/puzzle-evidence";
 
 vi.mock("@react-native-async-storage/async-storage", () => ({
   default: {
@@ -72,5 +72,13 @@ describe("puzzle evidence", () => {
   it("filters malformed records when loading", async () => {
     vi.mocked(AsyncStorage.getItem).mockResolvedValue(JSON.stringify([{ puzzleId: "valid", outcome: "incorrect", hintsUsed: 1, xp: 0, recordedAt: "now" }, { puzzleId: "bad" }]));
     await expect(loadPuzzleEvidence()).resolves.toHaveLength(1);
+  });
+
+  it("derives a capped five-point mastery signal without changing evidence counts", () => {
+    const records = Array.from({ length: 25 }, (_, index) => ({ resolutionId: `r-${index}`, topic: "energy", recordedAt: `2026-01-${String(index + 1).padStart(2, "0")}` }));
+    expect(reviewMasteryPercentDelta(records, "energy")).toBe(100);
+    expect(reviewMasteryPercentDelta(records.slice(0, 2), "energy")).toBe(10);
+    expect(reviewMasteryPercentDelta(records, "waves")).toBe(0);
+    expect(reviewMasteryPercentDelta(records, "energy", 0)).toBe(0);
   });
 });

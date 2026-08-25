@@ -61,6 +61,16 @@ export function reviewReinforcementDelta(records: readonly ReviewMasteryRecord[]
   return records.filter((record) => record.topic === topic).length;
 }
 
+/**
+ * Returns a derived, non-authoritative mastery signal for successful reviews.
+ * Each unique successful reinforcement contributes five percentage points, capped
+ * at 100. This intentionally remains separate from ordinary practice mastery.
+ */
+export function reviewMasteryPercentDelta(records: readonly ReviewMasteryRecord[], topic: string, pointsPerReview = 5): number {
+  if (!topic || !Number.isFinite(pointsPerReview) || pointsPerReview <= 0) return 0;
+  return Math.min(100, Math.round(reviewReinforcementDelta(records, topic) * pointsPerReview));
+}
+
 export function reviewHistorySummary(records: readonly ReviewMasteryRecord[], limit = 5) {
   const latestByTopic = new Map<string, ReviewMasteryRecord>();
   for (const record of records) {
