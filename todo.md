@@ -644,3 +644,8 @@
 - [x] Show lesson and Lab evidence counts in Progress
 - [x] Show completion evidence in achievement detail without raw content
 - [x] Add deterministic summary and malformed-event coverage
+
+- [x] Add stable content identifiers to lesson and Lab completion events
+- [x] Preserve legacy topic-only event parsing and duplicate protection
+- [x] Update Lesson and Lab callers to pass stable identifiers
+- [x] Add deterministic migration and duplicate-identity tests

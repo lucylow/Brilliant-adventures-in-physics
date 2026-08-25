@@ -23,11 +23,11 @@ describe("persistence validation", () => {
       { id: "lesson:projectile-motion", kind: "lesson", topic: "projectile-motion", completedAt: "2026-01-02T00:00:00.000Z" },
       { id: "bad", kind: "lesson", topic: "", completedAt: "not-a-date" },
     ]);
-    expect(parsed).toEqual([{ id: "lesson:projectile-motion", kind: "lesson", topic: "projectile-motion", completedAt: "2026-01-01T00:00:00.000Z" }]);
+    expect(parsed).toEqual([{ id: "lesson:projectile-motion", kind: "lesson", contentId: "projectile-motion", topic: "projectile-motion", completedAt: "2026-01-01T00:00:00.000Z" }]);
     expect(summarizeCompletionEvents(parsed)).toEqual({ total: 1, lessons: 1, labs: 0, topics: ["projectile-motion"] });
     expect(summarizeCompletionEvents([
       ...parsed,
-      { id: "lab:projectile-motion", kind: "lab", topic: "projectile-motion", completedAt: "2026-01-03T00:00:00.000Z" },
+      { id: "lab:projectile-motion", kind: "lab", contentId: "projectile-motion", topic: "projectile-motion", completedAt: "2026-01-03T00:00:00.000Z" },
     ])).toEqual({ total: 2, lessons: 1, labs: 1, topics: ["projectile-motion"] });
   });
 });
