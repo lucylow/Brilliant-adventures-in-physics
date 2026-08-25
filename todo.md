@@ -356,3 +356,6 @@
 - [x] Add goal-aware recommendation tie-breaking from onboarding preferences
 - [x] Show transparent local mastery status on the Home recommendation card
 - [x] Add deterministic coverage for goal-aware recommendation output
+- [x] Audit active runtime and persistence errors
+- [x] Add bounded deterministic mock-data fallback for recoverable local-load failures
+- [x] Add regression coverage for fallback and error recovery behavior

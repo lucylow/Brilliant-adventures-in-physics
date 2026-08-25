@@ -18,8 +18,8 @@ export function NetworkStatusBanner() {
       accessibilityRole="alert"
       accessibilityLiveRegion="polite"
       accessibilityLabel={`${networkStatusLabel(status)}. ${message}`}
-      pointerEvents="none"
       style={{
+        pointerEvents: "none",
         position: "absolute",
         top: Math.max(insets.top + 8, 12),
         left: 12,

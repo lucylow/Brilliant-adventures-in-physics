@@ -4,7 +4,7 @@ import { Keyboard, Pressable, ScrollView, Text, TextInput, View } from "react-na
 import { useRef } from "react";
 import { ScreenContainer } from "@/components/screen-container";
 import { Card, EquationCard, HintPanel, Pill, PrimaryButton, SectionHeader, SolutionStep } from "@/components/physica-ui";
-import { createDeterministicTutorService, requestTutorAnswer } from "@/lib/tutor-service";
+import { createDeterministicTutorService, requestTutorAnswerWithFallback } from "@/lib/tutor-service";
 import { consumeTutorUse, loadUsageWithStatus, remainingTutorUses, type UsageState } from "@/lib/usage-meter";
 import { projectile } from "@/lib/physics";
 import { useColors } from "@/hooks/use-colors";
@@ -41,12 +41,16 @@ export default function TutorScreen() {
     setServiceError(null);
     setLastQuestion(clean);
     try {
-      const response = await requestTutorAnswer(tutorService, { question: clean });
+      const response = await requestTutorAnswerWithFallback(tutorService, { question: clean });
       if (!mountedRef.current) return;
       if (!response.ok) { setServiceError(response.error); return; }
-      const nextUsage = await consumeTutorUse();
-      if (!mountedRef.current) return;
-      setUsage(nextUsage);
+      if (response.usedFallback) {
+        setUsageMessage("The tutor service was unavailable, so this structured answer came from PhysicaAI’s local mock fallback. No AI usage was consumed.");
+      } else {
+        const nextUsage = await consumeTutorUse();
+        if (!mountedRef.current) return;
+        setUsage(nextUsage);
+      }
       setMessages((current) => [...current, { role: "user", text: clean }, { role: "assistant", text: response.data.summary }]);
       setDraft("");
       setHint(0);

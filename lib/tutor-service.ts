@@ -20,8 +20,16 @@ export function createDeterministicTutorService(): Service<TutorRequest, TutorAn
   };
 }
 
-export async function requestTutorAnswer(service: Service<TutorRequest, TutorAnswer>, request: TutorRequest, signal?: AbortSignal): Promise<ServiceResult<TutorAnswer>> {
+export type TutorResponse = ServiceResult<TutorAnswer> & { usedFallback?: boolean };
+
+export async function requestTutorAnswer(service: Service<TutorRequest, TutorAnswer>, request: TutorRequest, signal?: AbortSignal): Promise<TutorResponse> {
   const valid = validateTutorRequest(request);
   if (!valid.ok) return valid;
   return executeService(service, valid.data, signal);
+}
+
+export async function requestTutorAnswerWithFallback(service: Service<TutorRequest, TutorAnswer>, request: TutorRequest, signal?: AbortSignal): Promise<TutorResponse> {
+  const response = await requestTutorAnswer(service, request, signal);
+  if (response.ok || !response.error.retryable) return response;
+  return { ok: true, data: validateTutorAnswer(createMockTutorAnswer(request.question, request.verifiedValues)), usedFallback: true };
 }
