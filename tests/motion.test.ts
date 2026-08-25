@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { clampProgress, motionDuration, progressPercent, shouldAutoPlay } from "../lib/motion";
+import { clampProgress, motionDuration, pressScale, progressPercent, shouldAutoPlay } from "../lib/motion";
 
 describe("motion contracts", () => {
   it("removes durations when reduced motion is enabled", () => {
@@ -15,5 +15,7 @@ describe("motion contracts", () => {
     expect(shouldAutoPlay({ reducedMotion: true })).toBe(false);
     expect(shouldAutoPlay({ reducedMotion: false, autoPlay: false })).toBe(false);
     expect(shouldAutoPlay({ reducedMotion: false, autoPlay: true })).toBe(true);
+    expect(pressScale(false)).toBe(0.97);
+    expect(pressScale(true)).toBe(1);
   });
 });

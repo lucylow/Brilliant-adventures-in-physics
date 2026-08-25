@@ -1,0 +1,94 @@
+export type WorldId = "orbit" | "quantum" | "mars" | "ocean" | "timelab";
+
+export type AdventureWorld = {
+  id: WorldId;
+  title: string;
+  description: string;
+  unlockLevel: number;
+  color: string;
+};
+
+export type AdventureMission = {
+  id: string;
+  worldId: WorldId;
+  title: string;
+  story: string;
+  objective: string;
+  topic: string;
+  goal: number;
+  rewardXp: number;
+  requiredLevel: number;
+};
+
+export type AdventureState = {
+  worldId: WorldId;
+  completedMissionIds: string[];
+  choices: string[];
+  flags: Record<string, boolean>;
+};
+
+export const ADVENTURE_WORLDS: readonly AdventureWorld[] = [
+  { id: "orbit", title: "Orbit Academy", description: "Use motion and forces to guide a scientific flight.", unlockLevel: 1, color: "#2563EB" },
+  { id: "quantum", title: "Quantum City", description: "Explore energy scales and probability with careful models.", unlockLevel: 4, color: "#7C3AED" },
+  { id: "mars", title: "Mars Expedition", description: "Use mechanics and energy to prepare a safe landing.", unlockLevel: 7, color: "#EA580C" },
+  { id: "ocean", title: "Ocean Physics", description: "Investigate waves, pressure, and buoyancy.", unlockLevel: 10, color: "#0891B2" },
+  { id: "timelab", title: "Time Laboratory", description: "Compare classical intuition with relativistic models.", unlockLevel: 15, color: "#9333EA" },
+];
+
+const MISSION_TEMPLATES: readonly Omit<AdventureMission, "id" | "worldId" | "requiredLevel">[] = [
+  { title: "The First Trajectory", story: "A training probe needs a predictable path before launch.", objective: "Complete a projectile-motion lesson or practice question.", topic: "projectile-motion", goal: 1, rewardXp: 20 },
+  { title: "The Wave Beacon", story: "A distant beacon is sending a repeating signal across the ocean.", objective: "Verify the relationship between wave speed, frequency, and wavelength.", topic: "wave-motion", goal: 1, rewardXp: 30 },
+  { title: "The Energy Ledger", story: "A rover’s battery report does not balance until every unit is checked.", objective: "Solve one energy problem and keep the units visible.", topic: "energy", goal: 1, rewardXp: 30 },
+];
+
+export function worldForLevel(level: number): AdventureWorld {
+  const safeLevel = Number.isFinite(level) ? Math.max(1, Math.floor(level)) : 1;
+  return [...ADVENTURE_WORLDS].reverse().find((world) => safeLevel >= world.unlockLevel) ?? ADVENTURE_WORLDS[0];
+}
+
+export function isWorldUnlocked(world: AdventureWorld, level: number): boolean {
+  return Number.isFinite(level) && level >= world.unlockLevel;
+}
+
+export function availableWorlds(level: number): AdventureWorld[] {
+  return ADVENTURE_WORLDS.filter((world) => isWorldUnlocked(world, level));
+}
+
+export function generateAdventureMissions(worldId: WorldId): AdventureMission[] {
+  const world = ADVENTURE_WORLDS.find((item) => item.id === worldId) ?? ADVENTURE_WORLDS[0];
+  return MISSION_TEMPLATES.map((template, index) => ({
+    ...template,
+    id: `${world.id}-mission-${index + 1}`,
+    worldId: world.id,
+    requiredLevel: world.unlockLevel,
+  }));
+}
+
+export function emptyAdventureState(worldId: WorldId = "orbit"): AdventureState {
+  return { worldId, completedMissionIds: [], choices: [], flags: {} };
+}
+
+export function completeAdventureMission(state: AdventureState, missionId: string): AdventureState {
+  if (!missionId.trim() || state.completedMissionIds.includes(missionId)) return state;
+  return { ...state, completedMissionIds: [...state.completedMissionIds, missionId] };
+}
+
+export function chooseAdventurePath(state: AdventureState, choiceId: string): AdventureState {
+  if (!choiceId.trim() || state.choices.includes(choiceId)) return state;
+  return { ...state, choices: [...state.choices, choiceId] };
+}
+
+export function setAdventureFlag(state: AdventureState, key: string, value = true): AdventureState {
+  if (!key.trim() || state.flags[key] === value) return state;
+  return { ...state, flags: { ...state.flags, [key]: value } };
+}
+
+export function missionIsComplete(state: AdventureState, mission: AdventureMission): boolean {
+  return state.completedMissionIds.includes(mission.id);
+}
+
+export function adventureProgress(state: AdventureState, missions: readonly AdventureMission[]): number {
+  if (!missions.length) return 0;
+  const completed = missions.filter((mission) => missionIsComplete(state, mission)).length;
+  return completed / missions.length;
+}

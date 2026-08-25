@@ -11,6 +11,7 @@ import { useColors } from "@/hooks/use-colors";
 import { loadPreferencesWithStatus, type Preferences } from "@/lib/preferences";
 import { AnimatedProgress } from "@/components/motion-primitives";
 import { useAppTranslations } from "@/hooks/use-app-translations";
+import { adventureProgress, generateAdventureMissions, missionIsComplete, worldForLevel, emptyAdventureState } from "@/lib/adventure";
 
 const TOPICS = [
   { name: "Kinematics", detail: "Review motion graphs and units." },
@@ -31,6 +32,12 @@ export default function ProgressScreen() {
   const level = levelProgress(learning.correct * 10);
   const mission = generateMission(new Date().getDate());
   const missionValue = mission.kind === "practice" ? learning.attempts : 0;
+  const adventureWorld = worldForLevel(level.level);
+  const adventureMissions = generateAdventureMissions(adventureWorld.id);
+  const adventureState = emptyAdventureState(adventureWorld.id);
+  const adventureMission = adventureMissions[0];
+  const adventureEvidence = Math.min(adventureMission.goal, learning.attempts);
+  const adventureComplete = missionIsComplete(adventureState, adventureMission) || adventureEvidence >= adventureMission.goal;
   const achievements = evaluateAchievements(learning);
   const [achievementFilter, setAchievementFilter] = useState<"all" | "earned" | "progress">("all");
   const visibleAchievements = achievements.filter((achievement) => achievementFilter === "all" || (achievementFilter === "earned" ? achievement.earned : !achievement.earned));
@@ -59,6 +66,16 @@ export default function ProgressScreen() {
           <Text style={{ color: colors.foreground, fontSize: 18, fontWeight: "800", marginTop: 6 }}>{mission.title}</Text>
           <Text style={{ color: colors.muted, marginTop: 4 }}>{Math.min(missionValue, mission.goal)} of {mission.goal} complete · +{mission.rewardXp} XP</Text>
           <View style={{ marginTop: 10 }}><AnimatedProgress value={missionProgress(mission.goal, missionValue)} preferences={preferences} /></View>
+        </Card>
+        <Card accessibilityLabel={`${tr("progress.adventure")}: ${adventureWorld.title}. ${adventureMission.title}.`} style={{ marginTop: 14 }}>
+          <Text style={{ color: colors.primary, fontWeight: "800" }}>{tr("progress.adventure")}</Text>
+          <Text style={{ color: colors.foreground, fontSize: 18, fontWeight: "800", marginTop: 6 }}>{adventureWorld.title}</Text>
+          <Text style={{ color: colors.muted, marginTop: 4 }}>{tr("progress.adventureBody")}</Text>
+          <Text style={{ color: colors.foreground, fontWeight: "800", marginTop: 12 }}>{adventureMission.title}</Text>
+          <Text style={{ color: colors.muted, marginTop: 4 }}>{adventureMission.objective}</Text>
+          <Text accessibilityLiveRegion="polite" style={{ color: adventureComplete ? colors.success : colors.primary, marginTop: 8 }}>{adventureComplete ? tr("progress.missionComplete") : tr("progress.missionProgress", { done: adventureEvidence, goal: adventureMission.goal })}</Text>
+          <View style={{ marginTop: 10 }}><AnimatedProgress value={adventureProgress({ ...adventureState, completedMissionIds: adventureComplete ? [adventureMission.id] : [] }, adventureMissions)} preferences={preferences} /></View>
+          {!adventureComplete && <View style={{ marginTop: 10 }}><PrimaryButton label={tr("progress.openMission")} onPress={() => router.push("/practice" as never)} /></View>}
         </Card>
         <View style={{ marginTop: 24 }}>
           <SectionHeader title={tr("progress.achievements")} subtitle={tr("progress.achievementsSubtitle")} />

@@ -1,12 +1,12 @@
 import { useEffect, type ReactNode } from "react";
 import { Pressable, Text, View, type PressableProps, type StyleProp, type ViewStyle } from "react-native";
 import Animated, { useAnimatedStyle, useSharedValue, withSpring, withTiming } from "react-native-reanimated";
-import { motion, motionDuration, progressPercent, type MotionPrefs } from "@/lib/motion";
+import { motion, motionDuration, pressScale, progressPercent, type MotionPrefs } from "@/lib/motion";
 
 export function MotionPressable({ children, reducedMotion = false, style, ...props }: Omit<PressableProps, "children"> & { children: ReactNode; reducedMotion?: boolean; style?: StyleProp<ViewStyle> }) {
   const scale = useSharedValue(1);
   const animatedStyle = useAnimatedStyle(() => ({ transform: [{ scale: scale.value }] }));
-  return <Pressable {...props} onPressIn={(event) => { scale.value = withTiming(reducedMotion ? 1 : 0.97, { duration: motionDuration(100, { reducedMotion }) }); props.onPressIn?.(event); }} onPressOut={(event) => { scale.value = withTiming(1, { duration: motionDuration(motion.fast, { reducedMotion }) }); props.onPressOut?.(event); }} style={style}><Animated.View style={animatedStyle}>{children}</Animated.View></Pressable>;
+  return <Pressable {...props} onPressIn={(event) => { scale.value = withTiming(pressScale(reducedMotion), { duration: motionDuration(100, { reducedMotion }) }); props.onPressIn?.(event); }} onPressOut={(event) => { scale.value = withTiming(1, { duration: motionDuration(motion.fast, { reducedMotion }) }); props.onPressOut?.(event); }} style={style}><Animated.View style={animatedStyle}>{children}</Animated.View></Pressable>;
 }
 
 export function RevealBlock({ children, index = 0, preferences }: { children: ReactNode; index?: number; preferences: Pick<MotionPrefs, "reducedMotion"> }) {

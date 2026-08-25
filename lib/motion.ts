@@ -25,6 +25,10 @@ export function progressPercent(value: number): `${number}%` {
   return `${Math.round(clampProgress(value) * 100)}%`;
 }
 
+export function pressScale(reducedMotion: boolean): 1 | 0.97 {
+  return reducedMotion ? 1 : 0.97;
+}
+
 export function shouldAutoPlay(preferences: MotionPrefs): boolean {
   return preferences.autoPlay !== false && !preferences.reducedMotion;
 }

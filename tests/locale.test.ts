@@ -76,6 +76,9 @@ describe("localization contracts", () => {
     expect(translate(copy, "fr", "lens.stage.observe")).toBe("Décrivez ce que vous pouvez observer sans encore l’expliquer.");
     expect(translate(copy, "es", "lens.stage.predict")).toBe("Escribe una predicción comprobable antes de medir.");
     expect(translate(copy, "de", "lens.stage.reflect")).toBe("Write one thing you learned or would test next.");
+    expect(translate(copy, "fr", "tutor.questionLabel")).toBe("Question de physique");
+    expect(translate(copy, "es", "tutor.hintUnits")).toBe("Sustituye los valores solo después de comprobar las unidades.");
+    expect(translate(copy, "de", "tutor.hintEquation")).toBe("Write the governing equation.");
   });
 
   it("creates typed localized announcements with safe fallback and priority", () => {

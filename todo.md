@@ -536,3 +536,22 @@
 - [x] Expose persistence recovery translation-key resolution without breaking existing callers
 - [x] Apply localized persistence failure feedback to Tutor, Practice, and Physics Lens
 - [x] Add deterministic persistence recovery localization coverage
+
+- [x] Add translation keys for remaining Tutor and Lab accessibility labels
+- [x] Replace hardcoded Tutor and Lab labels with locale-aware copy
+- [x] Add deterministic coverage for the new labels and fallback behavior
+
+- [x] Define local deterministic adventure worlds and unlock rules
+- [x] Define typed story missions with educational objectives and verified rewards
+- [ ] Add local adventure progression persistence without analytics
+- [x] Add an accessible mission entry point connected to existing learning flows
+- [x] Add deterministic tests for mission generation, unlocks, and completion idempotency
+
+- [x] Define a typed deterministic physics puzzle contract
+- [x] Add safe hint progression with no fabricated currency or analytics
+- [x] Add answer scoring for correct, assisted, and retry outcomes
+- [x] Add deterministic puzzle and hint regression coverage
+
+- [x] Add reduced-motion-safe interactive press feedback to shared cards and buttons
+- [x] Preserve accessibility roles, disabled states, and touch targets during the feedback update
+- [x] Add deterministic motion contract coverage for the new interaction feedback

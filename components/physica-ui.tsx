@@ -1,23 +1,24 @@
 import { PropsWithChildren } from "react";
 import { Pressable, Text, View, type DimensionValue, type StyleProp, type ViewStyle } from "react-native";
 import { useColors } from "@/hooks/use-colors";
+import { MotionPressable } from "@/components/motion-primitives";
 
 export const ui = { space: { xs: 4, sm: 8, md: 12, lg: 16, xl: 24, xxl: 32 }, radius: { sm: 8, md: 12, lg: 18, xl: 24, pill: 999 }, text: { xs: 12, sm: 14, md: 16, lg: 20, xl: 28, xxl: 36 } } as const;
 
-export function Card({ children, onPress, accessibilityLabel, style }: PropsWithChildren<{ onPress?: () => void; accessibilityLabel?: string; style?: StyleProp<ViewStyle> }>) {
+export function Card({ children, onPress, accessibilityLabel, style, reducedMotion = false }: PropsWithChildren<{ onPress?: () => void; accessibilityLabel?: string; style?: StyleProp<ViewStyle>; reducedMotion?: boolean }>) {
   const colors = useColors();
   const content = <View style={[{ padding: 16, borderRadius: 18, backgroundColor: colors.surface, borderWidth: 1, borderColor: colors.border }, style]}>{children}</View>;
-  return onPress ? <Pressable accessibilityRole="button" accessibilityLabel={accessibilityLabel} onPress={onPress} style={({ pressed }) => ({ opacity: pressed ? 0.72 : 1 })}>{content}</Pressable> : content;
+  return onPress ? <MotionPressable accessibilityRole="button" accessibilityLabel={accessibilityLabel} onPress={onPress} reducedMotion={reducedMotion} style={({ pressed }) => ({ opacity: pressed ? 0.72 : 1 })}>{content}</MotionPressable> : content;
 }
 
-export function PrimaryButton({ label, onPress, disabled = false }: { label: string; onPress: () => void; disabled?: boolean }) {
+export function PrimaryButton({ label, onPress, disabled = false, reducedMotion = false }: { label: string; onPress: () => void; disabled?: boolean; reducedMotion?: boolean }) {
   const colors = useColors();
-  return <Pressable accessibilityRole="button" accessibilityLabel={label} accessibilityState={{ disabled }} disabled={disabled} onPress={onPress} style={({ pressed }) => ({ minHeight: 50, padding: 14, borderRadius: 14, alignItems: "center", justifyContent: "center", backgroundColor: colors.primary, opacity: disabled ? 0.45 : pressed ? 0.82 : 1 })}><Text style={{ color: "#FFFFFF", fontWeight: "800", textAlign: "center" }}>{label}</Text></Pressable>;
+  return <MotionPressable accessibilityRole="button" accessibilityLabel={label} accessibilityState={{ disabled }} disabled={disabled} onPress={onPress} reducedMotion={reducedMotion} style={({ pressed }) => ({ minHeight: 50, padding: 14, borderRadius: 14, alignItems: "center", justifyContent: "center", backgroundColor: colors.primary, opacity: disabled ? 0.45 : pressed ? 0.82 : 1 })}><Text style={{ color: "#FFFFFF", fontWeight: "800", textAlign: "center" }}>{label}</Text></MotionPressable>;
 }
 
-export function SecondaryButton({ label, onPress }: { label: string; onPress: () => void }) {
+export function SecondaryButton({ label, onPress, reducedMotion = false }: { label: string; onPress: () => void; reducedMotion?: boolean }) {
   const colors = useColors();
-  return <Pressable accessibilityRole="button" accessibilityLabel={label} onPress={onPress} style={({ pressed }) => ({ minHeight: 50, padding: 14, borderRadius: 14, alignItems: "center", justifyContent: "center", backgroundColor: colors.surface, borderWidth: 1, borderColor: colors.border, opacity: pressed ? 0.72 : 1 })}><Text style={{ color: colors.foreground, fontWeight: "800", textAlign: "center" }}>{label}</Text></Pressable>;
+  return <MotionPressable accessibilityRole="button" accessibilityLabel={label} onPress={onPress} reducedMotion={reducedMotion} style={({ pressed }) => ({ minHeight: 50, padding: 14, borderRadius: 14, alignItems: "center", justifyContent: "center", backgroundColor: colors.surface, borderWidth: 1, borderColor: colors.border, opacity: pressed ? 0.72 : 1 })}><Text style={{ color: colors.foreground, fontWeight: "800", textAlign: "center" }}>{label}</Text></MotionPressable>;
 }
 
 export function Pill({ label, active = false }: { label: string; active?: boolean }) {
