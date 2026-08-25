@@ -348,3 +348,6 @@
 - [x] Add accessible filter controls and correct filtered empty states
 - [x] Add a registry-backed concept selector to Notebook reflections
 - [x] Add deterministic selector and concept-filter contract coverage
+- [x] Add mastery-aware next-concept recommendation logic
+- [x] Show a local next-concept recommendation on Home
+- [x] Add deterministic recommendation regression coverage

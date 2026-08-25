@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { orbitSummary, prerequisiteTrail, verifiedConceptId } from "../lib/concept-orbit";
+import { orbitSummary, prerequisiteTrail, recommendNextConcept, verifiedConceptId } from "../lib/concept-orbit";
+import type { LearningState } from "../lib/progress-store";
 
 describe("Concept Orbit", () => {
   it("resolves prerequisites in learning order", () => {
@@ -11,6 +12,18 @@ describe("Concept Orbit", () => {
     expect(prerequisiteTrail("not-a-concept")).toEqual([]);
     expect(verifiedConceptId("not-a-concept")).toBeNull();
     expect(orbitSummary("not-a-concept")).toBe("No verified concept path is available yet.");
+  });
+
+  it("recommends a foundation when no local mastery exists", () => {
+    const state: LearningState = { attempts: 0, correct: 0, savedQuestions: [], topics: {}, streak: 0, lessonsCompleted: 0, labsCompleted: 0 };
+    expect(recommendNextConcept(state).concept.id).toBe("kinematics");
+  });
+
+  it("gates advanced concepts behind mastered prerequisites", () => {
+    const state: LearningState = { attempts: 4, correct: 4, savedQuestions: [], topics: { "wave-motion": { attempts: 10, correct: 10, hints: 0, confidenceTotal: 30 }, energy: { attempts: 10, correct: 10, hints: 0, confidenceTotal: 30 } }, streak: 1, lessonsCompleted: 0, labsCompleted: 0 };
+    expect(recommendNextConcept(state).concept.id).toBe("kinematics");
+    const progressed: LearningState = { ...state, topics: { ...state.topics, kinematics: { attempts: 10, correct: 10, hints: 0, confidenceTotal: 30 } } };
+    expect(recommendNextConcept(progressed).concept.id).toBe("oscillation");
   });
 
   it("accepts only registered concept ids", () => {
