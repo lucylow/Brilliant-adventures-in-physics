@@ -659,3 +659,8 @@
 - [x] Announce filtered timeline result counts to screen readers
 - [x] Make the no-match completion state explicit and accessible
 - [x] Add deterministic accessibility-contract coverage
+
+- [x] Add a deterministic redacted completion export summary
+- [x] Expose completion metadata in the local privacy surface
+- [x] Keep export output bounded and exclude answers or raw content
+- [x] Add deterministic redaction and formatting coverage
