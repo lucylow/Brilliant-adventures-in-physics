@@ -79,6 +79,7 @@ export function createAppTranslations(): TranslationStore {
     "notebook.closePreview": { en: "Close preview", fr: "Fermer l’aperçu", es: "Cerrar vista previa" },
     "notebook.previewUnavailable": { en: "This local preview is unavailable, but the Notebook entry remains intact.", fr: "Cet aperçu local est indisponible, mais l’entrée du Notebook reste intacte.", es: "Esta vista previa local no está disponible, pero la entrada del Notebook permanece intacta." },
     "notebook.retryPreview": { en: "Retry preview", fr: "Réessayer l’aperçu", es: "Reintentar vista previa" },
+    "notebook.thumbnailUnavailable": { en: "Thumbnail unavailable", fr: "Miniature indisponible", es: "Miniatura no disponible" },
   };
   for (const [key, values] of Object.entries(entries)) for (const [locale, value] of Object.entries(values)) store.set(locale as SupportedLocale, key, value);
   return store;

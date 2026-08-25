@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { filterNotebookEntries, isNotebookEntry, notebookSummary, parseNotebookEntries, sameNotebookEntry, type NotebookEntry } from "../lib/notebook";
 import { searchConcepts } from "../lib/concepts";
+import { isPreviewableLocalMediaUri } from "../lib/media-contract";
 
 const validEntry: NotebookEntry = { id: "n1", title: "Reflection", type: "reflection", content: "The evidence changed my prediction.", links: ["kinematics"], createdAt: "2026-08-24T00:00:00.000Z" };
 
@@ -42,6 +43,14 @@ describe("Living Notebook contracts", () => {
     expect(searchConcepts("relativistic energy").map((concept) => concept.id)).toContain("relativistic-energy");
     expect(searchConcepts("thermal").every((concept) => concept.domain === "Thermal")).toBe(true);
     expect(searchConcepts("not-a-real-concept")).toEqual([]);
+  });
+
+  it("accepts only local sources for Notebook thumbnails", () => {
+    expect(isPreviewableLocalMediaUri("file:///observations/ball.jpg")).toBe(true);
+    expect(isPreviewableLocalMediaUri("content://media/external/images/1")).toBe(true);
+    expect(isPreviewableLocalMediaUri("https://example.com/ball.jpg")).toBe(false);
+    expect(isPreviewableLocalMediaUri("not-a-uri")).toBe(false);
+    expect(isPreviewableLocalMediaUri(`data:image/png;base64,${"a".repeat(4097)}`)).toBe(false);
   });
 
   it("uses deterministic topic summaries", () => {

@@ -403,3 +403,7 @@
 - [x] Add non-destructive image-load failure handling to Notebook preview
 - [x] Add localized retry and preview-failure feedback
 - [x] Add deterministic preview failure-state coverage
+
+- [x] Add Notebook list thumbnails for valid local media
+- [x] Add per-entry thumbnail failure fallback without mutating saved metadata
+- [x] Add deterministic thumbnail URI and fallback coverage
