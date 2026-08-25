@@ -122,6 +122,15 @@ export function createAppTranslations(): TranslationStore {
     "tutor.hintLadder": { en: "Hint ladder", fr: "Échelle d’indices", es: "Escalera de pistas" },
     "tutor.questionPlaceholder": { en: "Ask a physics question…", fr: "Posez une question de physique…", es: "Haz una pregunta de física…" },
     "tutor.limitReached": { en: "Daily free usage reached", fr: "Limite quotidienne gratuite atteinte", es: "Límite diario gratuito alcanzado" },
+    "achievement.loading": { en: "Loading achievement details…", fr: "Chargement des détails du succès…", es: "Cargando detalles del logro…" },
+    "achievement.retryProgress": { en: "Retry loading progress", fr: "Réessayer de charger la progression", es: "Reintentar la carga del progreso" },
+    "achievement.title": { en: "Achievement detail", fr: "Détails du succès", es: "Detalles del logro" },
+    "achievement.subtitle": { en: "Progress is evidence of understanding, not a race.", fr: "La progression témoigne de la compréhension, pas d’une course.", es: "El progreso demuestra comprensión, no es una carrera." },
+    "achievement.earned": { en: "Earned from your learning activity", fr: "Obtenu grâce à votre activité d’apprentissage", es: "Obtenido gracias a tu actividad de aprendizaje" },
+    "achievement.notEarned": { en: "Not earned yet", fr: "Pas encore obtenu", es: "Aún no obtenido" },
+    "achievement.keepGoing": { en: "Keep building understanding at your own pace.", fr: "Continuez à développer votre compréhension à votre rythme.", es: "Sigue construyendo comprensión a tu ritmo." },
+    "achievement.evidence": { en: "Complete the evidence described above. Practice, lessons, and labs are counted only when you finish the learning action.", fr: "Complétez les éléments décrits ci-dessus. La pratique, les leçons et les laboratoires ne sont comptés qu’après l’action d’apprentissage.", es: "Completa la evidencia descrita arriba. La práctica, las lecciones y los laboratorios solo cuentan al terminar la acción de aprendizaje." },
+    "achievement.back": { en: "Back to progress", fr: "Retour à la progression", es: "Volver al progreso" },
   };
   for (const [key, values] of Object.entries(entries)) for (const [locale, value] of Object.entries(values)) store.set(locale as SupportedLocale, key, value);
   return store;

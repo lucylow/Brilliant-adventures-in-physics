@@ -33,6 +33,9 @@ describe("localization contracts", () => {
     expect(translate(copy, "es", "notebook.closePreview")).toBe("Cerrar vista previa");
     expect(translate(copy, "de", "notebook.previewUnavailable")).toContain("preview");
     expect(translate(copy, "fr", "notebook.retryPreview")).toBe("Réessayer l’aperçu");
+    expect(translate(copy, "fr", "achievement.title")).toBe("Détails du succès");
+    expect(translate(copy, "es", "achievement.earned")).toContain("aprendizaje");
+    expect(translate(copy, "de", "achievement.back")).toBe("Back to progress");
   });
 
   it("formats stored timestamps with locale-aware output and safe fallback", () => {

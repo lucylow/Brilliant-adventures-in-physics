@@ -417,3 +417,7 @@
 - [x] Add shared localized secondary-screen recovery copy
 - [x] Apply consistent retry and accessible state feedback to a secondary screen
 - [x] Add deterministic state-contract coverage
+
+- [x] Add localized Achievement detail loading, retry, status, and navigation copy
+- [x] Preserve deterministic evidence wording while localizing surrounding UI
+- [x] Add deterministic Achievement localization coverage
