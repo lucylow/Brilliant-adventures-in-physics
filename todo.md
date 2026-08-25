@@ -359,3 +359,6 @@
 - [x] Audit active runtime and persistence errors
 - [x] Add bounded deterministic mock-data fallback for recoverable local-load failures
 - [x] Add regression coverage for fallback and error recovery behavior
+- [x] Harden secondary-screen local-load error states
+- [x] Add clearly labeled mock fallback data for recoverable secondary-screen loads
+- [x] Add deterministic tests for secondary-screen fallback and persistence errors

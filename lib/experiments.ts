@@ -4,6 +4,9 @@ const STORAGE_KEY = "physicaai.experiments.v1";
 
 export type ExperimentPoint = { time: number; distance: number };
 export type SavedExperiment = { id: string; title: string; points: ExperimentPoint[]; summary: string; createdAt: string };
+export type ExperimentLoadResult = { experiments: SavedExperiment[]; usedFallback: boolean };
+
+export const DEMO_EXPERIMENT: SavedExperiment = { id: "demo-rolling-object", title: "[Demo] Rolling object example", points: [{ time: 0, distance: 0 }, { time: 1, distance: 1.2 }, { time: 2, distance: 4.5 }], summary: "Demo data only — storage was unavailable. No experiment was saved on this device.", createdAt: "2026-01-01T00:00:00.000Z" };
 
 export function isSavedExperiment(value: unknown): value is SavedExperiment {
   if (!value || typeof value !== "object") return false;
@@ -15,14 +18,18 @@ export function parseSavedExperiments(value: unknown): SavedExperiment[] {
   return Array.isArray(value) ? value.filter(isSavedExperiment).slice(0, 25) : [];
 }
 
-export async function loadExperiments(): Promise<SavedExperiment[]> {
+export async function loadExperimentsWithStatus(): Promise<ExperimentLoadResult> {
   try {
     const raw = await AsyncStorage.getItem(STORAGE_KEY);
     const parsed = raw ? JSON.parse(raw) : [];
-    return parseSavedExperiments(parsed);
+    return { experiments: parseSavedExperiments(parsed), usedFallback: false };
   } catch {
-    return [];
+    return { experiments: [DEMO_EXPERIMENT], usedFallback: true };
   }
+}
+
+export async function loadExperiments(): Promise<SavedExperiment[]> {
+  return (await loadExperimentsWithStatus()).experiments;
 }
 
 export async function saveExperiment(experiment: Omit<SavedExperiment, "id" | "createdAt">): Promise<SavedExperiment> {
