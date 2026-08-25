@@ -294,6 +294,21 @@ export function createAppTranslations(): TranslationStore {
     "lens.analyze": { en: "Analyze measurements", fr: "Analyser les mesures", es: "Analizar mediciones" },
     "lens.askTutor": { en: "Ask Tutor about this experiment", fr: "Demander au tuteur à propos de cette expérience", es: "Preguntar al tutor sobre este experimento" },
     "lens.openNotebook": { en: "Open Living Notebook", fr: "Ouvrir le carnet vivant", es: "Abrir el cuaderno vivo" },
+    "lens.openingMedia": { en: "Opening media…", fr: "Ouverture du média…", es: "Abriendo medio…" },
+    "lens.deterministicComplete": { en: "Deterministic analysis complete", fr: "Analyse déterministe terminée", es: "Análisis determinista completado" },
+    "lens.averageVelocity": { en: "Average velocity", fr: "Vitesse moyenne", es: "Velocidad media" },
+    "lens.estimatedAcceleration": { en: "Estimated acceleration", fr: "Accélération estimée", es: "Aceleración estimada" },
+    "lens.restAssumption": { en: "This estimate assumes the object started from rest.", fr: "Cette estimation suppose que l’objet est parti du repos.", es: "Esta estimación supone que el objeto comenzó desde el reposo." },
+    "lens.save": { en: "Save experiment", fr: "Enregistrer l’expérience", es: "Guardar experimento" },
+    "lens.saving": { en: "Saving…", fr: "Enregistrement…", es: "Guardando…" },
+    "lens.saveNotebook": { en: "Save analysis to Notebook", fr: "Enregistrer l’analyse dans le carnet", es: "Guardar análisis en el cuaderno" },
+    "lens.savedExperiments": { en: "Saved experiments", fr: "Expériences enregistrées", es: "Experimentos guardados" },
+    "lens.storedLocally": { en: "Stored locally on this device.", fr: "Stockées localement sur cet appareil.", es: "Almacenados localmente en este dispositivo." },
+    "lens.storageFallback": { en: "Storage is temporarily unavailable. Showing clearly labeled demo data; your saved experiments were not replaced.", fr: "Le stockage est temporairement indisponible. Des données de démonstration clairement indiquées sont affichées ; vos expériences enregistrées n’ont pas été remplacées.", es: "El almacenamiento no está disponible temporalmente. Se muestran datos de demostración claramente etiquetados; tus experimentos guardados no se reemplazaron." },
+    "lens.retryExperiments": { en: "Retry loading experiments", fr: "Réessayer de charger les expériences", es: "Reintentar cargar experimentos" },
+    "lens.loadFailed": { en: "We could not load saved experiments. Your current measurements are still available.", fr: "Impossible de charger les expériences enregistrées. Vos mesures actuelles sont toujours disponibles.", es: "No pudimos cargar los experimentos guardados. Tus mediciones actuales siguen disponibles." },
+    "lens.noneSaved": { en: "No saved experiments yet.", fr: "Aucune expérience enregistrée pour le moment.", es: "Aún no hay experimentos guardados." },
+    "lens.delete": { en: "Delete", fr: "Supprimer", es: "Eliminar" },
   };
   for (const [key, values] of Object.entries(entries)) for (const [locale, value] of Object.entries(values)) store.set(locale as SupportedLocale, key, value);
   return store;

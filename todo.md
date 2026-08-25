@@ -514,3 +514,7 @@
 - [x] Add localized Lens accessibility and live-region keys
 - [x] Apply localized Lens labels without changing state or measurements
 - [x] Add deterministic Lens localization coverage
+
+- [x] Localize Lens save, retry, delete, and empty-state labels
+- [x] Localize Lens media-loading and storage-recovery feedback
+- [x] Add deterministic coverage for Lens recovery keys

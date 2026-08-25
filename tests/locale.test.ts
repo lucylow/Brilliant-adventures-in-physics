@@ -70,6 +70,9 @@ describe("localization contracts", () => {
     expect(translate(copy, "fr", "lens.observationPlaceholder")).toBe("Décrivez ce que vous observez");
     expect(translate(copy, "es", "lens.analyze")).toBe("Analizar mediciones");
     expect(translate(copy, "de", "lens.openNotebook")).toBe("Open Living Notebook");
+    expect(translate(copy, "fr", "lens.save")).toBe("Enregistrer l’expérience");
+    expect(translate(copy, "es", "lens.retryExperiments")).toBe("Reintentar cargar experimentos");
+    expect(translate(copy, "de", "lens.noneSaved")).toBe("No saved experiments yet.");
   });
 
   it("formats stored timestamps with locale-aware output and safe fallback", () => {
