@@ -560,3 +560,13 @@
 - [x] Derive adventure mission evidence from persisted learning records
 - [x] Restore adventure progress in Progress with safe fallback behavior
 - [x] Add deterministic persistence and evidence-linking tests
+
+- [x] Add localized puzzle challenge, hint, and scoring copy
+- [x] Connect deterministic puzzle choices to Practice with accessible states
+- [x] Preserve numeric practice answer flow and local persistence behavior
+- [x] Add deterministic UI-contract coverage for puzzle outcomes
+
+- [x] Add a local puzzle-evidence record contract with stable IDs
+- [x] Persist puzzle outcomes idempotently from Practice
+- [x] Preserve retry behavior and avoid duplicate learning credit
+- [x] Add deterministic evidence persistence tests
