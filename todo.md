@@ -384,3 +384,6 @@
 - [x] Add localized persistence and retry feedback keys for Tutor and Notebook
 - [x] Integrate persisted locale into Tutor and Notebook feedback
 - [x] Add deterministic Tutor and Notebook localization coverage
+- [x] Preserve Lens media captions and timestamps in Notebook artifacts
+- [x] Add accessible local-only media context in Notebook entries
+- [x] Add deterministic Lens-to-Notebook media artifact coverage

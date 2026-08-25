@@ -71,6 +71,8 @@ export function createAppTranslations(): TranslationStore {
     "tutor.localFallback": { en: "The tutor service was unavailable, so this structured answer came from PhysicaAI’s local mock fallback. No AI usage was consumed.", fr: "Le service de tutorat était indisponible ; cette réponse structurée provient du mode local de PhysicaAI. Aucune utilisation d’IA n’a été consommée.", es: "El servicio de tutoría no estaba disponible; esta respuesta estructurada proviene del respaldo local de PhysicaAI. No se consumió uso de IA." },
     "notebook.verifiedConcept": { en: "Choose a verified concept before saving your reflection.", fr: "Choisissez un concept vérifié avant d’enregistrer votre réflexion.", es: "Elige un concepto verificado antes de guardar tu reflexión." },
     "notebook.saved": { en: "Reflection saved to your local Notebook.", fr: "Réflexion enregistrée dans votre Notebook local.", es: "Reflexión guardada en tu Notebook local." },
+    "lens.media.caption": { en: "Caption", fr: "Légende", es: "Descripción" },
+    "lens.media.capturedAt": { en: "Captured locally", fr: "Capturé localement", es: "Capturado localmente" },
   };
   for (const [key, values] of Object.entries(entries)) for (const [locale, value] of Object.entries(values)) store.set(locale as SupportedLocale, key, value);
   return store;

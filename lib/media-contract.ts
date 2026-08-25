@@ -11,6 +11,13 @@ export function normalizeMediaAsset(value: unknown): MediaAsset | null {
   return { uri: candidate.uri, width: typeof candidate.width === "number" && candidate.width > 0 ? Math.round(candidate.width) : undefined, height: typeof candidate.height === "number" && candidate.height > 0 ? Math.round(candidate.height) : undefined, type: candidate.type ?? undefined, fileName: candidate.fileName ?? undefined, caption, capturedAt };
 }
 
+export function mediaArtifactContext(asset: MediaAsset | null): string {
+  if (!asset) return "No local observation image was attached.";
+  const caption = asset.caption ? `Caption: ${asset.caption}.` : "No caption was provided.";
+  const capturedAt = asset.capturedAt ? `Captured locally at: ${asset.capturedAt}.` : "Capture time was not recorded.";
+  return `Local observation image. ${caption} ${capturedAt}`;
+}
+
 export function mediaStatusTranslationKey(code: MediaAdapterCode): string | null {
   if (code === "PERMISSION_DENIED") return "lens.media.permission";
   if (code === "CANCELED") return "lens.media.canceled";

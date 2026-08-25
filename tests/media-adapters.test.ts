@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { mediaErrorMessage, mediaStatusTranslationKey, normalizeMediaAsset } from "../lib/media-contract";
+import { mediaArtifactContext, mediaErrorMessage, mediaStatusTranslationKey, normalizeMediaAsset } from "../lib/media-contract";
 
 describe("media adapter safety contracts", () => {
   it("explains permission, cancellation, offline, and unavailable states", () => {
@@ -7,6 +7,11 @@ describe("media adapter safety contracts", () => {
     expect(mediaErrorMessage("CANCELED")).toContain("No media was selected");
     expect(mediaErrorMessage("OFFLINE")).toContain("local-only");
     expect(mediaErrorMessage("UNAVAILABLE")).toContain("unavailable");
+  });
+
+  it("preserves bounded local media context for Notebook artifacts", () => {
+    expect(mediaArtifactContext({ uri: "file:///observation.jpg", caption: "Ball at release", capturedAt: "2026-08-25T03:00:00.000Z" })).toContain("Ball at release");
+    expect(mediaArtifactContext(null)).toContain("No local observation image");
   });
 
   it("maps every recoverable status to a localized Lens key", () => {
