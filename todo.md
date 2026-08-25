@@ -620,3 +620,8 @@
 - [x] Keep history bounded and exclude raw answers or sensitive content
 - [x] Show localized review history in Progress with accessible labels
 - [x] Add deterministic review-history coverage
+
+- [x] Add a pure deterministic topic mastery-delta summary
+- [x] Show localized review reinforcement deltas beside affected topics
+- [x] Keep ordinary numeric attempts and original evidence unchanged
+- [x] Add deterministic mastery-delta regression coverage

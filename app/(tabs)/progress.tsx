@@ -12,7 +12,7 @@ import { loadPreferencesWithStatus, type Preferences } from "@/lib/preferences";
 import { AnimatedProgress } from "@/components/motion-primitives";
 import { useAppTranslations } from "@/hooks/use-app-translations";
 import { adventureProgress, completeAdventureMission, emptyAdventureState, generateAdventureMissions, loadAdventureState, missionIsComplete, saveAdventureState, worldForLevel, type AdventureState } from "@/lib/adventure";
-import { loadPuzzleEvidence, loadResolvedPuzzleIds, loadReviewMastery, missedPuzzleReviewQueue, reviewHistorySummary, summarizePuzzleEvidence, summarizeReviewMastery, type PuzzleEvidence, type ReviewMasteryRecord } from "@/lib/puzzle-evidence";
+import { loadPuzzleEvidence, loadResolvedPuzzleIds, loadReviewMastery, missedPuzzleReviewQueue, reviewHistorySummary, reviewReinforcementDelta, summarizePuzzleEvidence, summarizeReviewMastery, type PuzzleEvidence, type ReviewMasteryRecord } from "@/lib/puzzle-evidence";
 
 const TOPICS = [
   { name: "Kinematics", detail: "Review motion graphs and units." },
@@ -99,7 +99,7 @@ export default function ProgressScreen() {
         </View>
         <View style={{ marginTop: 24 }}>
           <SectionHeader title={tr("progress.topicGuidance")} subtitle={tr("progress.topicGuidanceSubtitle")} />
-          {TOPICS.map((topic) => <Card key={topic.name} style={{ marginBottom: 10 }}><Text style={{ color: colors.foreground, fontSize: 17, fontWeight: "800" }}>{topic.name}</Text><Text style={{ color: colors.muted, marginTop: 4 }}>{topic.detail}</Text>{reviewMasterySummary.topicCounts[topic.name] ? <Text accessibilityLiveRegion="polite" style={{ color: colors.success, marginTop: 4 }}>{tr("progress.topicReinforced", { count: reviewMasterySummary.topicCounts[topic.name] })}</Text> : null}</Card>)}
+          {TOPICS.map((topic) => <Card key={topic.name} style={{ marginBottom: 10 }}><Text style={{ color: colors.foreground, fontSize: 17, fontWeight: "800" }}>{topic.name}</Text><Text style={{ color: colors.muted, marginTop: 4 }}>{topic.detail}</Text>{reviewMasterySummary.topicCounts[topic.name] ? <View><Text accessibilityLiveRegion="polite" style={{ color: colors.success, marginTop: 4 }}>{tr("progress.topicReinforced", { count: reviewMasterySummary.topicCounts[topic.name] })}</Text><Text accessibilityLabel={tr("progress.topicReinforcedDelta", { count: reviewReinforcementDelta(reviewMastery, topic.name) })} style={{ color: colors.success, marginTop: 2, fontSize: 12 }}>{tr("progress.topicReinforcedDelta", { count: reviewReinforcementDelta(reviewMastery, topic.name) })}</Text></View> : null}</Card>)}
         </View>
         <View style={{ marginTop: 6 }}><Card onPress={() => router.push("/settings" as never)}><Text style={{ color: colors.foreground, fontWeight: "800" }}>{tr("progress.settingsPrivacy")}</Text><Text style={{ color: colors.muted, marginTop: 4 }}>{tr("progress.settingsPrivacyBody")}</Text></Card></View>
       </ScrollView>

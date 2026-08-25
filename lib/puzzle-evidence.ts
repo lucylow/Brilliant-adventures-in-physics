@@ -56,6 +56,11 @@ export function summarizeReviewMastery(records: readonly ReviewMasteryRecord[]) 
   return { resolved: records.length, topics: Object.keys(topicCounts).sort(), topicCounts };
 }
 
+export function reviewReinforcementDelta(records: readonly ReviewMasteryRecord[], topic: string): number {
+  if (!topic) return 0;
+  return records.filter((record) => record.topic === topic).length;
+}
+
 export function reviewHistorySummary(records: readonly ReviewMasteryRecord[], limit = 5) {
   const latestByTopic = new Map<string, ReviewMasteryRecord>();
   for (const record of records) {
