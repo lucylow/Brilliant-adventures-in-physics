@@ -444,3 +444,8 @@
 - [x] Localize Home quick-action labels and accessibility descriptions
 - [x] Localize Home Notebook and mastery summary copy
 - [x] Add deterministic coverage for the remaining Home action keys
+
+- [x] Audit hardcoded onboarding copy and learning-path controls
+- [x] Add localized onboarding labels with safe English fallback
+- [x] Apply persisted-locale translations without changing profile semantics
+- [x] Add deterministic onboarding localization coverage

@@ -42,6 +42,9 @@ describe("localization contracts", () => {
     expect(translate(copy, "fr", "home.greeting")).toBe("Bonjour, physicien");
     expect(translate(copy, "es", "home.startPractice")).toBe("Empezar práctica");
     expect(translate(copy, "de", "home.changePath")).toBe("Change learning path");
+    expect(translate(copy, "fr", "onboarding.title")).toBe("Bienvenue dans PhysicaAI");
+    expect(translate(copy, "es", "onboarding.goalExperiment")).toBe("Hacer experimentos");
+    expect(translate(copy, "de", "onboarding.skip")).toBe("Skip setup");
   });
 
   it("formats stored timestamps with locale-aware output and safe fallback", () => {
