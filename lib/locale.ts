@@ -186,6 +186,20 @@ export function createAppTranslations(): TranslationStore {
     "home.noActivity": { en: "No activity yet", fr: "Aucune activité", es: "Aún no hay actividad" },
     "home.noActivityBody": { en: "Ask your first question or start a practice set to see your learning history here.", fr: "Posez votre première question ou commencez un exercice pour voir votre historique ici.", es: "Haz tu primera pregunta o inicia una práctica para ver aquí tu historial." },
     "home.startPractice": { en: "Start practice", fr: "Commencer un exercice", es: "Empezar práctica" },
+    "home.askTutor": { en: "Ask Tutor", fr: "Demander au tuteur", es: "Preguntar al tutor" },
+    "home.physicsLab": { en: "Physics Lab", fr: "Laboratoire de physique", es: "Laboratorio de física" },
+    "home.scan": { en: "Scan", fr: "Scanner", es: "Escanear" },
+    "home.lens": { en: "Lens", fr: "Lentille", es: "Lente" },
+    "home.lesson": { en: "Lesson", fr: "Leçon", es: "Lección" },
+    "home.concepts": { en: "Concepts", fr: "Concepts", es: "Conceptos" },
+    "home.notebook": { en: "Living Notebook", fr: "Notebook vivant", es: "Cuaderno vivo" },
+    "home.notebookBody": { en: "Revisit saved experiments and keep your reflections on-device.", fr: "Revoyez vos expériences enregistrées et gardez vos réflexions sur l’appareil.", es: "Revisa tus experimentos guardados y conserva tus reflexiones en el dispositivo." },
+    "home.open": { en: "Open", fr: "Ouvrir", es: "Abrir" },
+    "home.new": { en: "NEW", fr: "NOUVEAU", es: "NUEVO" },
+    "home.physicsMap": { en: "Your physics map", fr: "Votre carte de physique", es: "Tu mapa de física" },
+    "home.emptyMap": { en: "Complete your first practice attempt to start your progress map.", fr: "Terminez votre premier exercice pour commencer votre carte de progression.", es: "Completa tu primer ejercicio para iniciar tu mapa de progreso." },
+    "home.recentAttempt": { en: "Your latest attempt is ready for a focused follow-up.", fr: "Votre dernier essai est prêt pour un suivi ciblé.", es: "Tu último intento está listo para un seguimiento enfocado." },
+    "home.continue": { en: "Continue {{topic}}", fr: "Continuer {{topic}}", es: "Continuar {{topic}}" },
   };
   for (const [key, values] of Object.entries(entries)) for (const [locale, value] of Object.entries(values)) store.set(locale as SupportedLocale, key, value);
   return store;

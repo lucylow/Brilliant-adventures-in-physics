@@ -440,3 +440,7 @@
 - [x] Add localized Home dashboard keys with safe English fallback
 - [x] Apply persisted-locale translations without altering dynamic recommendation data
 - [x] Add deterministic Home localization coverage
+
+- [x] Localize Home quick-action labels and accessibility descriptions
+- [x] Localize Home Notebook and mastery summary copy
+- [x] Add deterministic coverage for the remaining Home action keys
