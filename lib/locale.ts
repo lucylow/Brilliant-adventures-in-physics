@@ -203,6 +203,7 @@ export function createAppTranslations(): TranslationStore {
     "progress.completionLab": { en: "Lab", fr: "Laboratoire", es: "Laboratorio" },
     "progress.completionTimelineItem": { en: "{{kind}} · {{contentId}} · {{date}}", fr: "{{kind}} · {{contentId}} · {{date}}", es: "{{kind}} · {{contentId}} · {{date}}" },
     "progress.completionTimelineEmpty": { en: "No completions match this filter.", fr: "Aucune complétion ne correspond à ce filtre.", es: "Ninguna finalización coincide con este filtro." },
+    "progress.completionFilterAnnouncement": { en: "{{filter}} selected. Showing {{count}} completion(s).", fr: "{{filter}} sélectionné. {{count}} complétion(s) affichée(s).", es: "{{filter}} seleccionado. Se muestran {{count}} finalización(es)." },
     "progress.reviewTitle": { en: "Review a missed principle", fr: "Revoir un principe manqué", es: "Revisar un principio fallado" },
     "progress.reviewCount": { en: "{{count}} principle(s) ready for review", fr: "{{count}} principe(s) à revoir", es: "{{count}} principio(s) listos para repasar" },
     "progress.reviewTopic": { en: "Missed principle: {{topic}}", fr: "Principe manqué : {{topic}}", es: "Principio fallado: {{topic}}" },

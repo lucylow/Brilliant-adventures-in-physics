@@ -654,3 +654,8 @@
 - [x] Add localized date and content-label formatting without raw answers
 - [x] Render a bounded accessible completion timeline in Progress
 - [x] Add deterministic timeline and privacy regression coverage
+
+- [x] Add localized completion-filter announcements
+- [x] Announce filtered timeline result counts to screen readers
+- [x] Make the no-match completion state explicit and accessible
+- [x] Add deterministic accessibility-contract coverage

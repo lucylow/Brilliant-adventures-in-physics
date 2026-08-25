@@ -40,6 +40,8 @@ describe("localization contracts", () => {
     expect(translate(copy, "fr", "progress.title")).toBe("Progression");
     expect(translate(copy, "es", "progress.earned")).toBe("Obtenidos");
     expect(translate(copy, "de", "progress.retry")).toBe("Retry loading progress");
+    expect(translate(copy, "fr", "progress.completionFilterAnnouncement", { filter: "Leçons", count: 0 })).toContain("0");
+    expect(translate(copy, "es", "progress.completionTimelineEmpty")).toContain("Ninguna");
     expect(translate(copy, "fr", "home.greeting")).toBe("Bonjour, physicien");
     expect(translate(copy, "es", "home.startPractice")).toBe("Empezar práctica");
     expect(translate(copy, "de", "home.changePath")).toBe("Change learning path");
@@ -89,6 +91,7 @@ describe("localization contracts", () => {
     store.set("fr", "save.ready", "{{count}} mesure(s) enregistrée(s).");
     expect(createLocalizedAnnouncement(store, "fr", "save.ready", "assertive", { count: 2 })).toEqual({ message: "2 mesure(s) enregistrée(s).", accessibilityLiveRegion: "assertive" });
     expect(createLocalizedAnnouncement(store, "de", "save.ready")).toEqual({ message: "Saved  measurement(s).", accessibilityLiveRegion: "polite" });
+    expect(createLocalizedAnnouncement(createAppTranslations(), "en", "progress.completionFilterAnnouncement", "polite", { filter: "Labs", count: 0 })).toEqual({ message: "Labs selected. Showing 0 completion(s).", accessibilityLiveRegion: "polite" });
   });
 
   it("formats stored timestamps with locale-aware output and safe fallback", () => {
