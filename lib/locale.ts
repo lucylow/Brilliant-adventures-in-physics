@@ -56,6 +56,13 @@ export function createAppTranslations(): TranslationStore {
     "lab.advancedLabel": { en: "ADVANCED PHYSICS · LOCAL MODEL", fr: "PHYSIQUE AVANCÉE · MODÈLE LOCAL", es: "FÍSICA AVANZADA · MODELO LOCAL" },
     "lab.advancedDescription": { en: "Explore time dilation, a force balance, and a quantum ground-state energy scale. These models are deterministic and keep equations separate from explanations.", fr: "Explorez la dilatation du temps, un équilibre des forces et une échelle d’énergie de l’état fondamental quantique. Ces modèles sont déterministes et séparent les équations des explications.", es: "Explora la dilatación temporal, un equilibrio de fuerzas y una escala de energía del estado fundamental cuántico. Estos modelos son deterministas y separan ecuaciones de explicaciones." },
     "lab.forceBalance": { en: "force balance: ΣF = 0", fr: "équilibre des forces : ΣF = 0", es: "equilibrio de fuerzas: ΣF = 0" },
+    "lens.media.choose": { en: "Choose local observation image", fr: "Choisir une image d’observation locale", es: "Elegir imagen de observación local" },
+    "lens.media.capture": { en: "Capture local observation image", fr: "Capturer une image d’observation locale", es: "Capturar imagen de observación local" },
+    "lens.media.unavailable": { en: "Camera unavailable on web", fr: "Caméra indisponible sur le web", es: "Cámara no disponible en la web" },
+    "lens.media.remove": { en: "Remove attached image", fr: "Supprimer l’image jointe", es: "Eliminar imagen adjunta" },
+    "lens.media.permission": { en: "Permission was not granted. You can enable it in device settings.", fr: "L’autorisation n’a pas été accordée. Vous pouvez l’activer dans les réglages.", es: "No se concedió el permiso. Puedes activarlo en los ajustes del dispositivo." },
+    "lens.media.canceled": { en: "No media was selected.", fr: "Aucun média n’a été sélectionné.", es: "No se seleccionó ningún medio." },
+    "lens.media.ready": { en: "Media is ready on this device.", fr: "Le média est prêt sur cet appareil.", es: "El medio está listo en este dispositivo." },
   };
   for (const [key, values] of Object.entries(entries)) for (const [locale, value] of Object.entries(values)) store.set(locale as SupportedLocale, key, value);
   return store;

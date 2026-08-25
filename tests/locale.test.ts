@@ -25,7 +25,9 @@ describe("localization contracts", () => {
   it("localizes feature-screen copy with a deterministic English fallback", () => {
     const copy = createAppTranslations();
     expect(translate(copy, "fr", "media.title")).toBe("Médias de physique");
+    expect(translate(copy, "fr", "lens.media.capture")).toBe("Capturer une image d’observation locale");
     expect(translate(copy, "de", "media.title")).toBe("Physics media");
+    expect(translate(copy, "de", "lens.media.permission")).toBe("Permission was not granted. You can enable it in device settings.");
   });
 
   it("formats percentages with a safe locale-aware formatter", () => {

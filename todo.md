@@ -377,3 +377,5 @@
 - [x] Add bounded media captions and observation timestamps to Lens drafts
 - [x] Add localized accessible controls for media metadata
 - [x] Add deterministic metadata validation coverage
+- [x] Localize Lens media controls and feedback through persisted locale
+- [x] Add deterministic Lens media localization coverage
