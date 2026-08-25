@@ -3,6 +3,7 @@ import {
   ADVENTURE_WORLDS,
   adventureProgress,
   completeAdventureMission,
+  missionEvidenceCount,
   mergeAdventureState,
   emptyAdventureState,
   generateAdventureMissions,
@@ -40,5 +41,12 @@ describe("local adventure engine", () => {
     expect(repeated.completedMissionIds).toEqual([missions[0].id]);
     expect(missionIsComplete(repeated, missions[0])).toBe(true);
     expect(adventureProgress(repeated, missions)).toBeCloseTo(1 / 3);
+  });
+
+  it("counts matching practice and completion evidence without trusting unrelated topics", () => {
+    const mission = generateAdventureMissions("orbit")[0];
+    expect(missionEvidenceCount(mission, { "Projectile motion": { attempts: 2 }, energy: { attempts: 10 } }, [{ topic: "projectile-motion" }])).toBe(1);
+    expect(missionEvidenceCount(mission, {}, [{ topic: "energy" }])).toBe(0);
+    expect(missionEvidenceCount({ ...mission, goal: 2 }, { "projectile-motion": { attempts: 1 } }, [{ topic: "projectile motion" }])).toBe(2);
   });
 });

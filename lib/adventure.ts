@@ -127,6 +127,25 @@ export function missionIsComplete(state: AdventureState, mission: AdventureMissi
   return state.completedMissionIds.includes(mission.id);
 }
 
+function normalizedMissionTopic(topic: string): string {
+  return topic.trim().toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
+}
+
+export function missionEvidenceCount(
+  mission: AdventureMission,
+  topicAttempts: Readonly<Record<string, { attempts: number }>>,
+  completionEvents: readonly { topic: string }[] = [],
+): number {
+  const target = normalizedMissionTopic(mission.topic);
+  if (!target) return 0;
+  const practiceEvidence = Object.entries(topicAttempts).reduce((total, [topic, mastery]) => {
+    if (normalizedMissionTopic(topic) !== target || !Number.isFinite(mastery.attempts) || mastery.attempts < 0) return total;
+    return total + Math.floor(mastery.attempts);
+  }, 0);
+  const completionEvidence = completionEvents.filter((event) => normalizedMissionTopic(event.topic) === target).length;
+  return Math.min(Math.max(0, Math.floor(mission.goal)), practiceEvidence + completionEvidence);
+}
+
 export function adventureProgress(state: AdventureState, missions: readonly AdventureMission[]): number {
   if (!missions.length) return 0;
   const completed = missions.filter((mission) => missionIsComplete(state, mission)).length;

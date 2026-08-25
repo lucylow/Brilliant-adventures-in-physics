@@ -634,3 +634,8 @@
 - [x] Add a deterministic derived percentage signal for successful review reinforcement
 - [x] Show localized mastery percentage deltas on affected topic cards
 - [x] Add regression coverage for capped percentage deltas and zero-state behavior
+
+- [x] Add a bounded local completion-event store for lessons and Lab experiments
+- [x] Make lesson and Lab completion evidence idempotent and privacy-safe
+- [x] Use lesson and Lab evidence in adventure mission progress
+- [x] Add deterministic malformed-data and duplicate-event tests

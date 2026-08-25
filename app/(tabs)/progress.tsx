@@ -11,7 +11,7 @@ import { useColors } from "@/hooks/use-colors";
 import { loadPreferencesWithStatus, type Preferences } from "@/lib/preferences";
 import { AnimatedProgress } from "@/components/motion-primitives";
 import { useAppTranslations } from "@/hooks/use-app-translations";
-import { adventureProgress, completeAdventureMission, emptyAdventureState, generateAdventureMissions, loadAdventureState, missionIsComplete, saveAdventureState, worldForLevel, type AdventureState } from "@/lib/adventure";
+import { adventureProgress, completeAdventureMission, emptyAdventureState, generateAdventureMissions, loadAdventureState, missionEvidenceCount, missionIsComplete, saveAdventureState, worldForLevel, type AdventureState } from "@/lib/adventure";
 import { loadPuzzleEvidence, loadResolvedPuzzleIds, loadReviewMastery, missedPuzzleReviewQueue, reviewHistorySummary, reviewMasteryPercentDelta, reviewReinforcementDelta, summarizePuzzleEvidence, summarizeReviewMastery, type PuzzleEvidence, type ReviewMasteryRecord } from "@/lib/puzzle-evidence";
 
 const TOPICS = [
@@ -46,7 +46,7 @@ export default function ProgressScreen() {
   const adventureWorld = worldForLevel(level.level);
   const adventureMissions = generateAdventureMissions(adventureWorld.id);
   const adventureMission = adventureMissions[0];
-  const adventureEvidence = Math.min(adventureMission.goal, learning.attempts);
+  const adventureEvidence = missionEvidenceCount(adventureMission, learning.topics, learning.completionEvents ?? []);
   const adventureComplete = missionIsComplete(adventureState, adventureMission) || adventureEvidence >= adventureMission.goal;
   useEffect(() => { if (!adventureComplete || missionIsComplete(adventureState, adventureMission)) return; let active = true; const nextState = completeAdventureMission({ ...adventureState, worldId: adventureWorld.id }, adventureMission.id); setAdventureState(nextState); void saveAdventureState(nextState).then(() => { if (active) setAdventureSaveFailed(false); }).catch(() => { if (active) setAdventureSaveFailed(true); }); return () => { active = false; }; }, [adventureComplete, adventureMission, adventureState, adventureWorld.id]);
   const achievements = evaluateAchievements(learning);

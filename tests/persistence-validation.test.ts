@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { isValidDraft, parseLearningState } from "../lib/progress-store";
+import { isValidDraft, parseCompletionEvents, parseLearningState } from "../lib/progress-store";
 
 describe("persistence validation", () => {
   it("falls back safely for malformed learning state and clamps impossible counts", () => {
@@ -16,5 +16,13 @@ describe("persistence validation", () => {
     expect(isValidDraft({ id: "", updatedAt: Date.now(), data: {} })).toBe(false);
     expect(isValidDraft({ id: "practice", updatedAt: 0, data: {} })).toBe(false);
     expect(isValidDraft({ id: "practice", updatedAt: Date.now() })).toBe(false);
+  });
+  it("filters invalid completion events, removes duplicate ids, and keeps the newest bound", () => {
+    const parsed = parseCompletionEvents([
+      { id: "lesson:projectile-motion", kind: "lesson", topic: "projectile-motion", completedAt: "2026-01-01T00:00:00.000Z" },
+      { id: "lesson:projectile-motion", kind: "lesson", topic: "projectile-motion", completedAt: "2026-01-02T00:00:00.000Z" },
+      { id: "bad", kind: "lesson", topic: "", completedAt: "not-a-date" },
+    ]);
+    expect(parsed).toEqual([{ id: "lesson:projectile-motion", kind: "lesson", topic: "projectile-motion", completedAt: "2026-01-01T00:00:00.000Z" }]);
   });
 });
