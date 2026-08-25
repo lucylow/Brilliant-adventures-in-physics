@@ -12,7 +12,7 @@ import { loadPreferencesWithStatus, type Preferences } from "@/lib/preferences";
 import { AnimatedProgress } from "@/components/motion-primitives";
 import { useAppTranslations } from "@/hooks/use-app-translations";
 import { adventureProgress, completeAdventureMission, emptyAdventureState, generateAdventureMissions, loadAdventureState, missionIsComplete, saveAdventureState, worldForLevel, type AdventureState } from "@/lib/adventure";
-import { loadPuzzleEvidence, missedPuzzleReviewQueue, summarizePuzzleEvidence, type PuzzleEvidence } from "@/lib/puzzle-evidence";
+import { loadPuzzleEvidence, loadResolvedPuzzleIds, missedPuzzleReviewQueue, summarizePuzzleEvidence, type PuzzleEvidence } from "@/lib/puzzle-evidence";
 
 const TOPICS = [
   { name: "Kinematics", detail: "Review motion graphs and units." },
@@ -30,14 +30,15 @@ export default function ProgressScreen() {
   const [adventureState, setAdventureState] = useState<AdventureState>(emptyAdventureState());
   const [adventureSaveFailed, setAdventureSaveFailed] = useState(false);
   const [puzzleEvidence, setPuzzleEvidence] = useState<PuzzleEvidence[]>([]);
-  const loadProgress = () => { setLoadFailed(false); let active = true; void Promise.all([loadLearningState(), loadPreferencesWithStatus(), loadAdventureState(), loadPuzzleEvidence()]).then(([nextLearning, preferenceResult, adventureResult, puzzleResult]) => { if (!active) return; setLearning(nextLearning); setPreferences(preferenceResult.preferences); setAdventureState(adventureResult.state); setPuzzleEvidence(puzzleResult); }).catch(() => { if (active) setLoadFailed(true); }); return () => { active = false; }; };
+  const [resolvedPuzzleIds, setResolvedPuzzleIds] = useState<string[]>([]);
+  const loadProgress = () => { setLoadFailed(false); let active = true; void Promise.all([loadLearningState(), loadPreferencesWithStatus(), loadAdventureState(), loadPuzzleEvidence(), loadResolvedPuzzleIds()]).then(([nextLearning, preferenceResult, adventureResult, puzzleResult, resolvedIds]) => { if (!active) return; setLearning(nextLearning); setPreferences(preferenceResult.preferences); setAdventureState(adventureResult.state); setPuzzleEvidence(puzzleResult); setResolvedPuzzleIds(resolvedIds); }).catch(() => { if (active) setLoadFailed(true); }); return () => { active = false; }; };
   useEffect(() => loadProgress(), []);
   const accuracy = learning.attempts ? learning.correct / learning.attempts : 0;
   const level = levelProgress(learning.correct * 10);
   const mission = generateMission(new Date().getDate());
   const missionValue = mission.kind === "practice" ? learning.attempts : 0;
   const puzzleSummary = summarizePuzzleEvidence(puzzleEvidence);
-  const reviewQueue = missedPuzzleReviewQueue(puzzleEvidence, 3);
+  const reviewQueue = missedPuzzleReviewQueue(puzzleEvidence, 3, resolvedPuzzleIds);
   const adventureWorld = worldForLevel(level.level);
   const adventureMissions = generateAdventureMissions(adventureWorld.id);
   const adventureMission = adventureMissions[0];

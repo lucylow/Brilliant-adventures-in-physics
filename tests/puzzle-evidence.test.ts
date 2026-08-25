@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { loadPuzzleEvidence, missedPuzzleReviewQueue, recordPuzzleEvidence, summarizePuzzleEvidence } from "../lib/puzzle-evidence";
+import { loadPuzzleEvidence, loadResolvedPuzzleIds, missedPuzzleReviewQueue, recordPuzzleEvidence, resolvePuzzleEvidence, summarizePuzzleEvidence } from "../lib/puzzle-evidence";
 
 vi.mock("@react-native-async-storage/async-storage", () => ({
   default: {
@@ -11,6 +11,7 @@ vi.mock("@react-native-async-storage/async-storage", () => ({
 
 describe("puzzle evidence", () => {
   beforeEach(() => {
+    vi.clearAllMocks();
     vi.mocked(AsyncStorage.getItem).mockResolvedValue(null);
     vi.mocked(AsyncStorage.setItem).mockResolvedValue(undefined);
   });
@@ -46,6 +47,15 @@ describe("puzzle evidence", () => {
       { puzzleId: "p-3", topic: "motion", outcome: "correct", hintsUsed: 0, xp: 25, recordedAt: "2026-01-01" },
     ], 2);
     expect(queue.map((entry) => entry.puzzleId)).toEqual(["p-1", "p-2"]);
+  });
+
+  it("resolves a puzzle once without deleting its original evidence", async () => {
+    vi.mocked(AsyncStorage.getItem).mockResolvedValueOnce(null).mockResolvedValueOnce(JSON.stringify(["p-1"]));
+    await expect(resolvePuzzleEvidence("p-1")).resolves.toBe(true);
+    await expect(resolvePuzzleEvidence("p-1")).resolves.toBe(false);
+    vi.mocked(AsyncStorage.getItem).mockResolvedValue(JSON.stringify(["p-1"]));
+    await expect(loadResolvedPuzzleIds()).resolves.toEqual(["p-1"]);
+    expect(AsyncStorage.setItem).toHaveBeenCalledTimes(1);
   });
 
   it("filters malformed records when loading", async () => {

@@ -590,3 +590,8 @@
 - [x] Select missed principles deterministically from local evidence
 - [x] Preserve original puzzle IDs and avoid duplicate credit during review
 - [x] Add deterministic review-mode selection coverage
+
+- [x] Add derived resolved state without mutating original puzzle evidence
+- [x] Persist successful review resolutions locally and idempotently
+- [x] Exclude resolved principles from future review queues
+- [x] Add deterministic resolution and anti-duplicate tests
