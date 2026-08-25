@@ -639,3 +639,8 @@
 - [x] Make lesson and Lab completion evidence idempotent and privacy-safe
 - [x] Use lesson and Lab evidence in adventure mission progress
 - [x] Add deterministic malformed-data and duplicate-event tests
+
+- [x] Add a privacy-safe completion-event summary helper
+- [x] Show lesson and Lab evidence counts in Progress
+- [x] Show completion evidence in achievement detail without raw content
+- [x] Add deterministic summary and malformed-event coverage

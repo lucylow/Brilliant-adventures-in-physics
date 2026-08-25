@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { isValidDraft, parseCompletionEvents, parseLearningState } from "../lib/progress-store";
+import { isValidDraft, parseCompletionEvents, parseLearningState, summarizeCompletionEvents } from "../lib/progress-store";
 
 describe("persistence validation", () => {
   it("falls back safely for malformed learning state and clamps impossible counts", () => {
@@ -24,5 +24,10 @@ describe("persistence validation", () => {
       { id: "bad", kind: "lesson", topic: "", completedAt: "not-a-date" },
     ]);
     expect(parsed).toEqual([{ id: "lesson:projectile-motion", kind: "lesson", topic: "projectile-motion", completedAt: "2026-01-01T00:00:00.000Z" }]);
+    expect(summarizeCompletionEvents(parsed)).toEqual({ total: 1, lessons: 1, labs: 0, topics: ["projectile-motion"] });
+    expect(summarizeCompletionEvents([
+      ...parsed,
+      { id: "lab:projectile-motion", kind: "lab", topic: "projectile-motion", completedAt: "2026-01-03T00:00:00.000Z" },
+    ])).toEqual({ total: 2, lessons: 1, labs: 1, topics: ["projectile-motion"] });
   });
 });

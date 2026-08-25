@@ -24,6 +24,16 @@ export function parseCompletionEvents(value: unknown): CompletionEvent[] {
   return [...unique.values()].slice(-200);
 }
 
+export function summarizeCompletionEvents(events: readonly CompletionEvent[]) {
+  const valid = parseCompletionEvents(events);
+  return {
+    total: valid.length,
+    lessons: valid.filter((event) => event.kind === "lesson").length,
+    labs: valid.filter((event) => event.kind === "lab").length,
+    topics: [...new Set(valid.map((event) => event.topic))].sort(),
+  };
+}
+
 function normalizedCompletionTopic(topic: string): string {
   return topic.trim().toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
 }
