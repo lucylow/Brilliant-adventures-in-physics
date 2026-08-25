@@ -600,3 +600,8 @@
 - [x] Show localized completion feedback at the end of sequential review
 - [x] Preserve original evidence and ordinary progress totals
 - [x] Add deterministic completion-summary coverage
+
+- [x] Add localized return-to-Progress completion copy
+- [x] Add an accessible return action after sequential review completion
+- [x] Preserve review evidence and scoring behavior
+- [x] Add deterministic completion-navigation contract coverage

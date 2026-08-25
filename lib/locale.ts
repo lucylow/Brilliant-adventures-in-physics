@@ -133,6 +133,7 @@ export function createAppTranslations(): TranslationStore {
     "practice.reviewProgress": { en: "Review {{current}} of {{total}}", fr: "Révision {{current}} sur {{total}}", es: "Repaso {{current}} de {{total}}" },
     "practice.reviewDone": { en: "Review queue complete. Your original evidence is preserved.", fr: "File de révision terminée. Vos preuves originales sont conservées.", es: "Cola de repaso completa. Tu evidencia original se conserva." },
     "practice.reviewCompleteSummary": { en: "Resolved in this review: {{count}} principle(s). Original evidence remains available in Progress.", fr: "Résolus pendant cette révision : {{count}} principe(s). Les preuves originales restent disponibles dans Progression.", es: "Resueltos en este repaso: {{count}} principio(s). La evidencia original sigue disponible en Progreso." },
+    "practice.returnToProgress": { en: "Return to Progress", fr: "Retourner à la progression", es: "Volver a Progreso" },
     "common.tryAgain": { en: "Try again", fr: "Réessayer", es: "Intentar de nuevo" },
     "common.send": { en: "Send", fr: "Envoyer", es: "Enviar" },
     "tutor.title": { en: "Tutor", fr: "Tuteur", es: "Tutor" },
