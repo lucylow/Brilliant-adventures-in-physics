@@ -478,3 +478,7 @@
 - [x] Localize Lab ConceptLink visible labels
 - [x] Localize Lab ConceptLink screen-reader descriptions
 - [x] Add deterministic coverage for ConceptLink localization
+
+- [x] Remove repeated preference reads from Lab child controls
+- [x] Pass the parent-loaded locale into Lab sliders and concept links
+- [x] Verify localized output remains unchanged after the refactor
