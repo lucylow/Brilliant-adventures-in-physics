@@ -518,3 +518,8 @@
 - [x] Localize Lens save, retry, delete, and empty-state labels
 - [x] Localize Lens media-loading and storage-recovery feedback
 - [x] Add deterministic coverage for Lens recovery keys
+
+- [x] Audit stable Physics Lens stage prompts and status labels
+- [x] Add localized observe, predict, measure, and reflect prompts
+- [x] Apply localized stage copy without changing user-entered content or state transitions
+- [x] Add deterministic stage-prompt localization coverage

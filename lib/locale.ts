@@ -309,6 +309,13 @@ export function createAppTranslations(): TranslationStore {
     "lens.loadFailed": { en: "We could not load saved experiments. Your current measurements are still available.", fr: "Impossible de charger les expériences enregistrées. Vos mesures actuelles sont toujours disponibles.", es: "No pudimos cargar los experimentos guardados. Tus mediciones actuales siguen disponibles." },
     "lens.noneSaved": { en: "No saved experiments yet.", fr: "Aucune expérience enregistrée pour le moment.", es: "Aún no hay experimentos guardados." },
     "lens.delete": { en: "Delete", fr: "Supprimer", es: "Eliminar" },
+    "lens.stage.observe": { en: "Describe what you can observe without explaining it yet.", fr: "Décrivez ce que vous pouvez observer sans encore l’expliquer.", es: "Describe lo que puedes observar sin explicarlo todavía." },
+    "lens.stage.predict": { en: "Write one testable prediction before measuring.", fr: "Écrivez une prédiction vérifiable avant de mesurer.", es: "Escribe una predicción comprobable antes de medir." },
+    "lens.stage.measure": { en: "Record one measurement and include its unit.", fr: "Notez une mesure et indiquez son unité.", es: "Registra una medición e incluye su unidad." },
+    "lens.stage.model": { en: "Name the physics principle or equation you will use.", fr: "Nommez le principe ou l’équation de physique que vous utiliserez.", es: "Nombra el principio o la ecuación de física que usarás." },
+    "lens.stage.simulate": { en: "Compare your prediction with a deterministic model.", fr: "Comparez votre prédiction avec un modèle déterministe.", es: "Compara tu predicción con un modelo determinista." },
+    "lens.stage.compare": { en: "Compare the measurement with your prediction.", fr: "Comparez la mesure avec votre prédiction.", es: "Compara la medición con tu predicción." },
+    "lens.stage.reflect": { en: "Write one thing you learned or would test next.", fr: "Écrivez une chose apprise ou que vous testeriez ensuite.", es: "Escribe algo que aprendiste o que probarías después." },
   };
   for (const [key, values] of Object.entries(entries)) for (const [locale, value] of Object.entries(values)) store.set(locale as SupportedLocale, key, value);
   return store;

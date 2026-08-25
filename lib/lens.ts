@@ -18,6 +18,16 @@ export const lensStagePrompts: Record<LensStage, string> = {
   reflect: "Write one thing you learned or would test next.",
 };
 
+export const lensStagePromptKeys: Record<LensStage, string> = {
+  observe: "lens.stage.observe",
+  predict: "lens.stage.predict",
+  measure: "lens.stage.measure",
+  model: "lens.stage.model",
+  simulate: "lens.stage.simulate",
+  compare: "lens.stage.compare",
+  reflect: "lens.stage.reflect",
+};
+
 export function emptyLensSession(): LensSession { return { stage: "observe", scene: "", prediction: "", measurement: "", reflection: "" }; }
 
 export function canAdvanceLens(session: LensSession): boolean {
