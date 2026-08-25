@@ -178,6 +178,7 @@ export function createAppTranslations(): TranslationStore {
     "progress.openMission": { en: "Open mission", fr: "Ouvrir la mission", es: "Abrir misión" },
     "progress.missionReady": { en: "Mission ready", fr: "Mission prête", es: "Misión lista" },
     "progress.missionComplete": { en: "Mission evidence recorded", fr: "Preuve de mission enregistrée", es: "Evidencia de misión registrada" },
+    "progress.adventureSaveFailed": { en: "Adventure progress is temporarily unavailable; your learning records remain safe.", fr: "La progression de l’aventure est temporairement indisponible ; vos données d’apprentissage restent en sécurité.", es: "El progreso de la aventura no está disponible temporalmente; tus registros de aprendizaje siguen seguros." },
     "progress.missionProgress": { en: "{{done}} of {{goal}} evidence", fr: "{{done}} preuve(s) sur {{goal}}", es: "{{done}} de {{goal}} evidencias" },
     "progress.achievements": { en: "Achievements", fr: "Succès", es: "Logros" },
     "progress.achievementsSubtitle": { en: "Earned through meaningful learning evidence.", fr: "Obtenus grâce à des preuves d’apprentissage significatives.", es: "Se obtienen mediante evidencias de aprendizaje significativas." },

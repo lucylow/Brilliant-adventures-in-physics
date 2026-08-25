@@ -11,7 +11,7 @@ import { useColors } from "@/hooks/use-colors";
 import { loadPreferencesWithStatus, type Preferences } from "@/lib/preferences";
 import { AnimatedProgress } from "@/components/motion-primitives";
 import { useAppTranslations } from "@/hooks/use-app-translations";
-import { adventureProgress, generateAdventureMissions, missionIsComplete, worldForLevel, emptyAdventureState } from "@/lib/adventure";
+import { adventureProgress, completeAdventureMission, emptyAdventureState, generateAdventureMissions, loadAdventureState, missionIsComplete, saveAdventureState, worldForLevel, type AdventureState } from "@/lib/adventure";
 
 const TOPICS = [
   { name: "Kinematics", detail: "Review motion graphs and units." },
@@ -26,7 +26,9 @@ export default function ProgressScreen() {
   const [learning, setLearning] = useState<LearningState>({ attempts: 0, correct: 0, savedQuestions: [], topics: {}, streak: 0, lessonsCompleted: 0, labsCompleted: 0 });
   const [preferences, setPreferences] = useState<Preferences>({ streakEnabled: true, reducedMotion: false, hapticsEnabled: true, locale: "en" });
   const [loadFailed, setLoadFailed] = useState(false);
-  const loadProgress = () => { setLoadFailed(false); let active = true; void Promise.all([loadLearningState(), loadPreferencesWithStatus()]).then(([nextLearning, preferenceResult]) => { if (!active) return; setLearning(nextLearning); setPreferences(preferenceResult.preferences); }).catch(() => { if (active) setLoadFailed(true); }); return () => { active = false; }; };
+  const [adventureState, setAdventureState] = useState<AdventureState>(emptyAdventureState());
+  const [adventureSaveFailed, setAdventureSaveFailed] = useState(false);
+  const loadProgress = () => { setLoadFailed(false); let active = true; void Promise.all([loadLearningState(), loadPreferencesWithStatus(), loadAdventureState()]).then(([nextLearning, preferenceResult, adventureResult]) => { if (!active) return; setLearning(nextLearning); setPreferences(preferenceResult.preferences); setAdventureState(adventureResult.state); }).catch(() => { if (active) setLoadFailed(true); }); return () => { active = false; }; };
   useEffect(() => loadProgress(), []);
   const accuracy = learning.attempts ? learning.correct / learning.attempts : 0;
   const level = levelProgress(learning.correct * 10);
@@ -34,10 +36,10 @@ export default function ProgressScreen() {
   const missionValue = mission.kind === "practice" ? learning.attempts : 0;
   const adventureWorld = worldForLevel(level.level);
   const adventureMissions = generateAdventureMissions(adventureWorld.id);
-  const adventureState = emptyAdventureState(adventureWorld.id);
   const adventureMission = adventureMissions[0];
   const adventureEvidence = Math.min(adventureMission.goal, learning.attempts);
   const adventureComplete = missionIsComplete(adventureState, adventureMission) || adventureEvidence >= adventureMission.goal;
+  useEffect(() => { if (!adventureComplete || missionIsComplete(adventureState, adventureMission)) return; let active = true; const nextState = completeAdventureMission({ ...adventureState, worldId: adventureWorld.id }, adventureMission.id); setAdventureState(nextState); void saveAdventureState(nextState).then(() => { if (active) setAdventureSaveFailed(false); }).catch(() => { if (active) setAdventureSaveFailed(true); }); return () => { active = false; }; }, [adventureComplete, adventureMission, adventureState, adventureWorld.id]);
   const achievements = evaluateAchievements(learning);
   const [achievementFilter, setAchievementFilter] = useState<"all" | "earned" | "progress">("all");
   const visibleAchievements = achievements.filter((achievement) => achievementFilter === "all" || (achievementFilter === "earned" ? achievement.earned : !achievement.earned));
@@ -74,8 +76,9 @@ export default function ProgressScreen() {
           <Text style={{ color: colors.foreground, fontWeight: "800", marginTop: 12 }}>{adventureMission.title}</Text>
           <Text style={{ color: colors.muted, marginTop: 4 }}>{adventureMission.objective}</Text>
           <Text accessibilityLiveRegion="polite" style={{ color: adventureComplete ? colors.success : colors.primary, marginTop: 8 }}>{adventureComplete ? tr("progress.missionComplete") : tr("progress.missionProgress", { done: adventureEvidence, goal: adventureMission.goal })}</Text>
-          <View style={{ marginTop: 10 }}><AnimatedProgress value={adventureProgress({ ...adventureState, completedMissionIds: adventureComplete ? [adventureMission.id] : [] }, adventureMissions)} preferences={preferences} /></View>
+          <View style={{ marginTop: 10 }}><AnimatedProgress value={adventureProgress(adventureComplete ? { ...adventureState, completedMissionIds: adventureState.completedMissionIds.includes(adventureMission.id) ? adventureState.completedMissionIds : [...adventureState.completedMissionIds, adventureMission.id] } : adventureState, adventureMissions)} preferences={preferences} /></View>
           {!adventureComplete && <View style={{ marginTop: 10 }}><PrimaryButton label={tr("progress.openMission")} onPress={() => router.push("/practice" as never)} /></View>}
+          {adventureSaveFailed && <Text accessibilityLiveRegion="assertive" style={{ color: colors.warning, marginTop: 8 }}>{tr("progress.adventureSaveFailed")}</Text>}
         </Card>
         <View style={{ marginTop: 24 }}>
           <SectionHeader title={tr("progress.achievements")} subtitle={tr("progress.achievementsSubtitle")} />

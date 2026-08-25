@@ -20,6 +20,8 @@ export type AdventureMission = {
   requiredLevel: number;
 };
 
+import AsyncStorage from "@react-native-async-storage/async-storage";
+
 export type AdventureState = {
   worldId: WorldId;
   completedMissionIds: string[];
@@ -81,6 +83,44 @@ export function chooseAdventurePath(state: AdventureState, choiceId: string): Ad
 export function setAdventureFlag(state: AdventureState, key: string, value = true): AdventureState {
   if (!key.trim() || state.flags[key] === value) return state;
   return { ...state, flags: { ...state.flags, [key]: value } };
+}
+
+const ADVENTURE_STORAGE_KEY = "physicaai.adventure.v1";
+
+function isWorldId(value: unknown): value is WorldId {
+  return ADVENTURE_WORLDS.some((world) => world.id === value);
+}
+
+export function mergeAdventureState(input: unknown): AdventureState {
+  const stored = input && typeof input === "object" ? input as Partial<AdventureState> : {};
+  const flags = stored.flags && typeof stored.flags === "object" ? Object.fromEntries(Object.entries(stored.flags).filter(([, value]) => typeof value === "boolean")) : {};
+  return {
+    worldId: isWorldId(stored.worldId) ? stored.worldId : "orbit",
+    completedMissionIds: Array.isArray(stored.completedMissionIds) ? stored.completedMissionIds.filter((value): value is string => typeof value === "string").slice(0, 100) : [],
+    choices: Array.isArray(stored.choices) ? stored.choices.filter((value): value is string => typeof value === "string").slice(0, 100) : [],
+    flags,
+  };
+}
+
+export type AdventureLoadResult = { state: AdventureState; recovered: boolean };
+
+export async function loadAdventureState(): Promise<AdventureLoadResult> {
+  try {
+    const raw = await AsyncStorage.getItem(ADVENTURE_STORAGE_KEY);
+    if (!raw) return { state: emptyAdventureState(), recovered: false };
+    const parsed: unknown = JSON.parse(raw);
+    const state = mergeAdventureState(parsed);
+    const recovered = !parsed || typeof parsed !== "object" || !isWorldId((parsed as Partial<AdventureState>).worldId);
+    return { state, recovered };
+  } catch {
+    return { state: emptyAdventureState(), recovered: true };
+  }
+}
+
+export async function saveAdventureState(state: AdventureState): Promise<AdventureState> {
+  const safeState = mergeAdventureState(state);
+  await AsyncStorage.setItem(ADVENTURE_STORAGE_KEY, JSON.stringify(safeState));
+  return safeState;
 }
 
 export function missionIsComplete(state: AdventureState, mission: AdventureMission): boolean {

@@ -3,6 +3,7 @@ import {
   ADVENTURE_WORLDS,
   adventureProgress,
   completeAdventureMission,
+  mergeAdventureState,
   emptyAdventureState,
   generateAdventureMissions,
   isWorldUnlocked,
@@ -24,6 +25,11 @@ describe("local adventure engine", () => {
     expect(missions[0].id).toBe("orbit-mission-1");
     expect(missions[0].topic).toBe("projectile-motion");
     expect(missions[0].goal).toBeGreaterThan(0);
+  });
+
+  it("recovers malformed local state without trusting arbitrary values", () => {
+    const recovered = mergeAdventureState({ worldId: "unknown", completedMissionIds: ["ok", 4, null], choices: "bad", flags: { safe: true, unsafe: "yes" } });
+    expect(recovered).toEqual({ worldId: "orbit", completedMissionIds: ["ok"], choices: [], flags: { safe: true } });
   });
 
   it("completes missions idempotently and reports progress", () => {

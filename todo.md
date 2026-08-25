@@ -543,7 +543,7 @@
 
 - [x] Define local deterministic adventure worlds and unlock rules
 - [x] Define typed story missions with educational objectives and verified rewards
-- [ ] Add local adventure progression persistence without analytics
+- [x] Add local adventure progression persistence without analytics
 - [x] Add an accessible mission entry point connected to existing learning flows
 - [x] Add deterministic tests for mission generation, unlocks, and completion idempotency
 
@@ -555,3 +555,8 @@
 - [x] Add reduced-motion-safe interactive press feedback to shared cards and buttons
 - [x] Preserve accessibility roles, disabled states, and touch targets during the feedback update
 - [x] Add deterministic motion contract coverage for the new interaction feedback
+
+- [x] Add validated local persistence helpers for adventure state
+- [x] Derive adventure mission evidence from persisted learning records
+- [x] Restore adventure progress in Progress with safe fallback behavior
+- [x] Add deterministic persistence and evidence-linking tests
