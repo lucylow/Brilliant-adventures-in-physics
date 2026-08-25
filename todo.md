@@ -585,3 +585,8 @@
 - [x] Show a bounded missed-principle list in Progress
 - [x] Preserve one-tap Practice routing for each review item
 - [x] Add deterministic review-summary coverage
+
+- [x] Add localized sequential review-mode labels and completion feedback
+- [x] Select missed principles deterministically from local evidence
+- [x] Preserve original puzzle IDs and avoid duplicate credit during review
+- [x] Add deterministic review-mode selection coverage
