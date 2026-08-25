@@ -400,3 +400,6 @@
 - [x] Add deterministic preview interaction coverage
 - [x] Show localized caption and timestamp context in full-screen Notebook preview
 - [x] Add deterministic full-screen metadata rendering coverage
+- [x] Add non-destructive image-load failure handling to Notebook preview
+- [x] Add localized retry and preview-failure feedback
+- [x] Add deterministic preview failure-state coverage

@@ -32,6 +32,7 @@ describe("localization contracts", () => {
     expect(translate(copy, "fr", "notebook.saved")).toBe("Réflexion enregistrée dans votre Notebook local.");
     expect(translate(copy, "es", "notebook.closePreview")).toBe("Cerrar vista previa");
     expect(translate(copy, "de", "notebook.previewUnavailable")).toContain("preview");
+    expect(translate(copy, "fr", "notebook.retryPreview")).toBe("Réessayer l’aperçu");
   });
 
   it("formats stored timestamps with locale-aware output and safe fallback", () => {
