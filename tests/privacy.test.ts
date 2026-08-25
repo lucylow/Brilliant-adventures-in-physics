@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { buildLocalDataShareText, formatLocalDataSummary, getLocalDataSummary, LOCAL_DATA_STORAGE_KEYS } from "../lib/privacy";
+import { buildLocalDataShareText, formatLocalDataSummary, getLocalDataSummary, localSummaryFileUri, LOCAL_DATA_STORAGE_KEYS } from "../lib/privacy";
 
 vi.mock("@react-native-async-storage/async-storage", () => ({
   default: {
@@ -23,6 +23,11 @@ describe("privacy controls", () => {
     expect(text).toContain("Completion events: 3");
     expect(text).toContain("Labs completed: 1");
   });
+  it("builds a cleanup-safe temporary summary URI", () => {
+    expect(localSummaryFileUri("file:///cache/")).toBe("file:///cache/physicaai-local-summary.txt");
+    expect(localSummaryFileUri(null)).toBeNull();
+  });
+
   it("builds a count-only share payload without raw study content", () => {
     const text = buildLocalDataShareText({ learningRecords: 2, savedQuestions: 1, savedExperiments: 1, activeDrafts: 0, completionEvents: 2, lessonCompletions: 1, labCompletions: 1 });
     expect(text).toContain("Completion events: 2");

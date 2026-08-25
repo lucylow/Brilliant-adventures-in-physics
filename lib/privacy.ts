@@ -32,8 +32,14 @@ export function formatLocalDataSummary(summary: LocalDataSummary): string {
   return ["PhysicaAI local data summary", `Practice attempts: ${summary.learningRecords}`, `Saved questions: ${summary.savedQuestions}`, `Saved experiments: ${summary.savedExperiments}`, `Active drafts: ${summary.activeDrafts}`, `Completion events: ${summary.completionEvents}`, `Lessons completed: ${summary.lessonCompletions}`, `Labs completed: ${summary.labCompletions}`].join("\n");
 }
 
+export const LOCAL_SUMMARY_FILE_NAME = "physicaai-local-summary.txt";
+
 export function buildLocalDataShareText(summary: LocalDataSummary): string {
   return formatLocalDataSummary(summary);
+}
+
+export function localSummaryFileUri(directory: string | null): string | null {
+  return directory ? `${directory}${LOCAL_SUMMARY_FILE_NAME}` : null;
 }
 
 export async function clearAllLocalData(): Promise<void> {

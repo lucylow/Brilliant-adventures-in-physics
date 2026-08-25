@@ -5,7 +5,7 @@ import * as Sharing from "expo-sharing";
 import { router } from "expo-router";
 import { ScreenContainer } from "@/components/screen-container";
 import { Card, PrimaryButton, SecondaryButton, SectionHeader } from "@/components/physica-ui";
-import { buildLocalDataShareText, clearAllLocalData, formatLocalDataSummary, getLocalDataSummary, type LocalDataSummary } from "@/lib/privacy";
+import { buildLocalDataShareText, clearAllLocalData, formatLocalDataSummary, getLocalDataSummary, localSummaryFileUri, type LocalDataSummary } from "@/lib/privacy";
 import { useColors } from "@/hooks/use-colors";
 import { useAppTranslations } from "@/hooks/use-app-translations";
 
@@ -15,28 +15,30 @@ export default function PrivacyScreen() {
   const [summary, setSummary] = useState<LocalDataSummary>({ learningRecords: 0, savedQuestions: 0, savedExperiments: 0, activeDrafts: 0, completionEvents: 0, lessonCompletions: 0, labCompletions: 0 });
   const [shareMessage, setShareMessage] = useState<string | null>(null);
   const [sharing, setSharing] = useState(false);
-  const refresh = () => { void getLocalDataSummary().then(setSummary); };
+  const refresh = () => { void getLocalDataSummary().then((next) => { setSummary(next); setShareMessage(null); }).catch(() => setShareMessage(tr("privacy.loadFailed"))); };
   useEffect(refresh, []);
   const rows = [{ label: tr("privacy.practiceAttempts"), value: summary.learningRecords }, { label: tr("privacy.savedQuestions"), value: summary.savedQuestions }, { label: tr("privacy.savedExperiments"), value: summary.savedExperiments }, { label: tr("privacy.activeDrafts"), value: summary.activeDrafts }, { label: tr("privacy.completionEvents"), value: summary.completionEvents }, { label: tr("privacy.lessonsCompleted"), value: summary.lessonCompletions }, { label: tr("privacy.labsCompleted"), value: summary.labCompletions }];
-  const clear = () => Alert.alert(tr("privacy.clearTitle"), tr("privacy.clearBody"), [{ text: tr("privacy.cancel"), style: "cancel" }, { text: tr("privacy.clear"), style: "destructive", onPress: () => void clearAllLocalData().then(refresh) }]);
+  const clear = () => Alert.alert(tr("privacy.clearTitle"), tr("privacy.clearBody"), [{ text: tr("privacy.cancel"), style: "cancel" }, { text: tr("privacy.clear"), style: "destructive", onPress: () => { void clearAllLocalData().then(refresh).catch(() => setShareMessage(tr("privacy.clearFailed"))); } }]);
   const share = async () => {
     if (sharing) return;
     setSharing(true);
     setShareMessage(null);
+    let uri: string | null = null;
     try {
       if (Platform.OS === "web" || !(await Sharing.isAvailableAsync())) {
         setShareMessage(tr("privacy.shareUnavailable"));
         return;
       }
       const directory = FileSystem.cacheDirectory ?? FileSystem.documentDirectory;
-      if (!directory) throw new Error("Local cache directory unavailable");
-      const uri = `${directory}physicaai-local-summary.txt`;
+      uri = localSummaryFileUri(directory);
+      if (!uri) throw new Error("Local cache directory unavailable");
       await FileSystem.writeAsStringAsync(uri, buildLocalDataShareText(summary), { encoding: FileSystem.EncodingType.UTF8 });
       await Sharing.shareAsync(uri, { dialogTitle: tr("privacy.shareTitle"), mimeType: "text/plain", UTI: "public.plain-text" });
       setShareMessage(tr("privacy.shareSuccess"));
     } catch {
       setShareMessage(tr("privacy.shareFailed"));
     } finally {
+      if (uri) await FileSystem.deleteAsync(uri, { idempotent: true }).catch(() => undefined);
       setSharing(false);
     }
   };

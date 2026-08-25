@@ -669,3 +669,8 @@
 - [x] Add sharing availability and error feedback in Privacy
 - [x] Keep sharing offline-only with no upload path
 - [x] Add deterministic sharing-contract coverage
+
+- [x] Clean up temporary privacy-summary files after sharing attempts
+- [x] Add safe refresh failure feedback on the privacy screen
+- [x] Preserve share-sheet success and unsupported-platform behavior
+- [x] Add deterministic cleanup and failure-path coverage

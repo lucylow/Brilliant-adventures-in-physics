@@ -252,6 +252,8 @@ export function createAppTranslations(): TranslationStore {
     "privacy.shareSuccess": { en: "The count-only summary is ready to share.", fr: "Le résumé des totaux est prêt à être partagé.", es: "El resumen de cantidades está listo para compartir." },
     "privacy.shareUnavailable": { en: "Sharing is not available on this device. Your local data remains unchanged.", fr: "Le partage n’est pas disponible sur cet appareil. Vos données locales restent inchangées.", es: "Compartir no está disponible en este dispositivo. Tus datos locales no han cambiado." },
     "privacy.shareFailed": { en: "The summary could not be shared. Your local data remains unchanged.", fr: "Le résumé n’a pas pu être partagé. Vos données locales restent inchangées.", es: "No se pudo compartir el resumen. Tus datos locales no han cambiado." },
+    "privacy.loadFailed": { en: "The local summary could not be refreshed. Your existing data remains unchanged.", fr: "Le résumé local n’a pas pu être actualisé. Vos données existantes restent inchangées.", es: "No se pudo actualizar el resumen local. Tus datos existentes no han cambiado." },
+    "privacy.clearFailed": { en: "Local data could not be cleared. Please try again.", fr: "Les données locales n’ont pas pu être effacées. Réessayez.", es: "No se pudieron borrar los datos locales. Inténtalo de nuevo." },
     "home.retryDashboard": { en: "Retry loading dashboard", fr: "Réessayer de charger le tableau de bord", es: "Reintentar la carga del panel" },
     "home.greeting": { en: "Hi, physicist", fr: "Bonjour, physicien", es: "Hola, físico" },
     "home.greetingBody": { en: "Let’s understand some physics today.", fr: "Comprenons la physique aujourd’hui.", es: "Entendamos algo de física hoy." },
