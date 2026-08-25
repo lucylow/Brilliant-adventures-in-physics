@@ -33,6 +33,7 @@ export default function PracticeScreen() {
   const [puzzlePersistenceMessage, setPuzzlePersistenceMessage] = useState<string | null>(null);
   const [reviewItems, setReviewItems] = useState<Awaited<ReturnType<typeof missedPuzzleReviewQueue>>>([]);
   const [reviewCursor, setReviewCursor] = useState(0);
+  const [reviewResolvedCount, setReviewResolvedCount] = useState(0);
   const [submitting, setSubmitting] = useState(false);
   const [persistenceMessage, setPersistenceMessage] = useState<string | null>(null);
   const [notebookMessage, setNotebookMessage] = useState<string | null>(null);
@@ -44,7 +45,7 @@ export default function PracticeScreen() {
   const puzzle = useMemo(() => createPhysicsPuzzle(question.concept, 2, index), [question.concept, index]);
   const puzzleHints = useMemo(() => getPhysicsHints(question.concept), [question.concept]);
   const puzzleAnnouncement = puzzleOutcome ? announce(puzzleOutcome === "correct" ? "practice.puzzleCorrect" : puzzleOutcome === "assisted-correct" ? "practice.puzzleAssisted" : "practice.puzzleIncorrect", puzzleOutcome === "incorrect" ? "assertive" : "polite") : null;
-  const answerPuzzle = (choice: string) => { const outcome = scorePuzzleAnswer(puzzle, choice, puzzleHintsUsed); const evidenceId = reviewItem?.puzzleId ?? puzzle.id; setPuzzleOutcome(outcome); setPuzzlePersistenceMessage(null); void recordPuzzleEvidence({ puzzleId: puzzle.id, topic: question.concept, outcome, hintsUsed: puzzleHintsUsed, xp: puzzleRewardXp(puzzle, outcome) }).then(() => { if (isReviewMode && outcome !== "incorrect") return resolvePuzzleEvidence(evidenceId); }).catch(() => setPuzzlePersistenceMessage(tr("practice.puzzleSaveFailed"))); };
+  const answerPuzzle = (choice: string) => { const outcome = scorePuzzleAnswer(puzzle, choice, puzzleHintsUsed); const evidenceId = reviewItem?.puzzleId ?? puzzle.id; setPuzzleOutcome(outcome); setPuzzlePersistenceMessage(null); void recordPuzzleEvidence({ puzzleId: puzzle.id, topic: question.concept, outcome, hintsUsed: puzzleHintsUsed, xp: puzzleRewardXp(puzzle, outcome) }).then(() => { if (isReviewMode && outcome !== "incorrect") return resolvePuzzleEvidence(evidenceId); return false; }).then((resolved) => { if (resolved) setReviewResolvedCount((value) => value + 1); }).catch(() => setPuzzlePersistenceMessage(tr("practice.puzzleSaveFailed"))); };
   const resetPuzzle = () => { setPuzzleOutcome(null); setPuzzleHintsUsed(0); setPuzzleHintVisible(false); setPuzzlePersistenceMessage(null); };
   const feedbackAnnouncement = feedback ? announce(feedback === "correct" ? "practice.correct" : "practice.incorrect", "polite") : null;
   const notebookAnnouncement = notebookMessage ? { message: notebookMessage, accessibilityLiveRegion: "polite" as const } : null;
@@ -61,6 +62,7 @@ export default function PracticeScreen() {
         {puzzleHintVisible && <Text style={{ color: colors.muted, marginTop: 8, lineHeight: 20 }}>{puzzleHints[Math.min(puzzleHintsUsed - 1, puzzleHints.length - 1)].text}</Text>}
         {puzzleAnnouncement && <Text accessibilityLiveRegion={puzzleAnnouncement.accessibilityLiveRegion} style={{ color: puzzleOutcome === "incorrect" ? colors.warning : colors.success, marginTop: 10, fontWeight: "800" }}>{puzzleAnnouncement.message}</Text>}
         {puzzleOutcome && <Text style={{ color: colors.muted, marginTop: 5 }}>{puzzleOutcome === "incorrect" ? puzzle.explanation : tr("practice.puzzleReward", { xp: puzzleRewardXp(puzzle, puzzleOutcome) })}</Text>}
+        {isReviewMode && puzzleOutcome !== "incorrect" && reviewCursor + 1 >= reviewItems.length && <Text accessibilityLiveRegion="polite" style={{ color: colors.success, marginTop: 10, lineHeight: 20 }}>{tr("practice.reviewCompleteSummary", { count: reviewResolvedCount })}</Text>}
         {puzzlePersistenceMessage && <Text accessibilityLiveRegion="assertive" style={{ color: colors.warning, marginTop: 8 }}>{puzzlePersistenceMessage}</Text>}
         {puzzleOutcome === "incorrect" && <View style={{ marginTop: 8 }}><SecondaryButton label={tr("common.tryAgain")} onPress={resetPuzzle} /></View>}
       </View></Card></ScrollView></ScreenContainer>;

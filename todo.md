@@ -595,3 +595,8 @@
 - [x] Persist successful review resolutions locally and idempotently
 - [x] Exclude resolved principles from future review queues
 - [x] Add deterministic resolution and anti-duplicate tests
+
+- [x] Add a deterministic resolved-principle summary from local resolution IDs
+- [x] Show localized completion feedback at the end of sequential review
+- [x] Preserve original evidence and ordinary progress totals
+- [x] Add deterministic completion-summary coverage

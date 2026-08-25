@@ -79,6 +79,8 @@ describe("localization contracts", () => {
     expect(translate(copy, "fr", "tutor.questionLabel")).toBe("Question de physique");
     expect(translate(copy, "es", "tutor.hintUnits")).toBe("Sustituye los valores solo después de comprobar las unidades.");
     expect(translate(copy, "de", "tutor.hintEquation")).toBe("Write the governing equation.");
+    expect(translate(copy, "fr", "practice.reviewCompleteSummary", { count: 2 })).toContain("2 principe(s)");
+    expect(translate(copy, "de", "practice.reviewCompleteSummary", { count: 2 })).toContain("Resolved in this review: 2");
   });
 
   it("creates typed localized announcements with safe fallback and priority", () => {
