@@ -2,6 +2,8 @@ import { View, type ViewProps } from "react-native";
 import { SafeAreaView, type Edge } from "react-native-safe-area-context";
 
 import { cn } from "@/lib/utils";
+import { useAppTranslations } from "@/hooks/use-app-translations";
+import { resolveLocale } from "@/lib/locale";
 
 export interface ScreenContainerProps extends ViewProps {
   /**
@@ -47,6 +49,9 @@ export function ScreenContainer({
   style,
   ...props
 }: ScreenContainerProps) {
+  const { locale } = useAppTranslations();
+  const direction = resolveLocale(locale).direction;
+
   return (
     <View
       className={cn(
@@ -54,12 +59,13 @@ export function ScreenContainer({
         "bg-background",
         containerClassName
       )}
+      style={[{ direction }, style]}
       {...props}
     >
       <SafeAreaView
         edges={edges}
         className={cn("flex-1", safeAreaClassName)}
-        style={style}
+        style={[{ direction }, style]}
       >
         <View className={cn("flex-1", className)}>{children}</View>
       </SafeAreaView>

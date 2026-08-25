@@ -6,6 +6,7 @@ describe("localization contracts", () => {
     expect(resolveLocale("fr-FR").code).toBe("fr");
     expect(resolveLocale("xx").code).toBe("en");
     expect(localeChain("ar")).toEqual(["ar", "en"]);
+    expect(resolveLocale("ar").direction).toBe("rtl");
     expect(LOCALES.length).toBe(10);
   });
 
