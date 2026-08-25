@@ -470,3 +470,7 @@
 - [x] Localize remaining Lab result labels and short summaries
 - [x] Localize Lab accessibility result descriptions without changing numeric values
 - [x] Add deterministic coverage for Lab result-state keys
+
+- [x] Localize Lab slider increase/decrease accessibility labels
+- [x] Localize Lab slider step hints with persisted locale
+- [x] Add deterministic coverage for slider accessibility copy
