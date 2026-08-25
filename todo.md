@@ -346,3 +346,5 @@
 - [x] Add deterministic route-parameter coverage for Notebook concept actions
 - [x] Add deterministic Notebook filters for entry type and concept
 - [x] Add accessible filter controls and correct filtered empty states
+- [x] Add a registry-backed concept selector to Notebook reflections
+- [x] Add deterministic selector and concept-filter contract coverage

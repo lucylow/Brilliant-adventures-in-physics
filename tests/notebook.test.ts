@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { filterNotebookEntries, isNotebookEntry, notebookSummary, parseNotebookEntries, sameNotebookEntry, type NotebookEntry } from "../lib/notebook";
+import { searchConcepts } from "../lib/concepts";
 
 const validEntry: NotebookEntry = { id: "n1", title: "Reflection", type: "reflection", content: "The evidence changed my prediction.", links: ["kinematics"], createdAt: "2026-08-24T00:00:00.000Z" };
 
@@ -28,6 +29,12 @@ describe("Living Notebook contracts", () => {
     expect(filterNotebookEntries(entries, "experiment")).toEqual([experiment]);
     expect(filterNotebookEntries(entries, "all", "energy")).toEqual([experiment]);
     expect(filterNotebookEntries(entries, "mistake")).toEqual([]);
+  });
+
+  it("searches only verified concepts for selector choices", () => {
+    expect(searchConcepts("relativistic energy").map((concept) => concept.id)).toContain("relativistic-energy");
+    expect(searchConcepts("thermal").every((concept) => concept.domain === "Thermal")).toBe(true);
+    expect(searchConcepts("not-a-real-concept")).toEqual([]);
   });
 
   it("uses deterministic topic summaries", () => {
