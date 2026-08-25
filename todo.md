@@ -374,3 +374,6 @@
 - [x] Add bounded local media metadata to Physics Lens drafts
 - [x] Add accessible Lens capture and remove/retry feedback
 - [x] Add deterministic media-draft persistence coverage
+- [x] Add bounded media captions and observation timestamps to Lens drafts
+- [x] Add localized accessible controls for media metadata
+- [x] Add deterministic metadata validation coverage
