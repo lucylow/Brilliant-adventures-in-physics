@@ -351,3 +351,5 @@
 - [x] Add mastery-aware next-concept recommendation logic
 - [x] Show a local next-concept recommendation on Home
 - [x] Add deterministic recommendation regression coverage
+- [x] Add direct Practice-this-concept routing from Home recommendations
+- [x] Add deterministic coverage for recommendation route parameters

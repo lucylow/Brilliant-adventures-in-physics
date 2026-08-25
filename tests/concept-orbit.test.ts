@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { orbitSummary, prerequisiteTrail, recommendNextConcept, verifiedConceptId } from "../lib/concept-orbit";
 import type { LearningState } from "../lib/progress-store";
+import { practiceQuestionIndexForConcept } from "../lib/practice";
 
 describe("Concept Orbit", () => {
   it("resolves prerequisites in learning order", () => {
@@ -24,6 +25,14 @@ describe("Concept Orbit", () => {
     expect(recommendNextConcept(state).concept.id).toBe("kinematics");
     const progressed: LearningState = { ...state, topics: { ...state.topics, kinematics: { attempts: 10, correct: 10, hints: 0, confidenceTotal: 30 } } };
     expect(recommendNextConcept(progressed).concept.id).toBe("oscillation");
+  });
+
+  it("keeps recommendation practice routes deterministic", () => {
+    const state: LearningState = { attempts: 0, correct: 0, savedQuestions: [], topics: {}, streak: 0, lessonsCompleted: 0, labsCompleted: 0 };
+    const recommendation = recommendNextConcept(state);
+    expect(recommendation.concept.id).toBe("kinematics");
+    expect(practiceQuestionIndexForConcept(recommendation.concept.id)).toBe(0);
+    expect(practiceQuestionIndexForConcept("not-a-concept")).toBeNull();
   });
 
   it("accepts only registered concept ids", () => {
