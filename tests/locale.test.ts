@@ -39,6 +39,9 @@ describe("localization contracts", () => {
     expect(translate(copy, "fr", "progress.title")).toBe("Progression");
     expect(translate(copy, "es", "progress.earned")).toBe("Obtenidos");
     expect(translate(copy, "de", "progress.retry")).toBe("Retry loading progress");
+    expect(translate(copy, "fr", "home.greeting")).toBe("Bonjour, physicien");
+    expect(translate(copy, "es", "home.startPractice")).toBe("Empezar práctica");
+    expect(translate(copy, "de", "home.changePath")).toBe("Change learning path");
   });
 
   it("formats stored timestamps with locale-aware output and safe fallback", () => {

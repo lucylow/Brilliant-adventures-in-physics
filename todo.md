@@ -435,3 +435,8 @@
 - [x] Add localized Progress labels with safe English fallback
 - [x] Apply persisted-locale translations to Progress controls and summaries
 - [x] Add deterministic Progress localization coverage
+
+- [x] Audit hardcoded Home dashboard labels and accessibility copy
+- [x] Add localized Home dashboard keys with safe English fallback
+- [x] Apply persisted-locale translations without altering dynamic recommendation data
+- [x] Add deterministic Home localization coverage
