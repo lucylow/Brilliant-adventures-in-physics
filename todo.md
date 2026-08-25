@@ -454,3 +454,7 @@
 - [x] Add localized Lab interface keys with safe English fallback
 - [x] Apply localization without translating equations or deterministic outputs
 - [x] Add deterministic Lab localization coverage
+
+- [x] Localize remaining Lab slider and concept-link labels
+- [x] Localize Lab accessibility state descriptions without changing numeric outputs
+- [x] Add deterministic coverage for remaining Lab control keys

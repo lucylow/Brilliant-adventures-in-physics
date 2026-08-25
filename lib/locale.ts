@@ -238,7 +238,16 @@ export function createAppTranslations(): TranslationStore {
     "lab.totalInternalReflection": { en: "Total internal reflection", fr: "Réflexion totale interne", es: "Reflexión interna total" },
     "lab.refractedAngle": { en: "Refracted angle", fr: "Angle réfracté", es: "Ángulo refractado" },
     "lab.criticalAngle": { en: "The critical angle is {{value}}°.", fr: "L’angle critique est de {{value}}°.", es: "El ángulo crítico es {{value}}°." },
-    "lab.newtonianRay": { en: "The ray enters the second medium and bends away from the normal.", fr: "Le rayon entre dans le second milieu et s’écarte de la normale.", es: "El rayo entra en el segundo medio y se aleja de la normal." },
+    "lab.newtonianRay": { en: "The ray enters the second medium and bends away from the normal.", fr: "Le rayon entre dans le second milieu et s’écarte de la normale.", es: "El rayo entra dans le second medio y se aleja de la normal." },
+    "lab.launchSpeed": { en: "Launch speed (m/s)", fr: "Vitesse de lancement (m/s)", es: "Velocidad inicial (m/s)" },
+    "lab.launchAngle": { en: "Launch angle (°)", fr: "Angle de lancement (°)", es: "Ángulo de lanzamiento (°)" },
+    "lab.frequency": { en: "Frequency (Hz)", fr: "Fréquence (Hz)", es: "Frecuencia (Hz)" },
+    "lab.wavelength": { en: "Wavelength (m)", fr: "Longueur d’onde (m)", es: "Longitud de onda (m)" },
+    "lab.incidentAngle": { en: "Incident angle (°)", fr: "Angle d’incidence (°)", es: "Ángulo de incidencia (°)" },
+    "lab.temperatureChange": { en: "Temperature change (K)", fr: "Variation de température (K)", es: "Cambio de temperatura (K)" },
+    "lab.waveMotion": { en: "wave motion", fr: "mouvement ondulatoire", es: "movimiento ondulatorio" },
+    "lab.optics": { en: "optics", fr: "optique", es: "óptica" },
+    "lab.heatCapacity": { en: "heat capacity", fr: "capacité thermique", es: "capacidad calorífica" },
   };
   for (const [key, values] of Object.entries(entries)) for (const [locale, value] of Object.entries(values)) store.set(locale as SupportedLocale, key, value);
   return store;
