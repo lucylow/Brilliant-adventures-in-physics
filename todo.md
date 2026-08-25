@@ -649,3 +649,8 @@
 - [x] Preserve legacy topic-only event parsing and duplicate protection
 - [x] Update Lesson and Lab callers to pass stable identifiers
 - [x] Add deterministic migration and duplicate-identity tests
+
+- [x] Add deterministic completion timeline filtering by kind
+- [x] Add localized date and content-label formatting without raw answers
+- [x] Render a bounded accessible completion timeline in Progress
+- [x] Add deterministic timeline and privacy regression coverage

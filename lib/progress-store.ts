@@ -47,6 +47,23 @@ export function summarizeCompletionEvents(events: readonly CompletionEvent[]) {
   };
 }
 
+export type CompletionEventFilter = "all" | CompletionEvent["kind"];
+
+export function completionTimelineEntries(events: readonly CompletionEvent[], filter: CompletionEventFilter = "all", limit = 10): CompletionEvent[] {
+  const safeLimit = Math.max(0, Math.min(50, Math.floor(limit)));
+  return parseCompletionEvents(events)
+    .filter((event) => filter === "all" || event.kind === filter)
+    .sort((left, right) => Date.parse(right.completedAt) - Date.parse(left.completedAt) || right.id.localeCompare(left.id))
+    .slice(0, safeLimit);
+}
+
+export function formatCompletionDate(value: string, locale: string = "en"): string {
+  const timestamp = Date.parse(value);
+  if (Number.isNaN(timestamp)) return "—";
+  const languageTag = locale === "fr" ? "fr-FR" : locale === "es" ? "es-ES" : "en-US";
+  return new Intl.DateTimeFormat(languageTag, { dateStyle: "medium" }).format(new Date(timestamp));
+}
+
 function normalizedCompletionTopic(topic: string): string {
   return topic.trim().toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
 }

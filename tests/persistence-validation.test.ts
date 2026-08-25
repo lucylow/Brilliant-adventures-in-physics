@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { isValidDraft, parseCompletionEvents, parseLearningState, summarizeCompletionEvents } from "../lib/progress-store";
+import { completionTimelineEntries, formatCompletionDate, isValidDraft, parseCompletionEvents, parseLearningState, summarizeCompletionEvents } from "../lib/progress-store";
 
 describe("persistence validation", () => {
   it("falls back safely for malformed learning state and clamps impossible counts", () => {
@@ -29,5 +29,17 @@ describe("persistence validation", () => {
       ...parsed,
       { id: "lab:projectile-motion", kind: "lab", contentId: "projectile-motion", topic: "projectile-motion", completedAt: "2026-01-03T00:00:00.000Z" },
     ])).toEqual({ total: 2, lessons: 1, labs: 1, topics: ["projectile-motion"] });
+  });
+  it("sorts timeline entries newest-first, filters by kind, and falls back for invalid dates", () => {
+    const events = [
+      { id: "lesson:one", kind: "lesson" as const, contentId: "one", topic: "kinematics", completedAt: "2026-01-01T00:00:00.000Z" },
+      { id: "lab:one", kind: "lab" as const, contentId: "one", topic: "kinematics", completedAt: "2026-01-03T00:00:00.000Z" },
+      { id: "lesson:two", kind: "lesson" as const, contentId: "two", topic: "energy", completedAt: "2026-01-02T00:00:00.000Z" },
+    ];
+    expect(completionTimelineEntries(events, "all", 2).map((event) => event.id)).toEqual(["lab:one", "lesson:two"]);
+    expect(completionTimelineEntries(events, "lesson").map((event) => event.id)).toEqual(["lesson:two", "lesson:one"]);
+    expect(completionTimelineEntries(events, "lab", 0)).toEqual([]);
+    expect(formatCompletionDate("2026-01-02T00:00:00.000Z", "fr")).not.toBe("—");
+    expect(formatCompletionDate("invalid", "en")).toBe("—");
   });
 });

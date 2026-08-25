@@ -3,7 +3,7 @@ import { Pressable, ScrollView, Text, View } from "react-native";
 import { router } from "expo-router";
 import { ScreenContainer } from "@/components/screen-container";
 import { Card, MasteryRing, PrimaryButton, SectionHeader, SecondaryButton } from "@/components/physica-ui";
-import { loadLearningState, summarizeCompletionEvents, type LearningState } from "@/lib/progress-store";
+import { completionTimelineEntries, formatCompletionDate, loadLearningState, summarizeCompletionEvents, type CompletionEventFilter, type LearningState } from "@/lib/progress-store";
 import { evaluateAchievements } from "@/lib/achievements";
 import { achievementProgress } from "@/lib/achievement-progress";
 import { generateMission, levelProgress, missionProgress, streakMessage } from "@/lib/gamification";
@@ -33,6 +33,7 @@ export default function ProgressScreen() {
   const [resolvedPuzzleIds, setResolvedPuzzleIds] = useState<string[]>([]);
   const [reviewMastery, setReviewMastery] = useState<ReviewMasteryRecord[]>([]);
   const [showReviewHistory, setShowReviewHistory] = useState(false);
+  const [completionFilter, setCompletionFilter] = useState<CompletionEventFilter>("all");
   const loadProgress = () => { setLoadFailed(false); let active = true; void Promise.all([loadLearningState(), loadPreferencesWithStatus(), loadAdventureState(), loadPuzzleEvidence(), loadResolvedPuzzleIds(), loadReviewMastery()]).then(([nextLearning, preferenceResult, adventureResult, puzzleResult, resolvedIds, masteryRecords]) => { if (!active) return; setLearning(nextLearning); setPreferences(preferenceResult.preferences); setAdventureState(adventureResult.state); setPuzzleEvidence(puzzleResult); setResolvedPuzzleIds(resolvedIds); setReviewMastery(masteryRecords); }).catch(() => { if (active) setLoadFailed(true); }); return () => { active = false; }; };
   useEffect(() => loadProgress(), []);
   const accuracy = learning.attempts ? learning.correct / learning.attempts : 0;
@@ -41,6 +42,7 @@ export default function ProgressScreen() {
   const missionValue = mission.kind === "practice" ? learning.attempts : 0;
   const puzzleSummary = summarizePuzzleEvidence(puzzleEvidence);
   const completionSummary = summarizeCompletionEvents(learning.completionEvents ?? []);
+  const completionTimeline = completionTimelineEntries(learning.completionEvents ?? [], completionFilter, 10);
   const reviewQueue = missedPuzzleReviewQueue(puzzleEvidence, 3, resolvedPuzzleIds);
   const reviewMasterySummary = summarizeReviewMastery(reviewMastery);
   const recentReviewHistory = reviewHistorySummary(reviewMastery, 5);
@@ -92,6 +94,7 @@ export default function ProgressScreen() {
           {!adventureComplete && <View style={{ marginTop: 10 }}><PrimaryButton label={tr("progress.openMission")} onPress={() => router.push("/practice" as never)} /></View>}
           {adventureSaveFailed && <Text accessibilityLiveRegion="assertive" style={{ color: colors.warning, marginTop: 8 }}>{tr("progress.adventureSaveFailed")}</Text>}
         </Card>
+        {completionSummary.total > 0 && <Card accessibilityLabel={tr("progress.completionTimeline")} style={{ marginTop: 14 }}><Text style={{ color: colors.foreground, fontSize: 18, fontWeight: "800" }}>{tr("progress.completionTimeline")}</Text><Text style={{ color: colors.muted, marginTop: 5, lineHeight: 20 }}>{tr("progress.completionTimelineBody")}</Text><View accessibilityRole="tablist" style={{ flexDirection: "row", gap: 8, marginTop: 12 }}><Pressable accessibilityRole="tab" accessibilityState={{ selected: completionFilter === "all" }} onPress={() => setCompletionFilter("all")}><Text style={{ color: completionFilter === "all" ? colors.primary : colors.muted, fontWeight: "800" }}>{tr("progress.completionAll")}</Text></Pressable><Pressable accessibilityRole="tab" accessibilityState={{ selected: completionFilter === "lesson" }} onPress={() => setCompletionFilter("lesson")}><Text style={{ color: completionFilter === "lesson" ? colors.primary : colors.muted, fontWeight: "800" }}>{tr("progress.completionLessons")}</Text></Pressable><Pressable accessibilityRole="tab" accessibilityState={{ selected: completionFilter === "lab" }} onPress={() => setCompletionFilter("lab")}><Text style={{ color: completionFilter === "lab" ? colors.primary : colors.muted, fontWeight: "800" }}>{tr("progress.completionLabs")}</Text></Pressable></View><View accessible accessibilityLabel={tr("progress.completionTimeline")} style={{ marginTop: 10 }}>{completionTimeline.length > 0 ? completionTimeline.map((event) => { const kind = tr(event.kind === "lesson" ? "progress.completionLesson" : "progress.completionLab"); const date = formatCompletionDate(event.completedAt, preferences.locale); const label = tr("progress.completionTimelineItem", { kind, contentId: event.contentId, date }); return <Text key={event.id} accessibilityLabel={label} style={{ color: colors.muted, marginTop: 5 }}>{label}</Text>; }) : <Text style={{ color: colors.muted, marginTop: 5 }}>{tr("progress.completionTimelineEmpty")}</Text>}</View></Card>}
         <View style={{ marginTop: 24 }}>
           <SectionHeader title={tr("progress.achievements")} subtitle={tr("progress.achievementsSubtitle")} />
           <View accessibilityRole="tablist" style={{ flexDirection: "row", gap: 8, marginBottom: 10 }}><Pressable accessibilityRole="tab" accessibilityState={{ selected: achievementFilter === "all" }} onPress={() => setAchievementFilter("all")}><Text style={{ color: achievementFilter === "all" ? colors.primary : colors.muted, fontWeight: "800" }}>{tr("progress.all")}</Text></Pressable><Pressable accessibilityRole="tab" accessibilityState={{ selected: achievementFilter === "earned" }} onPress={() => setAchievementFilter("earned")}><Text style={{ color: achievementFilter === "earned" ? colors.primary : colors.muted, fontWeight: "800" }}>{tr("progress.earned")}</Text></Pressable><Pressable accessibilityRole="tab" accessibilityState={{ selected: achievementFilter === "progress" }} onPress={() => setAchievementFilter("progress")}><Text style={{ color: achievementFilter === "progress" ? colors.primary : colors.muted, fontWeight: "800" }}>{tr("progress.inProgress")}</Text></Pressable></View>
