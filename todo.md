@@ -504,3 +504,13 @@
 - [x] Add localized tab navigation keys with safe English fallback
 - [x] Apply persisted-locale labels without changing route names
 - [x] Add deterministic tab localization coverage
+
+- [ ] Audit repeated live-region announcement formatting
+- [ ] Add a typed locale-aware announcement helper
+- [ ] Adopt the helper in network and media feedback
+- [ ] Add deterministic announcement fallback coverage
+
+- [x] Audit stable Physics Lens input, action, and recovery copy
+- [x] Add localized Lens accessibility and live-region keys
+- [x] Apply localized Lens labels without changing state or measurements
+- [x] Add deterministic Lens localization coverage

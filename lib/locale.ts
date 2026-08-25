@@ -278,6 +278,22 @@ export function createAppTranslations(): TranslationStore {
     "tabs.lab": { en: "Lab", fr: "Laboratoire", es: "Laboratorio" },
     "tabs.practice": { en: "Practice", fr: "Exercices", es: "Práctica" },
     "tabs.progress": { en: "Progress", fr: "Progrès", es: "Progreso" },
+    "lens.title": { en: "Physics Lens", fr: "Lentille de physique", es: "Lente de física" },
+    "lens.subtitle": { en: "Turn safe observations into a small, structured experiment.", fr: "Transformez des observations sûres en une petite expérience structurée.", es: "Convierte observaciones seguras en un pequeño experimento estructurado." },
+    "lens.observationLabel": { en: "Lens observation", fr: "Observation de la lentille", es: "Observación de la lente" },
+    "lens.observationPlaceholder": { en: "Describe what you observe", fr: "Décrivez ce que vous observez", es: "Describe lo que observas" },
+    "lens.predictionLabel": { en: "Lens prediction", fr: "Prédiction de la lentille", es: "Predicción de la lente" },
+    "lens.predictionPlaceholder": { en: "Make one testable prediction", fr: "Faites une prédiction vérifiable", es: "Haz una predicción comprobable" },
+    "lens.measurementLabel": { en: "Lens measurement note", fr: "Note de mesure de la lentille", es: "Nota de medición de la lente" },
+    "lens.measurementPlaceholder": { en: "Record a value and unit", fr: "Notez une valeur et une unité", es: "Registra un valor y una unidad" },
+    "lens.reflectionLabel": { en: "Lens reflection", fr: "Réflexion de la lentille", es: "Reflexión de la lente" },
+    "lens.reflectionPlaceholder": { en: "What did the evidence teach you?", fr: "Que vous a appris l’observation ?", es: "¿Qué te enseñó la evidencia?" },
+    "lens.complete": { en: "Lens complete", fr: "Lentille terminée", es: "Lente completada" },
+    "lens.continue": { en: "Continue Lens", fr: "Continuer la lentille", es: "Continuar con la lente" },
+    "lens.manualMeasurements": { en: "MANUAL MEASUREMENTS", fr: "MESURES MANUELLES", es: "MEDICIONES MANUALES" },
+    "lens.analyze": { en: "Analyze measurements", fr: "Analyser les mesures", es: "Analizar mediciones" },
+    "lens.askTutor": { en: "Ask Tutor about this experiment", fr: "Demander au tuteur à propos de cette expérience", es: "Preguntar al tutor sobre este experimento" },
+    "lens.openNotebook": { en: "Open Living Notebook", fr: "Ouvrir le carnet vivant", es: "Abrir el cuaderno vivo" },
   };
   for (const [key, values] of Object.entries(entries)) for (const [locale, value] of Object.entries(values)) store.set(locale as SupportedLocale, key, value);
   return store;
