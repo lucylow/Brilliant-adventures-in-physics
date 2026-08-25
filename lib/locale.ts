@@ -261,6 +261,13 @@ export function createAppTranslations(): TranslationStore {
     "lab.workHeading": { en: "WORK AND POWER · ENERGY TRANSFER", fr: "TRAVAIL ET PUISSANCE · TRANSFERT D’ÉNERGIE", es: "TRABAJO Y POTENCIA · TRANSFERENCIA DE ENERGÍA" },
     "lab.elasticityHeading": { en: "ELASTICITY · SPRING ENERGY", fr: "ÉLASTICITÉ · ÉNERGIE DU RESSORT", es: "ELASTICIDAD · ENERGÍA DEL RESORTE" },
     "lab.gravityHeading": { en: "GRAVITATIONAL ENERGY · mgh", fr: "ÉNERGIE GRAVITATIONNELLE · mgh", es: "ENERGÍA GRAVITACIONAL · mgh" },
+    "lab.required": { en: "required", fr: "nécessaires", es: "necesarios" },
+    "lab.kineticEnergy": { en: "kinetic energy", fr: "énergie cinétique", es: "energía cinética" },
+    "lab.tangentialSpeed": { en: "tangential speed", fr: "vitesse tangentielle", es: "velocidad tangencial" },
+    "lab.attractiveForce": { en: "attractive force", fr: "force attractive", es: "fuerza de atracción" },
+    "lab.fieldStrength": { en: "field strength", fr: "intensité du champ", es: "intensidad del campo" },
+    "lab.current": { en: "current", fr: "courant", es: "corriente" },
+    "lab.power": { en: "power", fr: "puissance", es: "potencia" },
   };
   for (const [key, values] of Object.entries(entries)) for (const [locale, value] of Object.entries(values)) store.set(locale as SupportedLocale, key, value);
   return store;

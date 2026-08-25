@@ -54,6 +54,9 @@ describe("localization contracts", () => {
     expect(translate(copy, "fr", "lab.circularHeading")).toBe("MOUVEMENT CIRCULAIRE · VÉRIFIÉ");
     expect(translate(copy, "es", "lab.circuitsHeading")).toBe("CIRCUITOS · LEY DE OHM");
     expect(translate(copy, "de", "lab.gravityHeading")).toBe("GRAVITATIONAL ENERGY · mgh");
+    expect(translate(copy, "fr", "lab.kineticEnergy")).toBe("énergie cinétique");
+    expect(translate(copy, "es", "lab.current")).toBe("corriente");
+    expect(translate(copy, "de", "lab.power")).toBe("power");
   });
 
   it("formats stored timestamps with locale-aware output and safe fallback", () => {
