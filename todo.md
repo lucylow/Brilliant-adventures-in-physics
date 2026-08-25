@@ -430,3 +430,8 @@
 - [x] Add localized Settings labels with safe English fallback
 - [x] Apply persisted-locale translations to Settings controls
 - [x] Add deterministic Settings localization coverage
+
+- [x] Audit hardcoded Progress copy and achievement state labels
+- [x] Add localized Progress labels with safe English fallback
+- [x] Apply persisted-locale translations to Progress controls and summaries
+- [x] Add deterministic Progress localization coverage
