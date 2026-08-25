@@ -57,6 +57,9 @@ describe("localization contracts", () => {
     expect(translate(copy, "fr", "lab.kineticEnergy")).toBe("énergie cinétique");
     expect(translate(copy, "es", "lab.current")).toBe("corriente");
     expect(translate(copy, "de", "lab.power")).toBe("power");
+    expect(translate(copy, "fr", "lab.learnAbout", { label: "optique" })).toBe("En savoir plus sur optique");
+    expect(translate(copy, "es", "lab.learnAbout", { label: "óptica" })).toBe("Más información sobre óptica");
+    expect(translate(copy, "de", "lab.learnAbout", { label: "wave motion" })).toBe("Learn about wave motion");
   });
 
   it("formats stored timestamps with locale-aware output and safe fallback", () => {

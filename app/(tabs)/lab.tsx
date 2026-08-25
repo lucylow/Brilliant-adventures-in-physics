@@ -18,7 +18,9 @@ import { persistSafely, persistenceRecoveryMessage } from "@/lib/persistence";
 import { clampStepValue, isSliderAtMax, isSliderAtMin, sliderAccessibilityValue, sliderProgressPercent, sliderStepHint, sliderValueLabel } from "@/lib/ui-logic";
 
 function ConceptLink({ conceptId, label }: { conceptId: string; label: string }) {
-  return <Pressable accessibilityRole="button" accessibilityLabel={`Learn about ${label}`} onPress={() => router.push({ pathname: "/concepts", params: { query: conceptId } })} style={({ pressed }) => [{ marginTop: 12, paddingVertical: 8 }, pressed && { opacity: 0.65 }]}><Text style={{ color: "#0A7EA4", fontWeight: "800" }}>Learn about {label}</Text></Pressable>;
+  const { tr } = useAppTranslations();
+  const localizedLabel = tr("lab.learnAbout").replace("{{label}}", label);
+  return <Pressable accessibilityRole="button" accessibilityLabel={localizedLabel} onPress={() => router.push({ pathname: "/concepts", params: { query: conceptId } })} style={({ pressed }) => [{ marginTop: 12, paddingVertical: 8 }, pressed && { opacity: 0.65 }]}><Text style={{ color: "#0A7EA4", fontWeight: "800" }}>{localizedLabel}</Text></Pressable>;
 }
 
 function Slider({ label, value, min, max, step, onChange }: { label: string; value: number; min: number; max: number; step: number; onChange: (value: number) => void }) {

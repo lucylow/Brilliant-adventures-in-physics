@@ -474,3 +474,7 @@
 - [x] Localize Lab slider increase/decrease accessibility labels
 - [x] Localize Lab slider step hints with persisted locale
 - [x] Add deterministic coverage for slider accessibility copy
+
+- [x] Localize Lab ConceptLink visible labels
+- [x] Localize Lab ConceptLink screen-reader descriptions
+- [x] Add deterministic coverage for ConceptLink localization

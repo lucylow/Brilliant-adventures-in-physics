@@ -268,6 +268,7 @@ export function createAppTranslations(): TranslationStore {
     "lab.fieldStrength": { en: "field strength", fr: "intensité du champ", es: "intensidad del campo" },
     "lab.current": { en: "current", fr: "courant", es: "corriente" },
     "lab.power": { en: "power", fr: "puissance", es: "potencia" },
+    "lab.learnAbout": { en: "Learn about {{label}}", fr: "En savoir plus sur {{label}}", es: "Más información sobre {{label}}" },
   };
   for (const [key, values] of Object.entries(entries)) for (const [locale, value] of Object.entries(values)) store.set(locale as SupportedLocale, key, value);
   return store;
