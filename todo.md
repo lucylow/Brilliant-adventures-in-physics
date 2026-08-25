@@ -531,3 +531,8 @@
 - [x] Apply typed localized announcements to Tutor usage, loading, and service-error feedback
 - [x] Apply typed localized announcements to Practice grading and persistence feedback
 - [x] Add deterministic coverage for Tutor and Practice announcement priorities
+
+- [x] Add stable translation keys for persistence save and offline recovery messages
+- [x] Expose persistence recovery translation-key resolution without breaking existing callers
+- [x] Apply localized persistence failure feedback to Tutor, Practice, and Physics Lens
+- [x] Add deterministic persistence recovery localization coverage

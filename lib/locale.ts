@@ -287,6 +287,8 @@ export function createAppTranslations(): TranslationStore {
     "network.checking": { en: "Checking connection", fr: "Vérification de la connexion", es: "Comprobando la conexión" },
     "network.offlineMessage": { en: "Offline mode: your work stays on this device and will retry when connected.", fr: "Mode hors ligne : votre travail reste sur cet appareil et sera réessayé une fois la connexion rétablie.", es: "Modo sin conexión: tu trabajo permanece en este dispositivo y se reintentará al conectarte." },
     "network.checkingMessage": { en: "Checking connection. Your local work remains safe.", fr: "Vérification de la connexion. Votre travail local reste en sécurité.", es: "Comprobando la conexión. Tu trabajo local permanece seguro." },
+    "persistence.offlineSave": { en: "Saved locally when storage is available. Please try again.", fr: "L’enregistrement local sera effectué dès que le stockage sera disponible. Veuillez réessayer.", es: "Se guardará localmente cuando el almacenamiento esté disponible. Inténtalo de nuevo." },
+    "persistence.saveFailed": { en: "We could not save this change. Please try again.", fr: "Impossible d’enregistrer cette modification. Veuillez réessayer.", es: "No pudimos guardar este cambio. Inténtalo de nuevo." },
     "tabs.home": { en: "Home", fr: "Accueil", es: "Inicio" },
     "tabs.tutor": { en: "Tutor", fr: "Tuteur", es: "Tutor" },
     "tabs.lab": { en: "Lab", fr: "Laboratoire", es: "Laboratorio" },

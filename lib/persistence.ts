@@ -8,9 +8,16 @@ export async function persistSafely<T>(operation: Promise<T>): Promise<ServiceRe
   }
 }
 
-export function persistenceRecoveryMessage(result: ServiceResult<unknown>): string | null {
+export function persistenceRecoveryMessageKey(result: ServiceResult<unknown>): "persistence.offlineSave" | "persistence.saveFailed" | null {
   if (result.ok) return null;
-  return result.error.code === "OFFLINE" ? "Saved locally when storage is available. Please try again." : "We could not save this change. Please try again.";
+  return result.error.code === "OFFLINE" ? "persistence.offlineSave" : "persistence.saveFailed";
+}
+
+export function persistenceRecoveryMessage(result: ServiceResult<unknown>): string | null {
+  const key = persistenceRecoveryMessageKey(result);
+  if (key === "persistence.offlineSave") return "Saved locally when storage is available. Please try again.";
+  if (key === "persistence.saveFailed") return "We could not save this change. Please try again.";
+  return null;
 }
 
 export function loadRecoveryMessage(scope: "profile" | "progress" | "draft"): string {
