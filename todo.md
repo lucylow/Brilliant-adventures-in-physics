@@ -387,3 +387,5 @@
 - [x] Preserve Lens media captions and timestamps in Notebook artifacts
 - [x] Add accessible local-only media context in Notebook entries
 - [x] Add deterministic Lens-to-Notebook media artifact coverage
+- [x] Localize Notebook media context labels and artifact metadata
+- [x] Add deterministic Notebook artifact localization coverage

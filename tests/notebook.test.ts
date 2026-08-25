@@ -11,6 +11,12 @@ describe("Living Notebook contracts", () => {
     expect(isNotebookEntry({ ...validEntry, type: "remote" })).toBe(false);
   });
 
+  it("accepts bounded media context and rejects invalid media metadata", () => {
+    expect(isNotebookEntry({ ...validEntry, media: { caption: "Ball at release", capturedAt: "2026-08-25T03:00:00.000Z" } })).toBe(true);
+    expect(isNotebookEntry({ ...validEntry, media: { caption: "x".repeat(161) } })).toBe(false);
+    expect(isNotebookEntry({ ...validEntry, media: { capturedAt: "not-a-date" } })).toBe(false);
+  });
+
   it("filters malformed entries and bounds the local collection", () => {
     const entries = Array.from({ length: 55 }, (_, index) => ({ ...validEntry, id: `n${index}` }));
     const parsed = parseNotebookEntries(["unexpected", ...entries]);

@@ -73,6 +73,9 @@ export function createAppTranslations(): TranslationStore {
     "notebook.saved": { en: "Reflection saved to your local Notebook.", fr: "Réflexion enregistrée dans votre Notebook local.", es: "Reflexión guardada en tu Notebook local." },
     "lens.media.caption": { en: "Caption", fr: "Légende", es: "Descripción" },
     "lens.media.capturedAt": { en: "Captured locally", fr: "Capturé localement", es: "Capturado localmente" },
+    "notebook.media": { en: "Local observation image", fr: "Image d’observation locale", es: "Imagen de observación local" },
+    "notebook.caption": { en: "Caption", fr: "Légende", es: "Descripción" },
+    "notebook.capturedAt": { en: "Captured locally", fr: "Capturé localement", es: "Capturado localmente" },
   };
   for (const [key, values] of Object.entries(entries)) for (const [locale, value] of Object.entries(values)) store.set(locale as SupportedLocale, key, value);
   return store;

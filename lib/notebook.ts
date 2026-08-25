@@ -3,12 +3,19 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 const STORAGE_KEY = "physicaai.notebook.v1";
 const MAX_ENTRIES = 50;
 
-export type NotebookEntry = { id: string; title: string; type: "experiment" | "reflection" | "mistake"; content: string; links: string[]; createdAt: string };
+export type NotebookMediaContext = { caption?: string; capturedAt?: string };
+export type NotebookEntry = { id: string; title: string; type: "experiment" | "reflection" | "mistake"; content: string; links: string[]; createdAt: string; media?: NotebookMediaContext };
+
+function isNotebookMediaContext(value: unknown): value is NotebookMediaContext {
+  if (!value || typeof value !== "object") return false;
+  const media = value as Partial<NotebookMediaContext>;
+  return (media.caption === undefined || (typeof media.caption === "string" && media.caption.length <= 160)) && (media.capturedAt === undefined || (typeof media.capturedAt === "string" && !Number.isNaN(Date.parse(media.capturedAt))));
+}
 
 export function isNotebookEntry(value: unknown): value is NotebookEntry {
   if (!value || typeof value !== "object") return false;
   const entry = value as Partial<NotebookEntry>;
-  return typeof entry.id === "string" && typeof entry.title === "string" && (entry.type === "experiment" || entry.type === "reflection" || entry.type === "mistake") && typeof entry.content === "string" && Array.isArray(entry.links) && entry.links.every((link) => typeof link === "string") && typeof entry.createdAt === "string";
+  return typeof entry.id === "string" && typeof entry.title === "string" && (entry.type === "experiment" || entry.type === "reflection" || entry.type === "mistake") && typeof entry.content === "string" && Array.isArray(entry.links) && entry.links.every((link) => typeof link === "string") && typeof entry.createdAt === "string" && (entry.media === undefined || isNotebookMediaContext(entry.media));
 }
 
 export function parseNotebookEntries(value: unknown): NotebookEntry[] { return Array.isArray(value) ? value.filter(isNotebookEntry).slice(0, MAX_ENTRIES) : []; }
