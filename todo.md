@@ -371,3 +371,6 @@
 - [x] Add permission-aware camera and image-picker adapters with offline states
 - [x] Localize remaining feature-screen copy through the translation store
 - [x] Add deterministic coverage for media permission and localization fallback paths
+- [x] Add bounded local media metadata to Physics Lens drafts
+- [x] Add accessible Lens capture and remove/retry feedback
+- [x] Add deterministic media-draft persistence coverage
