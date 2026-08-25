@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { loadPuzzleEvidence, recordPuzzleEvidence } from "../lib/puzzle-evidence";
+import { loadPuzzleEvidence, recordPuzzleEvidence, summarizePuzzleEvidence } from "../lib/puzzle-evidence";
 
 vi.mock("@react-native-async-storage/async-storage", () => ({
   default: {
@@ -27,6 +27,15 @@ describe("puzzle evidence", () => {
     expect(repeated.recorded).toBe(false);
     expect(repeated.entry.outcome).toBe("correct");
     expect(AsyncStorage.setItem).toHaveBeenCalledTimes(1);
+  });
+
+  it("summarizes unique evidence without answer farming inflation", () => {
+    const summary = summarizePuzzleEvidence([
+      { puzzleId: "p-1", topic: "energy", outcome: "correct", hintsUsed: 0, xp: 25, recordedAt: "now" },
+      { puzzleId: "p-1", topic: "energy", outcome: "incorrect", hintsUsed: 2, xp: 0, recordedAt: "later" },
+      { puzzleId: "p-2", topic: "waves", outcome: "assisted-correct", hintsUsed: 1, xp: 20, recordedAt: "now" },
+    ]);
+    expect(summary).toEqual({ total: 2, correct: 2, assisted: 1, xp: 45, accuracy: 1 });
   });
 
   it("filters malformed records when loading", async () => {

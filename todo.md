@@ -570,3 +570,8 @@
 - [x] Persist puzzle outcomes idempotently from Practice
 - [x] Preserve retry behavior and avoid duplicate learning credit
 - [x] Add deterministic evidence persistence tests
+
+- [x] Add pure derived summaries for verified puzzle evidence
+- [x] Integrate puzzle evidence into Progress without changing numeric attempt totals
+- [x] Prevent repeated puzzle IDs from inflating mastery or rewards
+- [x] Add deterministic anti-farming and summary tests

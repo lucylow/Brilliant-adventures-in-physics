@@ -39,7 +39,7 @@ export default function PracticeScreen() {
   const puzzle = useMemo(() => createPhysicsPuzzle(question.concept, 2, index), [question.concept, index]);
   const puzzleHints = useMemo(() => getPhysicsHints(question.concept), [question.concept]);
   const puzzleAnnouncement = puzzleOutcome ? announce(puzzleOutcome === "correct" ? "practice.puzzleCorrect" : puzzleOutcome === "assisted-correct" ? "practice.puzzleAssisted" : "practice.puzzleIncorrect", puzzleOutcome === "incorrect" ? "assertive" : "polite") : null;
-  const answerPuzzle = (choice: string) => { const outcome = scorePuzzleAnswer(puzzle, choice, puzzleHintsUsed); setPuzzleOutcome(outcome); setPuzzlePersistenceMessage(null); void recordPuzzleEvidence({ puzzleId: puzzle.id, outcome, hintsUsed: puzzleHintsUsed, xp: puzzleRewardXp(puzzle, outcome) }).catch(() => setPuzzlePersistenceMessage(tr("practice.puzzleSaveFailed"))); };
+  const answerPuzzle = (choice: string) => { const outcome = scorePuzzleAnswer(puzzle, choice, puzzleHintsUsed); setPuzzleOutcome(outcome); setPuzzlePersistenceMessage(null); void recordPuzzleEvidence({ puzzleId: puzzle.id, topic: question.concept, outcome, hintsUsed: puzzleHintsUsed, xp: puzzleRewardXp(puzzle, outcome) }).catch(() => setPuzzlePersistenceMessage(tr("practice.puzzleSaveFailed"))); };
   const resetPuzzle = () => { setPuzzleOutcome(null); setPuzzleHintsUsed(0); setPuzzleHintVisible(false); setPuzzlePersistenceMessage(null); };
   const feedbackAnnouncement = feedback ? announce(feedback === "correct" ? "practice.correct" : "practice.incorrect", "polite") : null;
   const notebookAnnouncement = notebookMessage ? { message: notebookMessage, accessibilityLiveRegion: "polite" as const } : null;

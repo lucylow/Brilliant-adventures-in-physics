@@ -5,6 +5,7 @@ const KEY = "physicaai.puzzle-evidence.v1";
 
 export type PuzzleEvidence = {
   puzzleId: string;
+  topic?: string;
   outcome: PuzzleOutcome;
   hintsUsed: number;
   xp: number;
@@ -14,7 +15,7 @@ export type PuzzleEvidence = {
 function validEvidence(value: unknown): value is PuzzleEvidence {
   if (!value || typeof value !== "object") return false;
   const item = value as Partial<PuzzleEvidence>;
-  return typeof item.puzzleId === "string" && item.puzzleId.length > 0 && (item.outcome === "correct" || item.outcome === "assisted-correct" || item.outcome === "incorrect") && typeof item.hintsUsed === "number" && Number.isFinite(item.hintsUsed) && item.hintsUsed >= 0 && typeof item.xp === "number" && Number.isFinite(item.xp) && item.xp >= 0 && typeof item.recordedAt === "string";
+  return typeof item.puzzleId === "string" && item.puzzleId.length > 0 && (item.topic === undefined || typeof item.topic === "string") && (item.outcome === "correct" || item.outcome === "assisted-correct" || item.outcome === "incorrect") && typeof item.hintsUsed === "number" && Number.isFinite(item.hintsUsed) && item.hintsUsed >= 0 && typeof item.xp === "number" && Number.isFinite(item.xp) && item.xp >= 0 && typeof item.recordedAt === "string";
 }
 
 export async function loadPuzzleEvidence(): Promise<PuzzleEvidence[]> {
@@ -25,6 +26,14 @@ export async function loadPuzzleEvidence(): Promise<PuzzleEvidence[]> {
   } catch {
     return [];
   }
+}
+
+export function summarizePuzzleEvidence(entries: readonly PuzzleEvidence[]) {
+  const unique = new Map<string, PuzzleEvidence>();
+  for (const entry of entries) if (!unique.has(entry.puzzleId)) unique.set(entry.puzzleId, entry);
+  const values = [...unique.values()];
+  const correct = values.filter((entry) => entry.outcome !== "incorrect").length;
+  return { total: values.length, correct, assisted: values.filter((entry) => entry.outcome === "assisted-correct").length, xp: values.reduce((sum, entry) => sum + entry.xp, 0), accuracy: values.length ? correct / values.length : 0 };
 }
 
 export async function recordPuzzleEvidence(entry: Omit<PuzzleEvidence, "recordedAt">, now = new Date().toISOString()): Promise<{ entry: PuzzleEvidence; recorded: boolean }> {
