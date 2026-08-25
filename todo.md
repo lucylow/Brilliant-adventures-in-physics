@@ -527,3 +527,7 @@
 - [x] Add a typed locale-aware announcement contract
 - [x] Apply localized announcement metadata to the Physics Lens stage live region
 - [x] Add deterministic announcement fallback and priority coverage
+
+- [x] Apply typed localized announcements to Tutor usage, loading, and service-error feedback
+- [x] Apply typed localized announcements to Practice grading and persistence feedback
+- [x] Add deterministic coverage for Tutor and Practice announcement priorities

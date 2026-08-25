@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { createAppTranslations, translate, type SupportedLocale } from "@/lib/locale";
+import { createAppTranslations, createLocalizedAnnouncement, translate, type AnnouncementPriority, type SupportedLocale, type TranslationVariables } from "@/lib/locale";
 import { loadPreferencesWithStatus } from "@/lib/preferences";
 
 export function useAppTranslations() {
@@ -16,5 +16,9 @@ export function useAppTranslations() {
       active = false;
     };
   }, []);
-  return { locale, tr: (key: string, variables?: Record<string, string | number>) => translate(copy, locale, key, variables) };
+  return {
+    locale,
+    tr: (key: string, variables?: TranslationVariables) => translate(copy, locale, key, variables),
+    announce: (key: string, priority: AnnouncementPriority = "polite", variables?: TranslationVariables) => createLocalizedAnnouncement(copy, locale, key, priority, variables),
+  };
 }
