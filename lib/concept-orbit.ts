@@ -1,5 +1,7 @@
 import { conceptRegistry, findConcept, type PhysicsConcept } from "./concepts";
 import type { LearningState } from "./progress-store";
+import type { LearnerGoal } from "./onboarding";
+import { practiceQuestionIndexForConcept } from "./practice";
 
 export function prerequisiteTrail(id: string): PhysicsConcept[] {
   const visited = new Set<string>();
@@ -31,12 +33,17 @@ function masteryFor(state: LearningState, id: string): number {
   return topic && topic.attempts > 0 ? topic.correct / topic.attempts : 0;
 }
 
-export function recommendNextConcept(state: LearningState): NextConceptRecommendation {
+export function recommendNextConcept(state: LearningState, goal: LearnerGoal = "understand"): NextConceptRecommendation {
   const eligible = conceptRegistry.filter((concept) => concept.prerequisites.every((id) => masteryFor(state, id) >= 0.7));
   const candidates = eligible.filter((concept) => masteryFor(state, concept.id) < 0.8);
+  const goalPriority = (id: string): number => {
+    if (goal === "practice") return practiceQuestionIndexForConcept(id) === null ? 0 : 1;
+    if (goal === "experiment") return new Set(["kinematics", "oscillation", "wave-motion", "optics", "heat", "circuits"]).has(id) ? 1 : 0;
+    return 0;
+  };
   const concept = [...(candidates.length ? candidates : eligible)].sort((a, b) => {
     const masteryDifference = masteryFor(state, a.id) - masteryFor(state, b.id);
-    return masteryDifference || a.prerequisites.length - b.prerequisites.length || conceptRegistry.indexOf(a) - conceptRegistry.indexOf(b);
+    return masteryDifference || goalPriority(b.id) - goalPriority(a.id) || a.prerequisites.length - b.prerequisites.length || conceptRegistry.indexOf(a) - conceptRegistry.indexOf(b);
   })[0] ?? conceptRegistry[0];
   const mastery = masteryFor(state, concept.id);
   const hasPrerequisites = concept.prerequisites.length > 0;

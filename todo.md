@@ -353,3 +353,6 @@
 - [x] Add deterministic recommendation regression coverage
 - [x] Add direct Practice-this-concept routing from Home recommendations
 - [x] Add deterministic coverage for recommendation route parameters
+- [x] Add goal-aware recommendation tie-breaking from onboarding preferences
+- [x] Show transparent local mastery status on the Home recommendation card
+- [x] Add deterministic coverage for goal-aware recommendation output

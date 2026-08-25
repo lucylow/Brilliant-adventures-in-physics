@@ -27,6 +27,13 @@ describe("Concept Orbit", () => {
     expect(recommendNextConcept(progressed).concept.id).toBe("oscillation");
   });
 
+  it("uses onboarding goals to break eligible concept ties", () => {
+    const state: LearningState = { attempts: 10, correct: 10, savedQuestions: [], topics: { kinematics: { attempts: 10, correct: 10, hints: 0, confidenceTotal: 30 } }, streak: 1, lessonsCompleted: 0, labsCompleted: 0 };
+    expect(recommendNextConcept(state, "practice").concept.id).toBe("energy");
+    expect(recommendNextConcept(state, "experiment").concept.id).toBe("oscillation");
+    expect(recommendNextConcept(state, "understand").concept.id).toBe("oscillation");
+  });
+
   it("keeps recommendation practice routes deterministic", () => {
     const state: LearningState = { attempts: 0, correct: 0, savedQuestions: [], topics: {}, streak: 0, lessonsCompleted: 0, labsCompleted: 0 };
     const recommendation = recommendNextConcept(state);
