@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { mediaErrorMessage, normalizeMediaAsset } from "../lib/media-contract";
+import { mediaErrorMessage, mediaStatusTranslationKey, normalizeMediaAsset } from "../lib/media-contract";
 
 describe("media adapter safety contracts", () => {
   it("explains permission, cancellation, offline, and unavailable states", () => {
@@ -7,6 +7,15 @@ describe("media adapter safety contracts", () => {
     expect(mediaErrorMessage("CANCELED")).toContain("No media was selected");
     expect(mediaErrorMessage("OFFLINE")).toContain("local-only");
     expect(mediaErrorMessage("UNAVAILABLE")).toContain("unavailable");
+  });
+
+  it("maps every recoverable status to a localized Lens key", () => {
+    expect(mediaStatusTranslationKey("PERMISSION_DENIED")).toBe("lens.media.permission");
+    expect(mediaStatusTranslationKey("CANCELED")).toBe("lens.media.canceled");
+    expect(mediaStatusTranslationKey("UNAVAILABLE")).toBe("lens.media.unavailableMessage");
+    expect(mediaStatusTranslationKey("OFFLINE")).toBe("lens.media.offline");
+    expect(mediaStatusTranslationKey("ERROR")).toBe("lens.media.error");
+    expect(mediaStatusTranslationKey("OK")).toBe("lens.media.ready");
   });
 
   it("bounds captions and rejects malformed or invalid timestamps", () => {

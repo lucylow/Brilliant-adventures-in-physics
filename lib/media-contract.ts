@@ -11,6 +11,16 @@ export function normalizeMediaAsset(value: unknown): MediaAsset | null {
   return { uri: candidate.uri, width: typeof candidate.width === "number" && candidate.width > 0 ? Math.round(candidate.width) : undefined, height: typeof candidate.height === "number" && candidate.height > 0 ? Math.round(candidate.height) : undefined, type: candidate.type ?? undefined, fileName: candidate.fileName ?? undefined, caption, capturedAt };
 }
 
+export function mediaStatusTranslationKey(code: MediaAdapterCode): string | null {
+  if (code === "PERMISSION_DENIED") return "lens.media.permission";
+  if (code === "CANCELED") return "lens.media.canceled";
+  if (code === "OK") return "lens.media.ready";
+  if (code === "UNAVAILABLE") return "lens.media.unavailableMessage";
+  if (code === "OFFLINE") return "lens.media.offline";
+  if (code === "ERROR") return "lens.media.error";
+  return null;
+}
+
 export function mediaErrorMessage(code: MediaAdapterCode): string {
   if (code === "PERMISSION_DENIED") return "Permission was not granted. You can enable it in device settings.";
   if (code === "UNAVAILABLE") return "This media feature is unavailable on this device or browser.";

@@ -63,6 +63,9 @@ export function createAppTranslations(): TranslationStore {
     "lens.media.permission": { en: "Permission was not granted. You can enable it in device settings.", fr: "L’autorisation n’a pas été accordée. Vous pouvez l’activer dans les réglages.", es: "No se concedió el permiso. Puedes activarlo en los ajustes del dispositivo." },
     "lens.media.canceled": { en: "No media was selected.", fr: "Aucun média n’a été sélectionné.", es: "No se seleccionó ningún medio." },
     "lens.media.ready": { en: "Media is ready on this device.", fr: "Le média est prêt sur cet appareil.", es: "El medio está listo en este dispositivo." },
+    "lens.media.unavailableMessage": { en: "This media feature is unavailable on this device or browser.", fr: "Cette fonction multimédia est indisponible sur cet appareil ou ce navigateur.", es: "Esta función multimedia no está disponible en este dispositivo o navegador." },
+    "lens.media.offline": { en: "The capture is local-only, but this action requires an available device service.", fr: "La capture reste locale, mais cette action nécessite un service d’appareil disponible.", es: "La captura es local, pero esta acción requiere un servicio disponible del dispositivo." },
+    "lens.media.error": { en: "We could not access media. Your existing study data is unchanged.", fr: "Impossible d’accéder au média. Vos données d’étude restent inchangées.", es: "No pudimos acceder al medio. Tus datos de estudio no han cambiado." },
   };
   for (const [key, values] of Object.entries(entries)) for (const [locale, value] of Object.entries(values)) store.set(locale as SupportedLocale, key, value);
   return store;

@@ -379,3 +379,5 @@
 - [x] Add deterministic metadata validation coverage
 - [x] Localize Lens media controls and feedback through persisted locale
 - [x] Add deterministic Lens media localization coverage
+- [x] Localize Lens media unavailable, offline, and error feedback states
+- [x] Add deterministic status-code-to-translation mapping coverage
