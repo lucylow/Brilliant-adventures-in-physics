@@ -615,3 +615,8 @@
 - [x] Show localized mastery reinforcement beside affected Progress topics
 - [x] Keep numeric practice totals visibly separate
 - [x] Add deterministic mastery-feedback coverage
+
+- [x] Add a pure redacted review-history summary from local resolution records
+- [x] Keep history bounded and exclude raw answers or sensitive content
+- [x] Show localized review history in Progress with accessible labels
+- [x] Add deterministic review-history coverage

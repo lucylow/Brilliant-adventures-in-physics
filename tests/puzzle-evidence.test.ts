@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { loadPuzzleEvidence, loadResolvedPuzzleIds, missedPuzzleReviewQueue, recordPuzzleEvidence, resolvePuzzleEvidence, summarizePuzzleEvidence } from "../lib/puzzle-evidence";
+import { loadPuzzleEvidence, loadResolvedPuzzleIds, missedPuzzleReviewQueue, recordPuzzleEvidence, resolvePuzzleEvidence, reviewHistorySummary, summarizePuzzleEvidence } from "../lib/puzzle-evidence";
 
 vi.mock("@react-native-async-storage/async-storage", () => ({
   default: {
@@ -56,6 +56,17 @@ describe("puzzle evidence", () => {
     vi.mocked(AsyncStorage.getItem).mockResolvedValue(JSON.stringify(["p-1"]));
     await expect(loadResolvedPuzzleIds()).resolves.toEqual(["p-1"]);
     expect(AsyncStorage.setItem).toHaveBeenCalledTimes(1);
+  });
+
+  it("summarizes a bounded redacted review history by unique topic", () => {
+    expect(reviewHistorySummary([
+      { resolutionId: "r-1", topic: "energy", recordedAt: "2026-01-01" },
+      { resolutionId: "r-2", topic: "waves", recordedAt: "2026-01-03" },
+      { resolutionId: "r-3", topic: "energy", recordedAt: "2026-01-04" },
+    ], 2)).toEqual([
+      { topic: "energy", recordedAt: "2026-01-04" },
+      { topic: "waves", recordedAt: "2026-01-03" },
+    ]);
   });
 
   it("filters malformed records when loading", async () => {

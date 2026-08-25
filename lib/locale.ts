@@ -199,6 +199,8 @@ export function createAppTranslations(): TranslationStore {
     "progress.reviewAll": { en: "Review all", fr: "Tout revoir", es: "Repasar todo" },
     "progress.reviewMastery": { en: "Principles reinforced through review: {{count}}", fr: "Principes renforcés par la révision : {{count}}", es: "Principios reforzados mediante el repaso: {{count}}" },
     "progress.topicReinforced": { en: "Reinforced through review: {{count}}", fr: "Renforcé par la révision : {{count}}", es: "Reforzado mediante el repaso: {{count}}" },
+    "progress.reviewHistory": { en: "Recent principles reinforced", fr: "Principes récemment renforcés", es: "Principios reforzados recientemente" },
+    "progress.reviewHistoryItem": { en: "{{topic}} reinforced", fr: "{{topic}} renforcé", es: "{{topic}} reforzado" },
     "progress.adventureSaveFailed": { en: "Adventure progress is temporarily unavailable; your learning records remain safe.", fr: "La progression de l’aventure est temporairement indisponible ; vos données d’apprentissage restent en sécurité.", es: "El progreso de la aventura no está disponible temporalmente; tus registros de aprendizaje siguen seguros." },
     "progress.missionProgress": { en: "{{done}} of {{goal}} evidence", fr: "{{done}} preuve(s) sur {{goal}}", es: "{{done}} de {{goal}} evidencias" },
     "progress.achievements": { en: "Achievements", fr: "Succès", es: "Logros" },

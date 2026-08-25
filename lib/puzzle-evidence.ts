@@ -56,6 +56,19 @@ export function summarizeReviewMastery(records: readonly ReviewMasteryRecord[]) 
   return { resolved: records.length, topics: Object.keys(topicCounts).sort(), topicCounts };
 }
 
+export function reviewHistorySummary(records: readonly ReviewMasteryRecord[], limit = 5) {
+  const latestByTopic = new Map<string, ReviewMasteryRecord>();
+  for (const record of records) {
+    if (!record.topic) continue;
+    const previous = latestByTopic.get(record.topic);
+    if (!previous || record.recordedAt > previous.recordedAt) latestByTopic.set(record.topic, record);
+  }
+  return [...latestByTopic.values()]
+    .sort((a, b) => b.recordedAt.localeCompare(a.recordedAt) || a.topic.localeCompare(b.topic))
+    .slice(0, Math.max(0, Math.floor(limit)))
+    .map((record) => ({ topic: record.topic, recordedAt: record.recordedAt }));
+}
+
 export async function resolvePuzzleEvidence(puzzleId: string): Promise<boolean> {
   if (!puzzleId) return false;
   const current = await loadResolvedPuzzleIds();
