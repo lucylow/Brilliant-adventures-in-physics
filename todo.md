@@ -523,3 +523,7 @@
 - [x] Add localized observe, predict, measure, and reflect prompts
 - [x] Apply localized stage copy without changing user-entered content or state transitions
 - [x] Add deterministic stage-prompt localization coverage
+
+- [x] Add a typed locale-aware announcement contract
+- [x] Apply localized announcement metadata to the Physics Lens stage live region
+- [x] Add deterministic announcement fallback and priority coverage

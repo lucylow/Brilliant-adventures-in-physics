@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { LOCALES, TranslationStore, createAppTranslations, directionalStyle, formatDateTime, formatPercent, localeChain, physicsTerm, resolveLocale, translate, unitLabel } from "../lib/locale";
+import { LOCALES, TranslationStore, createAppTranslations, createLocalizedAnnouncement, directionalStyle, formatDateTime, formatPercent, localeChain, physicsTerm, resolveLocale, translate, unitLabel } from "../lib/locale";
 
 describe("localization contracts", () => {
   it("resolves regional and unsupported locales safely", () => {
@@ -76,6 +76,14 @@ describe("localization contracts", () => {
     expect(translate(copy, "fr", "lens.stage.observe")).toBe("Décrivez ce que vous pouvez observer sans encore l’expliquer.");
     expect(translate(copy, "es", "lens.stage.predict")).toBe("Escribe una predicción comprobable antes de medir.");
     expect(translate(copy, "de", "lens.stage.reflect")).toBe("Write one thing you learned or would test next.");
+  });
+
+  it("creates typed localized announcements with safe fallback and priority", () => {
+    const store = new TranslationStore();
+    store.set("en", "save.ready", "Saved {{count}} measurement(s).");
+    store.set("fr", "save.ready", "{{count}} mesure(s) enregistrée(s).");
+    expect(createLocalizedAnnouncement(store, "fr", "save.ready", "assertive", { count: 2 })).toEqual({ message: "2 mesure(s) enregistrée(s).", accessibilityLiveRegion: "assertive" });
+    expect(createLocalizedAnnouncement(store, "de", "save.ready")).toEqual({ message: "Saved  measurement(s).", accessibilityLiveRegion: "polite" });
   });
 
   it("formats stored timestamps with locale-aware output and safe fallback", () => {

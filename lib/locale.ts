@@ -38,9 +38,23 @@ export class TranslationStore {
   get(locale: SupportedLocale, key: string): string | undefined { return this.values.get(`${locale}:${key}`); }
 }
 
-export function translate(store: TranslationStore, locale: SupportedLocale, key: string, variables: Record<string, string | number> = {}): string {
+export type TranslationVariables = Record<string, string | number>;
+export type AnnouncementPriority = "polite" | "assertive";
+export type LocalizedAnnouncement = { message: string; accessibilityLiveRegion: AnnouncementPriority };
+
+export function translate(store: TranslationStore, locale: SupportedLocale, key: string, variables: TranslationVariables = {}): string {
   const value = localeChain(locale).map((candidate) => store.get(candidate, key)).find(Boolean) ?? key;
   return interpolate(value, variables);
+}
+
+export function createLocalizedAnnouncement(
+  store: TranslationStore,
+  locale: SupportedLocale,
+  key: string,
+  accessibilityLiveRegion: AnnouncementPriority = "polite",
+  variables: TranslationVariables = {},
+): LocalizedAnnouncement {
+  return { message: translate(store, locale, key, variables), accessibilityLiveRegion };
 }
 
 export function createAppTranslations(): TranslationStore {
