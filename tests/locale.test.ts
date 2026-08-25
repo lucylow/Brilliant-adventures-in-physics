@@ -48,6 +48,9 @@ describe("localization contracts", () => {
     expect(translate(copy, "fr", "lab.title")).toBe("Laboratoire de physique");
     expect(translate(copy, "es", "lab.totalInternalReflection")).toBe("Reflexión interna total");
     expect(translate(copy, "de", "lab.reset")).toBe("Reset");
+    expect(translate(copy, "fr", "lab.waveDescription")).toContain("v = fλ");
+    expect(translate(copy, "es", "lab.thermalDescription")).toContain("4186");
+    expect(translate(copy, "de", "lab.mechanicsDescription")).toBe("Use one 2 kg object to connect speed, energy, momentum, and impulse.");
   });
 
   it("formats stored timestamps with locale-aware output and safe fallback", () => {

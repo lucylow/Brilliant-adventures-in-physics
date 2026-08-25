@@ -458,3 +458,7 @@
 - [x] Localize remaining Lab slider and concept-link labels
 - [x] Localize Lab accessibility state descriptions without changing numeric outputs
 - [x] Add deterministic coverage for remaining Lab control keys
+
+- [x] Localize remaining Lab experiment descriptions
+- [x] Localize stable Lab result labels and accessibility descriptions
+- [x] Add deterministic coverage for the new Lab explanatory keys
