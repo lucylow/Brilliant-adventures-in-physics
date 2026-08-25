@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { mediaArtifactContext, mediaErrorMessage, mediaStatusTranslationKey, normalizeMediaAsset } from "../lib/media-contract";
+import { isPreviewableLocalMediaUri, mediaArtifactContext, mediaErrorMessage, mediaStatusTranslationKey, normalizeMediaAsset } from "../lib/media-contract";
 
 describe("media adapter safety contracts", () => {
   it("explains permission, cancellation, offline, and unavailable states", () => {
@@ -7,6 +7,13 @@ describe("media adapter safety contracts", () => {
     expect(mediaErrorMessage("CANCELED")).toContain("No media was selected");
     expect(mediaErrorMessage("OFFLINE")).toContain("local-only");
     expect(mediaErrorMessage("UNAVAILABLE")).toContain("unavailable");
+  });
+
+  it("accepts local preview URIs and rejects remote sources", () => {
+    expect(isPreviewableLocalMediaUri("file:///observation.jpg")).toBe(true);
+    expect(isPreviewableLocalMediaUri("content://media/1")).toBe(true);
+    expect(isPreviewableLocalMediaUri("https://example.com/observation.jpg")).toBe(false);
+    expect(isPreviewableLocalMediaUri("not-a-uri")).toBe(false);
   });
 
   it("preserves bounded local media context for Notebook artifacts", () => {

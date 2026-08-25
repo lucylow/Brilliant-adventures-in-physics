@@ -2,10 +2,14 @@ export type MediaAdapterCode = "OK" | "CANCELED" | "PERMISSION_DENIED" | "UNAVAI
 export type MediaAdapterResult<T> = { ok: boolean; code: MediaAdapterCode; data?: T; message: string };
 export type MediaAsset = { uri: string; width?: number; height?: number; type?: string | null; fileName?: string | null; caption?: string; capturedAt?: string };
 
+export function isPreviewableLocalMediaUri(value: unknown): value is string {
+  return typeof value === "string" && value.length <= 4096 && /^(file|content|ph|blob|data:image):/i.test(value);
+}
+
 export function normalizeMediaAsset(value: unknown): MediaAsset | null {
   if (!value || typeof value !== "object") return null;
   const candidate = value as Partial<MediaAsset>;
-  if (typeof candidate.uri !== "string" || candidate.uri.length === 0 || candidate.uri.length > 4096) return null;
+  if (!isPreviewableLocalMediaUri(candidate.uri) || candidate.uri.length === 0) return null;
   const caption = typeof candidate.caption === "string" ? candidate.caption.trim().slice(0, 160) : undefined;
   const capturedAt = typeof candidate.capturedAt === "string" && !Number.isNaN(Date.parse(candidate.capturedAt)) ? candidate.capturedAt : undefined;
   return { uri: candidate.uri, width: typeof candidate.width === "number" && candidate.width > 0 ? Math.round(candidate.width) : undefined, height: typeof candidate.height === "number" && candidate.height > 0 ? Math.round(candidate.height) : undefined, type: candidate.type ?? undefined, fileName: candidate.fileName ?? undefined, caption, capturedAt };

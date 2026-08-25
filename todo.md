@@ -392,3 +392,6 @@
 - [x] Add safe locale-aware formatting for stored observation timestamps
 - [x] Show locale-formatted media timestamps in Lens and Notebook
 - [x] Add deterministic timestamp-formatting regression coverage
+- [x] Add safe local preview URI validation for Notebook media artifacts
+- [x] Render accessible Notebook image previews with non-destructive fallback
+- [x] Add deterministic local preview validation coverage
