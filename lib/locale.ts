@@ -224,6 +224,21 @@ export function createAppTranslations(): TranslationStore {
     "onboarding.goalPracticeBody": { en: "Work through feedback-rich questions.", fr: "Résolvez des questions riches en retours.", es: "Resuelve preguntas con comentarios útiles." },
     "onboarding.goalExperiment": { en: "Run experiments", fr: "Réaliser des expériences", es: "Hacer experimentos" },
     "onboarding.goalExperimentBody": { en: "Explore motion with deterministic labs.", fr: "Explorez le mouvement avec des laboratoires déterministes.", es: "Explora el movimiento con laboratorios deterministas." },
+    "lab.title": { en: "Physics Lab", fr: "Laboratoire de physique", es: "Laboratorio de física" },
+    "lab.subtitle": { en: "Manipulate a model and inspect verified values.", fr: "Manipulez un modèle et examinez des valeurs vérifiées.", es: "Manipula un modelo y revisa valores verificados." },
+    "lab.play": { en: "Play", fr: "Lire", es: "Reproducir" },
+    "lab.pause": { en: "Pause", fr: "Pause", es: "Pausa" },
+    "lab.reset": { en: "Reset", fr: "Réinitialiser", es: "Restablecer" },
+    "lab.waveExperiment": { en: "WAVE EXPERIMENT · DETERMINISTIC", fr: "EXPÉRIENCE D’ONDE · DÉTERMINISTE", es: "EXPERIMENTO DE ONDAS · DETERMINISTA" },
+    "lab.opticsExperiment": { en: "OPTICS EXPERIMENT · SNELL'S LAW", fr: "EXPÉRIENCE D’OPTIQUE · LOI DE SNELL", es: "EXPERIMENTO DE ÓPTICA · LEY DE SNELL" },
+    "lab.thermalExperiment": { en: "THERMAL EXPERIMENT · Q = mcΔT", fr: "EXPÉRIENCE THERMIQUE · Q = mcΔT", es: "EXPERIMENTO TÉRMICO · Q = mcΔT" },
+    "lab.mechanicsExperiment": { en: "MECHANICS EXPERIMENT · VERIFIED", fr: "EXPÉRIENCE DE MÉCANIQUE · VÉRIFIÉE", es: "EXPERIMENTO DE MECÁNICA · VERIFICADO" },
+    "lab.speed": { en: "Speed", fr: "Vitesse", es: "Velocidad" },
+    "lab.period": { en: "Period", fr: "Période", es: "Período" },
+    "lab.totalInternalReflection": { en: "Total internal reflection", fr: "Réflexion totale interne", es: "Reflexión interna total" },
+    "lab.refractedAngle": { en: "Refracted angle", fr: "Angle réfracté", es: "Ángulo refractado" },
+    "lab.criticalAngle": { en: "The critical angle is {{value}}°.", fr: "L’angle critique est de {{value}}°.", es: "El ángulo crítico es {{value}}°." },
+    "lab.newtonianRay": { en: "The ray enters the second medium and bends away from the normal.", fr: "Le rayon entre dans le second milieu et s’écarte de la normale.", es: "El rayo entra en el segundo medio y se aleja de la normal." },
   };
   for (const [key, values] of Object.entries(entries)) for (const [locale, value] of Object.entries(values)) store.set(locale as SupportedLocale, key, value);
   return store;

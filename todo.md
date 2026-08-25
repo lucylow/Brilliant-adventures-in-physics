@@ -449,3 +449,8 @@
 - [x] Add localized onboarding labels with safe English fallback
 - [x] Apply persisted-locale translations without changing profile semantics
 - [x] Add deterministic onboarding localization coverage
+
+- [x] Audit remaining Lab user-facing experiment labels and descriptions
+- [x] Add localized Lab interface keys with safe English fallback
+- [x] Apply localization without translating equations or deterministic outputs
+- [x] Add deterministic Lab localization coverage
