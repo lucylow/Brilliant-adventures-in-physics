@@ -14,7 +14,7 @@ export default function LessonScreen() {
   const colors = useColors();
   const [hintLevel, setHintLevel] = useState<HintLevel>("concept");
   const [completed, setCompleted] = useState(false);
-  const [preferences, setPreferences] = useState<Preferences>({ streakEnabled: true, reducedMotion: false, hapticsEnabled: true });
+  const [preferences, setPreferences] = useState<Preferences>({ streakEnabled: true, reducedMotion: false, hapticsEnabled: true, locale: "en" });
   const [persistenceMessage, setPersistenceMessage] = useState<string | null>(null);
   const [completionSaving, setCompletionSaving] = useState(false);
   useEffect(() => { let active = true; void loadPreferencesWithStatus().then((result) => { if (active) setPreferences(result.preferences); }).catch(() => undefined); return () => { active = false; }; }, []);

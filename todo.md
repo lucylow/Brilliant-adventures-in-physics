@@ -362,3 +362,8 @@
 - [x] Harden secondary-screen local-load error states
 - [x] Add clearly labeled mock fallback data for recoverable secondary-screen loads
 - [x] Add deterministic tests for secondary-screen fallback and persistence errors
+- [x] Add local multilingual locale registry, fallback chain, terminology, and formatting
+- [x] Add validated higher-level physics helpers with domain checks
+- [x] Add reusable accessible physics visuals and reduced-motion animation primitives
+- [x] Integrate an advanced-physics animated Lab experiment with locale-aware labels
+- [x] Add deterministic regression coverage for attached codebook integrations

@@ -1,8 +1,10 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { resolveLocale, type SupportedLocale } from "./locale";
 
 const KEY = "physicaai.preferences.v1";
-export type Preferences = { streakEnabled: boolean; reducedMotion: boolean; hapticsEnabled: boolean };
-const DEFAULTS: Preferences = { streakEnabled: true, reducedMotion: false, hapticsEnabled: true };
+export type Preferences = { streakEnabled: boolean; reducedMotion: boolean; hapticsEnabled: boolean; locale: SupportedLocale };
+export const DEFAULT_PREFERENCES: Preferences = { streakEnabled: true, reducedMotion: false, hapticsEnabled: true, locale: "en" };
+const DEFAULTS = DEFAULT_PREFERENCES;
 
 export function mergePreferences(input: unknown): Preferences {
   const stored = input && typeof input === "object" ? input as Partial<Preferences> : {};
@@ -10,6 +12,7 @@ export function mergePreferences(input: unknown): Preferences {
     streakEnabled: typeof stored.streakEnabled === "boolean" ? stored.streakEnabled : DEFAULTS.streakEnabled,
     reducedMotion: typeof stored.reducedMotion === "boolean" ? stored.reducedMotion : DEFAULTS.reducedMotion,
     hapticsEnabled: typeof stored.hapticsEnabled === "boolean" ? stored.hapticsEnabled : DEFAULTS.hapticsEnabled,
+    locale: resolveLocale(typeof stored.locale === "string" ? stored.locale : DEFAULTS.locale).code,
   };
 }
 

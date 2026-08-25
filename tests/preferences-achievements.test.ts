@@ -10,7 +10,7 @@ describe("preferences and achievement evidence", () => {
     expect(evaluateAchievements({ ...base, labsCompleted: 1 }).find((item) => item.id === "lesson-lab-loop")?.earned).toBe(true);
   });
   it("migrates malformed preferences to safe defaults", () => {
-    expect(mergePreferences({ streakEnabled: "yes", reducedMotion: null, hapticsEnabled: false })).toEqual({ streakEnabled: true, reducedMotion: false, hapticsEnabled: false });
-    expect(mergePreferences(null)).toEqual({ streakEnabled: true, reducedMotion: false, hapticsEnabled: true });
+    expect(mergePreferences({ streakEnabled: "yes", reducedMotion: null, hapticsEnabled: false })).toEqual({ streakEnabled: true, reducedMotion: false, hapticsEnabled: false, locale: "en" });
+    expect(mergePreferences(null)).toEqual({ streakEnabled: true, reducedMotion: false, hapticsEnabled: true, locale: "en" });
   });
 });

@@ -18,7 +18,7 @@ describe("service result contracts", () => {
     expect(normalizeServiceError({ message: "unknown" })).toMatchObject({ code: "UNEXPECTED_ERROR", retryable: true });
   });
   it("migrates older preferences with haptics enabled by default", () => {
-    expect(mergePreferences({ streakEnabled: false, reducedMotion: true })).toEqual({ streakEnabled: false, reducedMotion: true, hapticsEnabled: true });
+    expect(mergePreferences({ streakEnabled: false, reducedMotion: true })).toEqual({ streakEnabled: false, reducedMotion: true, hapticsEnabled: true, locale: "en" });
     expect(mergePreferences({ hapticsEnabled: false }).hapticsEnabled).toBe(false);
   });
   it("keeps validation failures non-retryable and transport failures retryable", () => {

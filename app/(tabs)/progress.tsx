@@ -21,7 +21,7 @@ const TOPICS = [
 export default function ProgressScreen() {
   const colors = useColors();
   const [learning, setLearning] = useState<LearningState>({ attempts: 0, correct: 0, savedQuestions: [], topics: {}, streak: 0, lessonsCompleted: 0, labsCompleted: 0 });
-  const [preferences, setPreferences] = useState<Preferences>({ streakEnabled: true, reducedMotion: false, hapticsEnabled: true });
+  const [preferences, setPreferences] = useState<Preferences>({ streakEnabled: true, reducedMotion: false, hapticsEnabled: true, locale: "en" });
   const [loadFailed, setLoadFailed] = useState(false);
   const loadProgress = () => { setLoadFailed(false); let active = true; void Promise.all([loadLearningState(), loadPreferencesWithStatus()]).then(([nextLearning, preferenceResult]) => { if (!active) return; setLearning(nextLearning); setPreferences(preferenceResult.preferences); }).catch(() => { if (active) setLoadFailed(true); }); return () => { active = false; }; };
   useEffect(() => loadProgress(), []);
