@@ -407,3 +407,8 @@
 - [x] Add Notebook list thumbnails for valid local media
 - [x] Add per-entry thumbnail failure fallback without mutating saved metadata
 - [x] Add deterministic thumbnail URI and fallback coverage
+
+- [x] Audit hardcoded user-facing copy in Tutor, Concepts, and Practice
+- [x] Add shared localized keys with English fallback and selected French/Spanish coverage
+- [x] Apply locale-aware copy to Tutor, Concepts, and Practice screens
+- [x] Add deterministic localization regression coverage for the new feature-screen keys
