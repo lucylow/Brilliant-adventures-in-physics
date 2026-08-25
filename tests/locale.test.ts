@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { LOCALES, TranslationStore, createAppTranslations, directionalStyle, formatPercent, localeChain, physicsTerm, resolveLocale, translate, unitLabel } from "../lib/locale";
+import { LOCALES, TranslationStore, createAppTranslations, directionalStyle, formatDateTime, formatPercent, localeChain, physicsTerm, resolveLocale, translate, unitLabel } from "../lib/locale";
 
 describe("localization contracts", () => {
   it("resolves regional and unsupported locales safely", () => {
@@ -30,6 +30,11 @@ describe("localization contracts", () => {
     expect(translate(copy, "de", "lens.media.permission")).toBe("Permission was not granted. You can enable it in device settings.");
     expect(translate(copy, "es", "tutor.localFallback")).toContain("respaldo local");
     expect(translate(copy, "fr", "notebook.saved")).toBe("Réflexion enregistrée dans votre Notebook local.");
+  });
+
+  it("formats stored timestamps with locale-aware output and safe fallback", () => {
+    expect(formatDateTime("2026-08-25T03:00:00.000Z", "fr")).toMatch(/2026|25/);
+    expect(formatDateTime("not-a-date", "en")).toBe("Unknown date");
   });
 
   it("formats percentages with a safe locale-aware formatter", () => {

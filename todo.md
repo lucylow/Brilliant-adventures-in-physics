@@ -389,3 +389,6 @@
 - [x] Add deterministic Lens-to-Notebook media artifact coverage
 - [x] Localize Notebook media context labels and artifact metadata
 - [x] Add deterministic Notebook artifact localization coverage
+- [x] Add safe locale-aware formatting for stored observation timestamps
+- [x] Show locale-formatted media timestamps in Lens and Notebook
+- [x] Add deterministic timestamp-formatting regression coverage

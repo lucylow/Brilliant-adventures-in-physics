@@ -110,3 +110,8 @@ export function formatNumber(value: number, locale: SupportedLocale): string { r
 export function formatPercent(value: number, locale: SupportedLocale): string { return safeIntl(`${Math.round(value * 100)}%`, () => new Intl.NumberFormat(resolveLocale(locale).code, { style: "percent", maximumFractionDigits: 1 }).format(value)); }
 export function formatScientific(value: number, locale: SupportedLocale): string { return safeIntl(String(value), () => new Intl.NumberFormat(resolveLocale(locale).code, { notation: "scientific", maximumSignificantDigits: 4 }).format(value)); }
 export function formatDate(date: Date, locale: SupportedLocale): string { return safeIntl(date.toISOString().slice(0, 10), () => new Intl.DateTimeFormat(resolveLocale(locale).code, { dateStyle: "medium" }).format(date)); }
+export function formatDateTime(value: Date | string, locale: SupportedLocale): string {
+  const date = typeof value === "string" ? new Date(value) : value;
+  if (Number.isNaN(date.getTime())) return "Unknown date";
+  return safeIntl(date.toISOString(), () => new Intl.DateTimeFormat(resolveLocale(locale).code, { dateStyle: "medium", timeStyle: "short" }).format(date));
+}
