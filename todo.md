@@ -605,3 +605,8 @@
 - [x] Add an accessible return action after sequential review completion
 - [x] Preserve review evidence and scoring behavior
 - [x] Add deterministic completion-navigation contract coverage
+
+- [x] Add a separate idempotent review-mastery evidence record
+- [x] Derive topic mastery updates only from successful review resolutions
+- [x] Show localized mastery feedback without changing numeric attempt totals
+- [x] Add deterministic review-mastery tests

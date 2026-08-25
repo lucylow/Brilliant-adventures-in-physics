@@ -15,7 +15,7 @@ import { useAppTranslations } from "@/hooks/use-app-translations";
 import { practiceQuestionIndexForConcept, practiceQuestions } from "@/lib/practice";
 import { saveNotebookEntry } from "@/lib/notebook";
 import { createPhysicsPuzzle, getPhysicsHints, puzzleRewardXp, scorePuzzleAnswer, type PuzzleOutcome } from "@/lib/puzzles";
-import { loadPuzzleEvidence, loadResolvedPuzzleIds, missedPuzzleReviewQueue, recordPuzzleEvidence, resolvePuzzleEvidence } from "@/lib/puzzle-evidence";
+import { loadPuzzleEvidence, loadResolvedPuzzleIds, missedPuzzleReviewQueue, recordPuzzleEvidence, recordReviewMastery, resolvePuzzleEvidence } from "@/lib/puzzle-evidence";
 
 export default function PracticeScreen() {
   const colors = useColors();
@@ -45,7 +45,7 @@ export default function PracticeScreen() {
   const puzzle = useMemo(() => createPhysicsPuzzle(question.concept, 2, index), [question.concept, index]);
   const puzzleHints = useMemo(() => getPhysicsHints(question.concept), [question.concept]);
   const puzzleAnnouncement = puzzleOutcome ? announce(puzzleOutcome === "correct" ? "practice.puzzleCorrect" : puzzleOutcome === "assisted-correct" ? "practice.puzzleAssisted" : "practice.puzzleIncorrect", puzzleOutcome === "incorrect" ? "assertive" : "polite") : null;
-  const answerPuzzle = (choice: string) => { const outcome = scorePuzzleAnswer(puzzle, choice, puzzleHintsUsed); const evidenceId = reviewItem?.puzzleId ?? puzzle.id; setPuzzleOutcome(outcome); setPuzzlePersistenceMessage(null); void recordPuzzleEvidence({ puzzleId: puzzle.id, topic: question.concept, outcome, hintsUsed: puzzleHintsUsed, xp: puzzleRewardXp(puzzle, outcome) }).then(() => { if (isReviewMode && outcome !== "incorrect") return resolvePuzzleEvidence(evidenceId); return false; }).then((resolved) => { if (resolved) setReviewResolvedCount((value) => value + 1); }).catch(() => setPuzzlePersistenceMessage(tr("practice.puzzleSaveFailed"))); };
+  const answerPuzzle = (choice: string) => { const outcome = scorePuzzleAnswer(puzzle, choice, puzzleHintsUsed); const evidenceId = reviewItem?.puzzleId ?? puzzle.id; setPuzzleOutcome(outcome); setPuzzlePersistenceMessage(null); void recordPuzzleEvidence({ puzzleId: puzzle.id, topic: question.concept, outcome, hintsUsed: puzzleHintsUsed, xp: puzzleRewardXp(puzzle, outcome) }).then(() => { if (isReviewMode && outcome !== "incorrect") return resolvePuzzleEvidence(evidenceId); return false; }).then((resolved) => { if (!resolved) return false; setReviewResolvedCount((value) => value + 1); return recordReviewMastery({ resolutionId: evidenceId, topic: question.concept, recordedAt: new Date().toISOString() }); }).catch(() => setPuzzlePersistenceMessage(tr("practice.puzzleSaveFailed"))); };
   const resetPuzzle = () => { setPuzzleOutcome(null); setPuzzleHintsUsed(0); setPuzzleHintVisible(false); setPuzzlePersistenceMessage(null); };
   const feedbackAnnouncement = feedback ? announce(feedback === "correct" ? "practice.correct" : "practice.incorrect", "polite") : null;
   const notebookAnnouncement = notebookMessage ? { message: notebookMessage, accessibilityLiveRegion: "polite" as const } : null;

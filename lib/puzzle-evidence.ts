@@ -3,6 +3,7 @@ import type { PuzzleOutcome } from "./puzzles";
 
 const KEY = "physicaai.puzzle-evidence.v1";
 const RESOLVED_KEY = "physicaai.puzzle-evidence-resolved.v1";
+const REVIEW_MASTERY_KEY = "physicaai.review-mastery.v1";
 
 export type PuzzleEvidence = {
   puzzleId: string;
@@ -27,6 +28,32 @@ export async function loadResolvedPuzzleIds(): Promise<string[]> {
   } catch {
     return [];
   }
+}
+
+export type ReviewMasteryRecord = { resolutionId: string; topic: string; recordedAt: string };
+
+export async function loadReviewMastery(): Promise<ReviewMasteryRecord[]> {
+  try {
+    const raw = await AsyncStorage.getItem(REVIEW_MASTERY_KEY);
+    const parsed: unknown = raw ? JSON.parse(raw) : [];
+    return Array.isArray(parsed) ? parsed.filter((item): item is ReviewMasteryRecord => Boolean(item && typeof item === "object" && typeof (item as ReviewMasteryRecord).resolutionId === "string" && typeof (item as ReviewMasteryRecord).topic === "string" && typeof (item as ReviewMasteryRecord).recordedAt === "string")).slice(-200) : [];
+  } catch {
+    return [];
+  }
+}
+
+export async function recordReviewMastery(record: ReviewMasteryRecord): Promise<boolean> {
+  if (!record.resolutionId || !record.topic) return false;
+  const current = await loadReviewMastery();
+  if (current.some((item) => item.resolutionId === record.resolutionId)) return false;
+  await AsyncStorage.setItem(REVIEW_MASTERY_KEY, JSON.stringify([...current, record].slice(-200)));
+  return true;
+}
+
+export function summarizeReviewMastery(records: readonly ReviewMasteryRecord[]) {
+  const topics = new Set<string>();
+  for (const record of records) if (record.topic) topics.add(record.topic);
+  return { resolved: records.length, topics: [...topics].sort() };
 }
 
 export async function resolvePuzzleEvidence(puzzleId: string): Promise<boolean> {

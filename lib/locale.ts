@@ -197,6 +197,7 @@ export function createAppTranslations(): TranslationStore {
     "progress.reviewBody": { en: "Return to Practice and rebuild the idea without losing your existing progress.", fr: "Retournez à la pratique pour reconstruire l’idée sans perdre votre progression.", es: "Vuelve a Práctica para reconstruir la idea sin perder tu progreso." },
     "progress.reviewOpen": { en: "Review in Practice", fr: "Revoir dans Pratique", es: "Revisar en Práctica" },
     "progress.reviewAll": { en: "Review all", fr: "Tout revoir", es: "Repasar todo" },
+    "progress.reviewMastery": { en: "Principles reinforced through review: {{count}}", fr: "Principes renforcés par la révision : {{count}}", es: "Principios reforzados mediante el repaso: {{count}}" },
     "progress.adventureSaveFailed": { en: "Adventure progress is temporarily unavailable; your learning records remain safe.", fr: "La progression de l’aventure est temporairement indisponible ; vos données d’apprentissage restent en sécurité.", es: "El progreso de la aventura no está disponible temporalmente; tus registros de aprendizaje siguen seguros." },
     "progress.missionProgress": { en: "{{done}} of {{goal}} evidence", fr: "{{done}} preuve(s) sur {{goal}}", es: "{{done}} de {{goal}} evidencias" },
     "progress.achievements": { en: "Achievements", fr: "Succès", es: "Logros" },
