@@ -412,3 +412,8 @@
 - [x] Add shared localized keys with English fallback and selected French/Spanish coverage
 - [x] Apply locale-aware copy to Tutor, Concepts, and Practice screens
 - [x] Add deterministic localization regression coverage for the new feature-screen keys
+
+- [x] Audit loading, empty, error, and retry handling on secondary screens
+- [x] Add shared localized secondary-screen recovery copy
+- [x] Apply consistent retry and accessible state feedback to a secondary screen
+- [x] Add deterministic state-contract coverage

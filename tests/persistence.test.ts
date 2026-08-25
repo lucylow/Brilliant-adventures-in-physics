@@ -15,6 +15,7 @@ describe("safe persistence", () => {
   it("keeps loading recovery copy stable by data scope", () => {
     expect(loadRecoveryMessage("profile")).toContain("learning path");
     expect(loadRecoveryMessage("progress")).toContain("progress");
+    expect(loadRecoveryMessage("progress")).toContain("try again");
     expect(loadRecoveryMessage("draft")).toContain("saved session");
   });
 });
