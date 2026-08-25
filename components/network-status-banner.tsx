@@ -3,13 +3,19 @@ import { Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { useColors } from "@/hooks/use-colors";
-import { networkStateToStatus, networkStatusLabel, networkStatusMessage } from "@/lib/network";
+import { useAppTranslations } from "@/hooks/use-app-translations";
+import { networkStateToStatus, networkStatusMessage } from "@/lib/network";
 
 export function NetworkStatusBanner() {
   const colors = useColors();
   const insets = useSafeAreaInsets();
+  const { tr } = useAppTranslations();
   const status = networkStateToStatus(Network.useNetworkState());
+  const translationKey = status === "offline" ? "network.offline" : "network.checking";
+  const messageKey = status === "offline" ? "network.offlineMessage" : "network.checkingMessage";
   const message = networkStatusMessage(status);
+  const localizedLabel = tr(translationKey);
+  const localizedMessage = tr(messageKey);
 
   if (!message) return null;
 
@@ -17,7 +23,7 @@ export function NetworkStatusBanner() {
     <View
       accessibilityRole="alert"
       accessibilityLiveRegion="polite"
-      accessibilityLabel={`${networkStatusLabel(status)}. ${message}`}
+      accessibilityLabel={`${localizedLabel}. ${localizedMessage}`}
       style={{
         pointerEvents: "none",
         position: "absolute",
@@ -34,9 +40,9 @@ export function NetworkStatusBanner() {
       }}
     >
       <Text style={{ color: colors.foreground, fontWeight: "800", lineHeight: 20 }}>
-        {networkStatusLabel(status)}
+        {localizedLabel}
       </Text>
-      <Text style={{ color: colors.muted, marginTop: 2, lineHeight: 18 }}>{message}</Text>
+      <Text style={{ color: colors.muted, marginTop: 2, lineHeight: 18 }}>{localizedMessage}</Text>
     </View>
   );
 }

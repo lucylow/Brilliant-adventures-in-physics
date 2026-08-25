@@ -486,3 +486,8 @@
 - [x] Locate the remaining runtime pointerEvents warning source
 - [x] Replace deprecated pointerEvents usage without changing interaction behavior
 - [x] Validate warning cleanup with deterministic tests and typecheck
+
+- [x] Audit network banner status labels and recovery messages
+- [x] Add localized network status keys with safe English fallback
+- [x] Apply localized live-region copy without changing network classification
+- [x] Add deterministic network localization coverage

@@ -60,6 +60,9 @@ describe("localization contracts", () => {
     expect(translate(copy, "fr", "lab.learnAbout", { label: "optique" })).toBe("En savoir plus sur optique");
     expect(translate(copy, "es", "lab.learnAbout", { label: "óptica" })).toBe("Más información sobre óptica");
     expect(translate(copy, "de", "lab.learnAbout", { label: "wave motion" })).toBe("Learn about wave motion");
+    expect(translate(copy, "fr", "network.offline")).toBe("Hors ligne");
+    expect(translate(copy, "es", "network.checkingMessage")).toBe("Comprobando la conexión. Tu trabajo local permanece seguro.");
+    expect(translate(copy, "de", "network.offlineMessage")).toBe("Offline mode: your work stays on this device and will retry when connected.");
   });
 
   it("formats stored timestamps with locale-aware output and safe fallback", () => {

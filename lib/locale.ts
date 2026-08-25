@@ -269,6 +269,10 @@ export function createAppTranslations(): TranslationStore {
     "lab.current": { en: "current", fr: "courant", es: "corriente" },
     "lab.power": { en: "power", fr: "puissance", es: "potencia" },
     "lab.learnAbout": { en: "Learn about {{label}}", fr: "En savoir plus sur {{label}}", es: "Más información sobre {{label}}" },
+    "network.offline": { en: "Offline", fr: "Hors ligne", es: "Sin conexión" },
+    "network.checking": { en: "Checking connection", fr: "Vérification de la connexion", es: "Comprobando la conexión" },
+    "network.offlineMessage": { en: "Offline mode: your work stays on this device and will retry when connected.", fr: "Mode hors ligne : votre travail reste sur cet appareil et sera réessayé une fois la connexion rétablie.", es: "Modo sin conexión: tu trabajo permanece en este dispositivo y se reintentará al conectarte." },
+    "network.checkingMessage": { en: "Checking connection. Your local work remains safe.", fr: "Vérification de la connexion. Votre travail local reste en sécurité.", es: "Comprobando la conexión. Tu trabajo local permanece seguro." },
   };
   for (const [key, values] of Object.entries(entries)) for (const [locale, value] of Object.entries(values)) store.set(locale as SupportedLocale, key, value);
   return store;
