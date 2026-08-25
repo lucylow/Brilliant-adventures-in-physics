@@ -12,7 +12,7 @@ import { loadPreferencesWithStatus, type Preferences } from "@/lib/preferences";
 import { AnimatedProgress } from "@/components/motion-primitives";
 import { useAppTranslations } from "@/hooks/use-app-translations";
 import { adventureProgress, completeAdventureMission, emptyAdventureState, generateAdventureMissions, loadAdventureState, missionIsComplete, saveAdventureState, worldForLevel, type AdventureState } from "@/lib/adventure";
-import { loadPuzzleEvidence, summarizePuzzleEvidence, type PuzzleEvidence } from "@/lib/puzzle-evidence";
+import { loadPuzzleEvidence, missedPuzzleReviewQueue, summarizePuzzleEvidence, type PuzzleEvidence } from "@/lib/puzzle-evidence";
 
 const TOPICS = [
   { name: "Kinematics", detail: "Review motion graphs and units." },
@@ -37,6 +37,7 @@ export default function ProgressScreen() {
   const mission = generateMission(new Date().getDate());
   const missionValue = mission.kind === "practice" ? learning.attempts : 0;
   const puzzleSummary = summarizePuzzleEvidence(puzzleEvidence);
+  const reviewItem = missedPuzzleReviewQueue(puzzleEvidence, 1)[0];
   const adventureWorld = worldForLevel(level.level);
   const adventureMissions = generateAdventureMissions(adventureWorld.id);
   const adventureMission = adventureMissions[0];
@@ -77,6 +78,7 @@ export default function ProgressScreen() {
           <Text style={{ color: colors.foreground, fontSize: 18, fontWeight: "800", marginTop: 6 }}>{adventureWorld.title}</Text>
           <Text style={{ color: colors.muted, marginTop: 4 }}>{tr("progress.adventureBody")}</Text>
           <Text accessibilityLabel={tr("progress.puzzleEvidence", { total: puzzleSummary.total, accuracy: Math.round(puzzleSummary.accuracy * 100) })} style={{ color: colors.muted, marginTop: 6 }}>{tr("progress.puzzleEvidence", { total: puzzleSummary.total, accuracy: Math.round(puzzleSummary.accuracy * 100) })}</Text>
+          {reviewItem && <View style={{ marginTop: 12, padding: 12, borderRadius: 12, backgroundColor: colors.warning + "14" }}><Text style={{ color: colors.foreground, fontWeight: "800" }}>{tr("progress.reviewTitle")}</Text><Text style={{ color: colors.muted, marginTop: 4 }}>{tr("progress.reviewBody")}</Text><View style={{ marginTop: 10 }}><PrimaryButton label={tr("progress.reviewOpen")} onPress={() => router.push({ pathname: "/practice", params: reviewItem.topic ? { concept: reviewItem.topic } : undefined } as never)} /></View></View>}
           <Text style={{ color: colors.foreground, fontWeight: "800", marginTop: 12 }}>{adventureMission.title}</Text>
           <Text style={{ color: colors.muted, marginTop: 4 }}>{adventureMission.objective}</Text>
           <Text accessibilityLiveRegion="polite" style={{ color: adventureComplete ? colors.success : colors.primary, marginTop: 8 }}>{adventureComplete ? tr("progress.missionComplete") : tr("progress.missionProgress", { done: adventureEvidence, goal: adventureMission.goal })}</Text>

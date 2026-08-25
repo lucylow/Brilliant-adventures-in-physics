@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { loadPuzzleEvidence, recordPuzzleEvidence, summarizePuzzleEvidence } from "../lib/puzzle-evidence";
+import { loadPuzzleEvidence, missedPuzzleReviewQueue, recordPuzzleEvidence, summarizePuzzleEvidence } from "../lib/puzzle-evidence";
 
 vi.mock("@react-native-async-storage/async-storage", () => ({
   default: {
@@ -36,6 +36,16 @@ describe("puzzle evidence", () => {
       { puzzleId: "p-2", topic: "waves", outcome: "assisted-correct", hintsUsed: 1, xp: 20, recordedAt: "now" },
     ]);
     expect(summary).toEqual({ total: 2, correct: 2, assisted: 1, xp: 45, accuracy: 1 });
+  });
+
+  it("orders a bounded missed-principle queue without duplicate IDs", () => {
+    const queue = missedPuzzleReviewQueue([
+      { puzzleId: "p-2", topic: "waves", outcome: "incorrect", hintsUsed: 0, xp: 0, recordedAt: "2026-01-02" },
+      { puzzleId: "p-1", topic: "energy", outcome: "incorrect", hintsUsed: 0, xp: 0, recordedAt: "2026-01-01" },
+      { puzzleId: "p-1", topic: "energy", outcome: "incorrect", hintsUsed: 1, xp: 0, recordedAt: "2026-01-03" },
+      { puzzleId: "p-3", topic: "motion", outcome: "correct", hintsUsed: 0, xp: 25, recordedAt: "2026-01-01" },
+    ], 2);
+    expect(queue.map((entry) => entry.puzzleId)).toEqual(["p-1", "p-2"]);
   });
 
   it("filters malformed records when loading", async () => {

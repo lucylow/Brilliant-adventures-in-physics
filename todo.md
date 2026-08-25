@@ -575,3 +575,8 @@
 - [x] Integrate puzzle evidence into Progress without changing numeric attempt totals
 - [x] Prevent repeated puzzle IDs from inflating mastery or rewards
 - [x] Add deterministic anti-farming and summary tests
+
+- [x] Add a pure deterministic missed-principle review queue
+- [x] Keep the review queue bounded and derived from unique local evidence
+- [x] Add localized Progress feedback and a route into Practice review
+- [x] Add deterministic review-queue regression coverage

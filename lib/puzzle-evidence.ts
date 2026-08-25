@@ -28,6 +28,12 @@ export async function loadPuzzleEvidence(): Promise<PuzzleEvidence[]> {
   }
 }
 
+export function missedPuzzleReviewQueue(entries: readonly PuzzleEvidence[], limit = 3): PuzzleEvidence[] {
+  const unique = new Map<string, PuzzleEvidence>();
+  for (const entry of entries) if (!unique.has(entry.puzzleId)) unique.set(entry.puzzleId, entry);
+  return [...unique.values()].filter((entry) => entry.outcome === "incorrect").sort((a, b) => a.recordedAt.localeCompare(b.recordedAt) || a.puzzleId.localeCompare(b.puzzleId)).slice(0, Math.max(0, Math.floor(limit)));
+}
+
 export function summarizePuzzleEvidence(entries: readonly PuzzleEvidence[]) {
   const unique = new Map<string, PuzzleEvidence>();
   for (const entry of entries) if (!unique.has(entry.puzzleId)) unique.set(entry.puzzleId, entry);
