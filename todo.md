@@ -499,3 +499,8 @@
 - [x] Audit locale direction and shared screen-container boundaries
 - [x] Apply persisted locale direction to shared screen layout
 - [x] Add deterministic RTL direction regression coverage
+
+- [x] Audit hardcoded primary tab labels and titles
+- [x] Add localized tab navigation keys with safe English fallback
+- [x] Apply persisted-locale labels without changing route names
+- [x] Add deterministic tab localization coverage
