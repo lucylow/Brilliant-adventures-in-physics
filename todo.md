@@ -664,3 +664,8 @@
 - [x] Expose completion metadata in the local privacy surface
 - [x] Keep export output bounded and exclude answers or raw content
 - [x] Add deterministic redaction and formatting coverage
+
+- [x] Add a local summary file builder for privacy-safe sharing
+- [x] Add sharing availability and error feedback in Privacy
+- [x] Keep sharing offline-only with no upload path
+- [x] Add deterministic sharing-contract coverage

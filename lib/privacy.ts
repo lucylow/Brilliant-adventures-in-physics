@@ -32,6 +32,10 @@ export function formatLocalDataSummary(summary: LocalDataSummary): string {
   return ["PhysicaAI local data summary", `Practice attempts: ${summary.learningRecords}`, `Saved questions: ${summary.savedQuestions}`, `Saved experiments: ${summary.savedExperiments}`, `Active drafts: ${summary.activeDrafts}`, `Completion events: ${summary.completionEvents}`, `Lessons completed: ${summary.lessonCompletions}`, `Labs completed: ${summary.labCompletions}`].join("\n");
 }
 
+export function buildLocalDataShareText(summary: LocalDataSummary): string {
+  return formatLocalDataSummary(summary);
+}
+
 export async function clearAllLocalData(): Promise<void> {
   await Promise.all([AsyncStorage.removeItem(LEARNING_KEY), AsyncStorage.removeItem(USAGE_KEY), AsyncStorage.removeItem(DRAFT_KEY), clearExperiments(), clearRetryQueue()]);
 }

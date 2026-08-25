@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { formatLocalDataSummary, getLocalDataSummary, LOCAL_DATA_STORAGE_KEYS } from "../lib/privacy";
+import { buildLocalDataShareText, formatLocalDataSummary, getLocalDataSummary, LOCAL_DATA_STORAGE_KEYS } from "../lib/privacy";
 
 vi.mock("@react-native-async-storage/async-storage", () => ({
   default: {
@@ -23,6 +23,13 @@ describe("privacy controls", () => {
     expect(text).toContain("Completion events: 3");
     expect(text).toContain("Labs completed: 1");
   });
+  it("builds a count-only share payload without raw study content", () => {
+    const text = buildLocalDataShareText({ learningRecords: 2, savedQuestions: 1, savedExperiments: 1, activeDrafts: 0, completionEvents: 2, lessonCompletions: 1, labCompletions: 1 });
+    expect(text).toContain("Completion events: 2");
+    expect(text).not.toContain("answer");
+    expect(text).not.toContain("kinematics");
+  });
+
   it("summarizes validated completion counts without exposing event content", async () => {
     vi.mocked(AsyncStorage.getItem).mockImplementation(async (key) => {
       if (key === "physicaai.learning.v2") return JSON.stringify({ attempts: 7, savedQuestions: ["q"], completionEvents: [
