@@ -482,3 +482,7 @@
 - [x] Remove repeated preference reads from Lab child controls
 - [x] Pass the parent-loaded locale into Lab sliders and concept links
 - [x] Verify localized output remains unchanged after the refactor
+
+- [x] Locate the remaining runtime pointerEvents warning source
+- [x] Replace deprecated pointerEvents usage without changing interaction behavior
+- [x] Validate warning cleanup with deterministic tests and typecheck
