@@ -131,6 +131,19 @@ export function createAppTranslations(): TranslationStore {
     "achievement.keepGoing": { en: "Keep building understanding at your own pace.", fr: "Continuez à développer votre compréhension à votre rythme.", es: "Sigue construyendo comprensión a tu ritmo." },
     "achievement.evidence": { en: "Complete the evidence described above. Practice, lessons, and labs are counted only when you finish the learning action.", fr: "Complétez les éléments décrits ci-dessus. La pratique, les leçons et les laboratoires ne sont comptés qu’après l’action d’apprentissage.", es: "Completa la evidencia descrita arriba. La práctica, las lecciones y los laboratorios solo cuentan al terminar la acción de aprendizaje." },
     "achievement.back": { en: "Back to progress", fr: "Retour à la progression", es: "Volver al progreso" },
+    "common.done": { en: "Done", fr: "Terminé", es: "Listo" },
+    "settings.title": { en: "Settings", fr: "Réglages", es: "Ajustes" },
+    "settings.subtitle": { en: "Choose how PhysicaAI supports your learning.", fr: "Choisissez comment PhysicaAI accompagne votre apprentissage.", es: "Elige cómo PhysicaAI apoya tu aprendizaje." },
+    "settings.streakTitle": { en: "Show learning streak", fr: "Afficher la série d’apprentissage", es: "Mostrar racha de aprendizaje" },
+    "settings.streakBody": { en: "Optional motivation only. Turning this off never affects progress or achievements.", fr: "Motivation facultative. La désactiver n’affecte jamais la progression ni les succès.", es: "Solo es motivación opcional. Desactivarla nunca afecta al progreso ni a los logros." },
+    "settings.motionTitle": { en: "Reduce motion", fr: "Réduire les mouvements", es: "Reducir movimiento" },
+    "settings.motionBody": { en: "Use calmer state changes and less animated feedback.", fr: "Utilisez des changements d’état plus calmes et moins d’animations.", es: "Usa cambios de estado más suaves y menos animaciones." },
+    "settings.hapticsTitle": { en: "Haptic feedback", fr: "Retour haptique", es: "Respuesta háptica" },
+    "settings.hapticsBody": { en: "Allow gentle vibration for meaningful actions such as completing a lab.", fr: "Autoriser une vibration légère pour les actions importantes, comme terminer un laboratoire.", es: "Permite una vibración suave para acciones importantes, como completar un laboratorio." },
+    "settings.languageTitle": { en: "Language", fr: "Langue", es: "Idioma" },
+    "settings.languageBody": { en: "Choose labels and number formatting for supported physics content. Equations and SI units stay unchanged.", fr: "Choisissez les libellés et le format des nombres. Les équations et unités SI restent inchangées.", es: "Elige etiquetas y formato numérico. Las ecuaciones y unidades del SI no cambian." },
+    "settings.offlineTitle": { en: "Connection and offline saves", fr: "Connexion et sauvegardes hors ligne", es: "Conexión y guardados sin conexión" },
+    "settings.learningPathTitle": { en: "Learning path", fr: "Parcours d’apprentissage", es: "Ruta de aprendizaje" },
   };
   for (const [key, values] of Object.entries(entries)) for (const [locale, value] of Object.entries(values)) store.set(locale as SupportedLocale, key, value);
   return store;

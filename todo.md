@@ -425,3 +425,8 @@
 - [x] Locate all remaining deprecated pointerEvents props
 - [x] Replace deprecated pointerEvents props with style-based usage
 - [x] Add deterministic warning-cleanup regression coverage
+
+- [x] Audit hardcoded Settings copy and preference persistence states
+- [x] Add localized Settings labels with safe English fallback
+- [x] Apply persisted-locale translations to Settings controls
+- [x] Add deterministic Settings localization coverage
