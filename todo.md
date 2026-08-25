@@ -398,3 +398,5 @@
 - [x] Add accessible full-screen local Notebook image preview
 - [x] Add localized preview close and fallback messages
 - [x] Add deterministic preview interaction coverage
+- [x] Show localized caption and timestamp context in full-screen Notebook preview
+- [x] Add deterministic full-screen metadata rendering coverage
