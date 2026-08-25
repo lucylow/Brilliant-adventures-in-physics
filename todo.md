@@ -421,3 +421,7 @@
 - [x] Add localized Achievement detail loading, retry, status, and navigation copy
 - [x] Preserve deterministic evidence wording while localizing surrounding UI
 - [x] Add deterministic Achievement localization coverage
+
+- [x] Locate all remaining deprecated pointerEvents props
+- [x] Replace deprecated pointerEvents props with style-based usage
+- [x] Add deterministic warning-cleanup regression coverage
