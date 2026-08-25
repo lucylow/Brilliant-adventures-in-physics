@@ -187,6 +187,8 @@ export function createAppTranslations(): TranslationStore {
     "progress.missionReady": { en: "Mission ready", fr: "Mission prête", es: "Misión lista" },
     "progress.missionComplete": { en: "Mission evidence recorded", fr: "Preuve de mission enregistrée", es: "Evidencia de misión registrada" },
     "progress.reviewTitle": { en: "Review a missed principle", fr: "Revoir un principe manqué", es: "Revisar un principio fallado" },
+    "progress.reviewCount": { en: "{{count}} principle(s) ready for review", fr: "{{count}} principe(s) à revoir", es: "{{count}} principio(s) listos para repasar" },
+    "progress.reviewTopic": { en: "Missed principle: {{topic}}", fr: "Principe manqué : {{topic}}", es: "Principio fallado: {{topic}}" },
     "progress.reviewBody": { en: "Return to Practice and rebuild the idea without losing your existing progress.", fr: "Retournez à la pratique pour reconstruire l’idée sans perdre votre progression.", es: "Vuelve a Práctica para reconstruir la idea sin perder tu progreso." },
     "progress.reviewOpen": { en: "Review in Practice", fr: "Revoir dans Pratique", es: "Revisar en Práctica" },
     "progress.adventureSaveFailed": { en: "Adventure progress is temporarily unavailable; your learning records remain safe.", fr: "La progression de l’aventure est temporairement indisponible ; vos données d’apprentissage restent en sécurité.", es: "El progreso de la aventura no está disponible temporalmente; tus registros de aprendizaje siguen seguros." },

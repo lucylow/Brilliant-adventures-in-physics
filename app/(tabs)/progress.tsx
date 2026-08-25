@@ -37,7 +37,7 @@ export default function ProgressScreen() {
   const mission = generateMission(new Date().getDate());
   const missionValue = mission.kind === "practice" ? learning.attempts : 0;
   const puzzleSummary = summarizePuzzleEvidence(puzzleEvidence);
-  const reviewItem = missedPuzzleReviewQueue(puzzleEvidence, 1)[0];
+  const reviewQueue = missedPuzzleReviewQueue(puzzleEvidence, 3);
   const adventureWorld = worldForLevel(level.level);
   const adventureMissions = generateAdventureMissions(adventureWorld.id);
   const adventureMission = adventureMissions[0];
@@ -78,7 +78,7 @@ export default function ProgressScreen() {
           <Text style={{ color: colors.foreground, fontSize: 18, fontWeight: "800", marginTop: 6 }}>{adventureWorld.title}</Text>
           <Text style={{ color: colors.muted, marginTop: 4 }}>{tr("progress.adventureBody")}</Text>
           <Text accessibilityLabel={tr("progress.puzzleEvidence", { total: puzzleSummary.total, accuracy: Math.round(puzzleSummary.accuracy * 100) })} style={{ color: colors.muted, marginTop: 6 }}>{tr("progress.puzzleEvidence", { total: puzzleSummary.total, accuracy: Math.round(puzzleSummary.accuracy * 100) })}</Text>
-          {reviewItem && <View style={{ marginTop: 12, padding: 12, borderRadius: 12, backgroundColor: colors.warning + "14" }}><Text style={{ color: colors.foreground, fontWeight: "800" }}>{tr("progress.reviewTitle")}</Text><Text style={{ color: colors.muted, marginTop: 4 }}>{tr("progress.reviewBody")}</Text><View style={{ marginTop: 10 }}><PrimaryButton label={tr("progress.reviewOpen")} onPress={() => router.push({ pathname: "/practice", params: reviewItem.topic ? { concept: reviewItem.topic } : undefined } as never)} /></View></View>}
+          {reviewQueue.length > 0 && <View style={{ marginTop: 12, padding: 12, borderRadius: 12, backgroundColor: colors.warning + "14" }}><Text style={{ color: colors.foreground, fontWeight: "800" }}>{tr("progress.reviewTitle")}</Text><Text style={{ color: colors.muted, marginTop: 4 }}>{tr("progress.reviewCount", { count: reviewQueue.length })}</Text><Text style={{ color: colors.muted, marginTop: 4 }}>{tr("progress.reviewBody")}</Text><View style={{ gap: 8, marginTop: 10 }}>{reviewQueue.map((item) => <View key={item.puzzleId}><Text accessibilityLabel={tr("progress.reviewTopic", { topic: item.topic ?? item.puzzleId })} style={{ color: colors.foreground, fontWeight: "700", marginBottom: 6 }}>{tr("progress.reviewTopic", { topic: item.topic ?? item.puzzleId })}</Text><PrimaryButton label={tr("progress.reviewOpen")} onPress={() => router.push({ pathname: "/practice", params: item.topic ? { concept: item.topic } : undefined } as never)} /></View>)}</View></View>}
           <Text style={{ color: colors.foreground, fontWeight: "800", marginTop: 12 }}>{adventureMission.title}</Text>
           <Text style={{ color: colors.muted, marginTop: 4 }}>{adventureMission.objective}</Text>
           <Text accessibilityLiveRegion="polite" style={{ color: adventureComplete ? colors.success : colors.primary, marginTop: 8 }}>{adventureComplete ? tr("progress.missionComplete") : tr("progress.missionProgress", { done: adventureEvidence, goal: adventureMission.goal })}</Text>

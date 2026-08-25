@@ -580,3 +580,8 @@
 - [x] Keep the review queue bounded and derived from unique local evidence
 - [x] Add localized Progress feedback and a route into Practice review
 - [x] Add deterministic review-queue regression coverage
+
+- [x] Add localized count and topic summary labels for missed principles
+- [x] Show a bounded missed-principle list in Progress
+- [x] Preserve one-tap Practice routing for each review item
+- [x] Add deterministic review-summary coverage
