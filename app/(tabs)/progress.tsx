@@ -98,7 +98,7 @@ export default function ProgressScreen() {
         </View>
         <View style={{ marginTop: 24 }}>
           <SectionHeader title={tr("progress.topicGuidance")} subtitle={tr("progress.topicGuidanceSubtitle")} />
-          {TOPICS.map((topic) => <Card key={topic.name} style={{ marginBottom: 10 }}><Text style={{ color: colors.foreground, fontSize: 17, fontWeight: "800" }}>{topic.name}</Text><Text style={{ color: colors.muted, marginTop: 4 }}>{topic.detail}</Text></Card>)}
+          {TOPICS.map((topic) => <Card key={topic.name} style={{ marginBottom: 10 }}><Text style={{ color: colors.foreground, fontSize: 17, fontWeight: "800" }}>{topic.name}</Text><Text style={{ color: colors.muted, marginTop: 4 }}>{topic.detail}</Text>{reviewMasterySummary.topicCounts[topic.name] ? <Text accessibilityLiveRegion="polite" style={{ color: colors.success, marginTop: 4 }}>{tr("progress.topicReinforced", { count: reviewMasterySummary.topicCounts[topic.name] })}</Text> : null}</Card>)}
         </View>
         <View style={{ marginTop: 6 }}><Card onPress={() => router.push("/settings" as never)}><Text style={{ color: colors.foreground, fontWeight: "800" }}>{tr("progress.settingsPrivacy")}</Text><Text style={{ color: colors.muted, marginTop: 4 }}>{tr("progress.settingsPrivacyBody")}</Text></Card></View>
       </ScrollView>

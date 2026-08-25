@@ -51,9 +51,9 @@ export async function recordReviewMastery(record: ReviewMasteryRecord): Promise<
 }
 
 export function summarizeReviewMastery(records: readonly ReviewMasteryRecord[]) {
-  const topics = new Set<string>();
-  for (const record of records) if (record.topic) topics.add(record.topic);
-  return { resolved: records.length, topics: [...topics].sort() };
+  const topicCounts: Record<string, number> = {};
+  for (const record of records) if (record.topic) topicCounts[record.topic] = (topicCounts[record.topic] ?? 0) + 1;
+  return { resolved: records.length, topics: Object.keys(topicCounts).sort(), topicCounts };
 }
 
 export async function resolvePuzzleEvidence(puzzleId: string): Promise<boolean> {

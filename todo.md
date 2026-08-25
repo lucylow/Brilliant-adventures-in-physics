@@ -610,3 +610,8 @@
 - [x] Derive topic mastery updates only from successful review resolutions
 - [x] Show localized mastery feedback without changing numeric attempt totals
 - [x] Add deterministic review-mastery tests
+
+- [x] Add a pure topic-level reinforcement summary with counts
+- [x] Show localized mastery reinforcement beside affected Progress topics
+- [x] Keep numeric practice totals visibly separate
+- [x] Add deterministic mastery-feedback coverage
