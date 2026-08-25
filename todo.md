@@ -367,3 +367,7 @@
 - [x] Add reusable accessible physics visuals and reduced-motion animation primitives
 - [x] Integrate an advanced-physics animated Lab experiment with locale-aware labels
 - [x] Add deterministic regression coverage for attached codebook integrations
+- [x] Add validated tunneling and wavefunction visualizations to Advanced Lab
+- [x] Add permission-aware camera and image-picker adapters with offline states
+- [x] Localize remaining feature-screen copy through the translation store
+- [x] Add deterministic coverage for media permission and localization fallback paths

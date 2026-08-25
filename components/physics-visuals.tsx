@@ -35,6 +35,20 @@ export function FreeBodyDiagram({ forces, reducedMotion = false }: { forces: Phy
   </View>;
 }
 
+export function WavefunctionPlot({ samples, reducedMotion = false }: { samples: number[]; reducedMotion?: boolean }) {
+  const max = Math.max(1e-9, ...samples.map((sample) => Math.abs(sample)));
+  return <View accessible accessibilityRole="image" accessibilityLabel={`Wavefunction probability density plot with ${samples.length} samples`} style={{ height: 110, flexDirection: "row", alignItems: "flex-end", gap: 2, paddingHorizontal: 4, paddingTop: 8 }}>
+    {samples.map((sample, index) => <AnimatedBar key={index} value={Math.abs(sample) / max} reducedMotion={reducedMotion} />)}
+  </View>;
+}
+
+function AnimatedBar({ value, reducedMotion }: { value: number; reducedMotion: boolean }) {
+  const progress = useSharedValue(reducedMotion ? value : 0);
+  useEffect(() => { progress.value = reducedMotion ? value : withTiming(value, { duration: 240 }); }, [progress, reducedMotion, value]);
+  const style = useAnimatedStyle(() => ({ height: `${Math.max(4, progress.value * 92)}%` }));
+  return <Animated.View style={[{ flex: 1, minWidth: 2, borderRadius: 3, backgroundColor: "#7C3AED" }, style]} />;
+}
+
 export function RelativityMeter({ fraction, reducedMotion = false }: { fraction: number; reducedMotion?: boolean }) {
   const value = Math.max(0, Math.min(0.999, fraction));
   const progress = useSharedValue(reducedMotion ? value : 0);

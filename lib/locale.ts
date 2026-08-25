@@ -43,6 +43,24 @@ export function translate(store: TranslationStore, locale: SupportedLocale, key:
   return interpolate(value, variables);
 }
 
+export function createAppTranslations(): TranslationStore {
+  const store = new TranslationStore();
+  const entries: Record<string, Partial<Record<SupportedLocale, string>>> = {
+    "media.title": { en: "Physics media", fr: "Médias de physique", es: "Medios de física" },
+    "media.subtitle": { en: "Capture or choose a local image for an observation. Nothing is uploaded automatically.", fr: "Capturez ou choisissez une image locale pour une observation. Rien n’est envoyé automatiquement.", es: "Captura o elige una imagen local para una observación. Nada se sube automáticamente." },
+    "media.localObservation": { en: "Local observation image", fr: "Image d’observation locale", es: "Imagen de observación local" },
+    "media.choose": { en: "Choose from library", fr: "Choisir dans la bibliothèque", es: "Elegir de la biblioteca" },
+    "media.take": { en: "Take a photo", fr: "Prendre une photo", es: "Tomar una foto" },
+    "media.webUnavailable": { en: "Camera unavailable on web", fr: "Caméra indisponible sur le web", es: "Cámara no disponible en la web" },
+    "media.localOnly": { en: "Preview only. The image remains local until you explicitly choose another action.", fr: "Aperçu uniquement. L’image reste locale jusqu’à une autre action explicite.", es: "Solo vista previa. La imagen permanece local hasta que elijas otra acción." },
+    "lab.advancedLabel": { en: "ADVANCED PHYSICS · LOCAL MODEL", fr: "PHYSIQUE AVANCÉE · MODÈLE LOCAL", es: "FÍSICA AVANZADA · MODELO LOCAL" },
+    "lab.advancedDescription": { en: "Explore time dilation, a force balance, and a quantum ground-state energy scale. These models are deterministic and keep equations separate from explanations.", fr: "Explorez la dilatation du temps, un équilibre des forces et une échelle d’énergie de l’état fondamental quantique. Ces modèles sont déterministes et séparent les équations des explications.", es: "Explora la dilatación temporal, un equilibrio de fuerzas y una escala de energía del estado fundamental cuántico. Estos modelos son deterministas y separan ecuaciones de explicaciones." },
+    "lab.forceBalance": { en: "force balance: ΣF = 0", fr: "équilibre des forces : ΣF = 0", es: "equilibrio de fuerzas: ΣF = 0" },
+  };
+  for (const [key, values] of Object.entries(entries)) for (const [locale, value] of Object.entries(values)) store.set(locale as SupportedLocale, key, value);
+  return store;
+}
+
 export type PhysicsTerm = { id: string; english: string; translations: Partial<Record<SupportedLocale, string>> };
 export const PHYSICS_TERMS: PhysicsTerm[] = [
   { id: "velocity", english: "velocity", translations: { fr: "vitesse", es: "velocidad", de: "Geschwindigkeit", ja: "速度", ar: "السرعة المتجهة", hi: "वेग" } },

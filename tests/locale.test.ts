@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { LOCALES, TranslationStore, directionalStyle, formatPercent, localeChain, physicsTerm, resolveLocale, translate, unitLabel } from "../lib/locale";
+import { LOCALES, TranslationStore, createAppTranslations, directionalStyle, formatPercent, localeChain, physicsTerm, resolveLocale, translate, unitLabel } from "../lib/locale";
 
 describe("localization contracts", () => {
   it("resolves regional and unsupported locales safely", () => {
@@ -20,6 +20,12 @@ describe("localization contracts", () => {
     store.set("en", "greeting", "Hello {{name}}");
     expect(translate(store, "fr", "greeting", { name: "Ada" })).toBe("Hello Ada");
     expect(directionalStyle("ar")).toEqual({ direction: "rtl" });
+  });
+
+  it("localizes feature-screen copy with a deterministic English fallback", () => {
+    const copy = createAppTranslations();
+    expect(translate(copy, "fr", "media.title")).toBe("Médias de physique");
+    expect(translate(copy, "de", "media.title")).toBe("Physics media");
   });
 
   it("formats percentages with a safe locale-aware formatter", () => {

@@ -86,6 +86,7 @@ const config: ExpoConfig = {
   },
   plugins: [
     "expo-router",
+    ["expo-camera", { cameraPermission: "Allow $(PRODUCT_NAME) to capture physics observations." }],
     [
       "expo-audio",
       {
