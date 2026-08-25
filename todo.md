@@ -491,3 +491,7 @@
 - [x] Add localized network status keys with safe English fallback
 - [x] Apply localized live-region copy without changing network classification
 - [x] Add deterministic network localization coverage
+
+- [x] Trace the remaining pointerEvents warning through runtime sources
+- [x] Apply the smallest safe compatibility fix if application-owned
+- [x] Validate warning behavior and deterministic regressions
