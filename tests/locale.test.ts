@@ -28,6 +28,8 @@ describe("localization contracts", () => {
     expect(translate(copy, "fr", "lens.media.capture")).toBe("Capturer une image d’observation locale");
     expect(translate(copy, "de", "media.title")).toBe("Physics media");
     expect(translate(copy, "de", "lens.media.permission")).toBe("Permission was not granted. You can enable it in device settings.");
+    expect(translate(copy, "es", "tutor.localFallback")).toContain("respaldo local");
+    expect(translate(copy, "fr", "notebook.saved")).toBe("Réflexion enregistrée dans votre Notebook local.");
   });
 
   it("formats percentages with a safe locale-aware formatter", () => {

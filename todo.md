@@ -381,3 +381,6 @@
 - [x] Add deterministic Lens media localization coverage
 - [x] Localize Lens media unavailable, offline, and error feedback states
 - [x] Add deterministic status-code-to-translation mapping coverage
+- [x] Add localized persistence and retry feedback keys for Tutor and Notebook
+- [x] Integrate persisted locale into Tutor and Notebook feedback
+- [x] Add deterministic Tutor and Notebook localization coverage

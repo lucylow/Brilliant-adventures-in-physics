@@ -1,7 +1,6 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { router } from "expo-router";
 import { Keyboard, Pressable, ScrollView, Text, TextInput, View } from "react-native";
-import { useRef } from "react";
 import { ScreenContainer } from "@/components/screen-container";
 import { Card, EquationCard, HintPanel, Pill, PrimaryButton, SectionHeader, SolutionStep } from "@/components/physica-ui";
 import { createDeterministicTutorService, requestTutorAnswerWithFallback } from "@/lib/tutor-service";
@@ -14,11 +13,16 @@ import { DraftStatus } from "@/components/draft-status";
 import { deleteDraft } from "@/lib/progress-store";
 import { normalizeServiceError, type ServiceError } from "@/lib/service-result";
 import { recoveryMessage } from "@/lib/network";
+import { createAppTranslations, translate, type SupportedLocale } from "@/lib/locale";
+import { loadPreferencesWithStatus } from "@/lib/preferences";
 
 type Message = { role: "assistant" | "user"; text: string };
 
 export default function TutorScreen() {
   const colors = useColors();
+  const [locale, setLocale] = useState<SupportedLocale>("en");
+  const copy = useMemo(() => createAppTranslations(), []);
+  const tr = (key: string) => translate(copy, locale, key);
   const [draft, setDraft] = useState("");
   const [messages, setMessages] = useState<Message[]>([{ role: "assistant", text: "I’m PhysicaAI. Give me a physics question and I’ll help you reason through it." }]);
   const [hint, setHint] = useState(0);
@@ -30,7 +34,8 @@ export default function TutorScreen() {
   const [usageMessage, setUsageMessage] = useState<string | null>(null);
   const mountedRef = useRef(true);
   useEffect(() => { return () => { mountedRef.current = false; }; }, []);
-  useEffect(() => { let active = true; void loadUsageWithStatus().then((result) => { if (!active) return; setUsage(result.usage); if (result.recovered) setUsageMessage("Daily usage data was unavailable, so a safe local limit is in use."); }).catch(() => { if (active) setUsageMessage("Daily usage data is temporarily unavailable; you can still continue with the local limit."); }); return () => { active = false; }; }, []);
+  useEffect(() => { let active = true; void loadPreferencesWithStatus().then((result) => { if (active) setLocale(result.preferences.locale); }).catch(() => undefined); return () => { active = false; }; }, []);
+  useEffect(() => { let active = true; void loadUsageWithStatus().then((result) => { if (!active) return; setUsage(result.usage); if (result.recovered) setUsageMessage(tr("tutor.usageRecovered")); }).catch(() => { if (active) setUsageMessage(tr("tutor.usageUnavailable")); }); return () => { active = false; }; }, []);
   const remaining = remainingTutorUses(usage);
   const draftStatus = useDraftAutosave("tutor", { question: draft });
   const send = async (text = draft) => {
@@ -45,7 +50,7 @@ export default function TutorScreen() {
       if (!mountedRef.current) return;
       if (!response.ok) { setServiceError(response.error); return; }
       if (response.usedFallback) {
-        setUsageMessage("The tutor service was unavailable, so this structured answer came from PhysicaAI’s local mock fallback. No AI usage was consumed.");
+        setUsageMessage(tr("tutor.localFallback"));
       } else {
         const nextUsage = await consumeTutorUse();
         if (!mountedRef.current) return;
