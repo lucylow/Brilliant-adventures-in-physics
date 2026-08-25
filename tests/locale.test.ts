@@ -51,6 +51,9 @@ describe("localization contracts", () => {
     expect(translate(copy, "fr", "lab.waveDescription")).toContain("v = fλ");
     expect(translate(copy, "es", "lab.thermalDescription")).toContain("4186");
     expect(translate(copy, "de", "lab.mechanicsDescription")).toBe("Use one 2 kg object to connect speed, energy, momentum, and impulse.");
+    expect(translate(copy, "fr", "lab.circularHeading")).toBe("MOUVEMENT CIRCULAIRE · VÉRIFIÉ");
+    expect(translate(copy, "es", "lab.circuitsHeading")).toBe("CIRCUITOS · LEY DE OHM");
+    expect(translate(copy, "de", "lab.gravityHeading")).toBe("GRAVITATIONAL ENERGY · mgh");
   });
 
   it("formats stored timestamps with locale-aware output and safe fallback", () => {

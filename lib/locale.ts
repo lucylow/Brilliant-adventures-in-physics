@@ -252,6 +252,15 @@ export function createAppTranslations(): TranslationStore {
     "lab.opticsDescription": { en: "Explore light moving from glass (n = 1.50) into air (n = 1.00). Angles are measured from the normal.", fr: "Explorez la lumière passant du verre (n = 1,50) à l’air (n = 1,00). Les angles sont mesurés depuis la normale.", es: "Explora la luz que pasa del vidrio (n = 1,50) al aire (n = 1,00). Los ángulos se miden desde la normal." },
     "lab.thermalDescription": { en: "Estimate the energy needed to warm 0.50 kg of water. The model uses a specific heat of 4186 J/(kg·K).", fr: "Estimez l’énergie nécessaire pour chauffer 0,50 kg d’eau. Le modèle utilise une capacité thermique de 4186 J/(kg·K).", es: "Estima la energía necesaria para calentar 0,50 kg de agua. El modelo usa un calor específico de 4186 J/(kg·K)." },
     "lab.mechanicsDescription": { en: "Use one 2 kg object to connect speed, energy, momentum, and impulse.", fr: "Utilisez un objet de 2 kg pour relier vitesse, énergie, quantité de mouvement et impulsion.", es: "Usa un objeto de 2 kg para conectar velocidad, energía, cantidad de movimiento e impulso." },
+    "lab.circularHeading": { en: "CIRCULAR MOTION · VERIFIED", fr: "MOUVEMENT CIRCULAIRE · VÉRIFIÉ", es: "MOVIMIENTO CIRCULAR · VERIFICADO" },
+    "lab.electrostaticsHeading": { en: "ELECTROSTATICS · VERIFIED", fr: "ÉLECTROSTATIQUE · VÉRIFIÉE", es: "ELECTROSTÁTICA · VERIFICADA" },
+    "lab.circuitsHeading": { en: "CIRCUITS · OHM'S LAW", fr: "CIRCUITS · LOI D’OHM", es: "CIRCUITOS · LEY DE OHM" },
+    "lab.fluidsHeading": { en: "FLUIDS · PRESSURE AND BUOYANCY", fr: "FLUIDES · PRESSION ET POUSSÉE", es: "FLUIDOS · PRESIÓN Y FLOTACIÓN" },
+    "lab.harmonicHeading": { en: "HARMONIC MOTION · OSCILLATION", fr: "MOUVEMENT HARMONIQUE · OSCILLATION", es: "MOVIMIENTO ARMÓNICO · OSCILACIÓN" },
+    "lab.collisionHeading": { en: "ELASTIC COLLISION · MOMENTUM", fr: "COLLISION ÉLASTIQUE · QUANTITÉ DE MOUVEMENT", es: "COLISIÓN ELÁSTICA · CANTIDAD DE MOVIMIENTO" },
+    "lab.workHeading": { en: "WORK AND POWER · ENERGY TRANSFER", fr: "TRAVAIL ET PUISSANCE · TRANSFERT D’ÉNERGIE", es: "TRABAJO Y POTENCIA · TRANSFERENCIA DE ENERGÍA" },
+    "lab.elasticityHeading": { en: "ELASTICITY · SPRING ENERGY", fr: "ÉLASTICITÉ · ÉNERGIE DU RESSORT", es: "ELASTICIDAD · ENERGÍA DEL RESORTE" },
+    "lab.gravityHeading": { en: "GRAVITATIONAL ENERGY · mgh", fr: "ÉNERGIE GRAVITATIONNELLE · mgh", es: "ENERGÍA GRAVITACIONAL · mgh" },
   };
   for (const [key, values] of Object.entries(entries)) for (const [locale, value] of Object.entries(values)) store.set(locale as SupportedLocale, key, value);
   return store;

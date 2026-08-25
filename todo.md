@@ -462,3 +462,7 @@
 - [x] Localize remaining Lab experiment descriptions
 - [x] Localize stable Lab result labels and accessibility descriptions
 - [x] Add deterministic coverage for the new Lab explanatory keys
+
+- [x] Localize remaining Lab section headings
+- [x] Preserve experiment equations and descriptions while replacing headings
+- [x] Add deterministic coverage for the new Lab heading keys
