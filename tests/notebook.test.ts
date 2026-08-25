@@ -14,6 +14,7 @@ describe("Living Notebook contracts", () => {
   it("accepts bounded media context and rejects invalid media metadata", () => {
     expect(isNotebookEntry({ ...validEntry, media: { caption: "Ball at release", capturedAt: "2026-08-25T03:00:00.000Z" } })).toBe(true);
     expect(isNotebookEntry({ ...validEntry, media: { caption: "x".repeat(161) } })).toBe(false);
+    expect(isNotebookEntry({ ...validEntry, media: { uri: "https://example.com/image.jpg" } })).toBe(false);
     expect(isNotebookEntry({ ...validEntry, media: { capturedAt: "not-a-date" } })).toBe(false);
   });
 

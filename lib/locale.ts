@@ -76,6 +76,8 @@ export function createAppTranslations(): TranslationStore {
     "notebook.media": { en: "Local observation image", fr: "Image d’observation locale", es: "Imagen de observación local" },
     "notebook.caption": { en: "Caption", fr: "Légende", es: "Descripción" },
     "notebook.capturedAt": { en: "Captured locally", fr: "Capturé localement", es: "Capturado localmente" },
+    "notebook.closePreview": { en: "Close preview", fr: "Fermer l’aperçu", es: "Cerrar vista previa" },
+    "notebook.previewUnavailable": { en: "This local preview is unavailable, but the Notebook entry remains intact.", fr: "Cet aperçu local est indisponible, mais l’entrée du Notebook reste intacte.", es: "Esta vista previa local no está disponible, pero la entrada del Notebook permanece intacta." },
   };
   for (const [key, values] of Object.entries(entries)) for (const [locale, value] of Object.entries(values)) store.set(locale as SupportedLocale, key, value);
   return store;

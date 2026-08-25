@@ -30,6 +30,8 @@ describe("localization contracts", () => {
     expect(translate(copy, "de", "lens.media.permission")).toBe("Permission was not granted. You can enable it in device settings.");
     expect(translate(copy, "es", "tutor.localFallback")).toContain("respaldo local");
     expect(translate(copy, "fr", "notebook.saved")).toBe("Réflexion enregistrée dans votre Notebook local.");
+    expect(translate(copy, "es", "notebook.closePreview")).toBe("Cerrar vista previa");
+    expect(translate(copy, "de", "notebook.previewUnavailable")).toContain("preview");
   });
 
   it("formats stored timestamps with locale-aware output and safe fallback", () => {

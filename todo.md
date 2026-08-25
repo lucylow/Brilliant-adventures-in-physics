@@ -395,3 +395,6 @@
 - [x] Add safe local preview URI validation for Notebook media artifacts
 - [x] Render accessible Notebook image previews with non-destructive fallback
 - [x] Add deterministic local preview validation coverage
+- [x] Add accessible full-screen local Notebook image preview
+- [x] Add localized preview close and fallback messages
+- [x] Add deterministic preview interaction coverage
