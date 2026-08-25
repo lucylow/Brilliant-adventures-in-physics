@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { buildLocalDataShareText, formatLocalDataSummary, getLocalDataSummary, localSummaryFileUri, LOCAL_DATA_STORAGE_KEYS } from "../lib/privacy";
+import { buildLocalDataShareText, formatLocalDataSummary, formatPrivacyActivityTimestamp, getLocalDataSummary, loadPrivacyActivity, localSummaryFileUri, parsePrivacyActivityEvents, recordPrivacyActivity, LOCAL_DATA_STORAGE_KEYS } from "../lib/privacy";
 
 vi.mock("@react-native-async-storage/async-storage", () => ({
   default: {
@@ -55,8 +55,35 @@ describe("privacy controls", () => {
     await expect(getLocalDataSummary()).resolves.toEqual({ learningRecords: 0, savedQuestions: 0, savedExperiments: 0, activeDrafts: 0, completionEvents: 0, lessonCompletions: 0, labCompletions: 0 });
   });
 
+  it("parses only bounded metadata and orders activity newest-first", () => {
+    const events = parsePrivacyActivityEvents([
+      { id: "old", kind: "share", outcome: "success", occurredAt: "2026-01-01T00:00:00.000Z", summary: "private answer" },
+      { id: "new", kind: "clear", outcome: "failure", occurredAt: "2026-01-02T00:00:00.000Z", rawAnswer: "private answer" },
+      { id: "invalid", kind: "share", outcome: "success", occurredAt: "not-a-date" },
+    ]);
+    expect(events).toEqual([
+      { id: "new", kind: "clear", outcome: "failure", occurredAt: "2026-01-02T00:00:00.000Z" },
+      { id: "old", kind: "share", outcome: "success", occurredAt: "2026-01-01T00:00:00.000Z" },
+    ]);
+    expect(JSON.stringify(events)).not.toContain("private answer");
+    expect(formatPrivacyActivityTimestamp("2026-01-02T00:00:00.000Z", "en")).toContain("2026");
+  });
+
+  it("records an activity event once for the same action timestamp", async () => {
+    vi.mocked(AsyncStorage.getItem).mockResolvedValue(JSON.stringify([]));
+    expect(await recordPrivacyActivity("share", "success", "2026-01-03T00:00:00.000Z")).toBe(true);
+    vi.mocked(AsyncStorage.getItem).mockResolvedValue(JSON.stringify([{ id: "share:2026-01-03T00:00:00.000Z", kind: "share", outcome: "success", occurredAt: "2026-01-03T00:00:00.000Z" }]));
+    expect(await recordPrivacyActivity("share", "success", "2026-01-03T00:00:00.000Z")).toBe(false);
+  });
+
+  it("recovers to an empty activity history when storage is malformed", async () => {
+    vi.mocked(AsyncStorage.getItem).mockResolvedValue("{");
+    await expect(loadPrivacyActivity()).resolves.toEqual([]);
+  });
+
   it("owns every local storage key, including offline autosave metadata", () => {
     expect(LOCAL_DATA_STORAGE_KEYS).toContain("physicaai.autosave.queue.v1");
     expect(LOCAL_DATA_STORAGE_KEYS).toContain("physicaai.autosave.last-save.v1");
+    expect(LOCAL_DATA_STORAGE_KEYS).toContain("physicaai.privacy-activity.v1");
   });
 });

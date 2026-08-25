@@ -674,3 +674,8 @@
 - [x] Add safe refresh failure feedback on the privacy screen
 - [x] Preserve share-sheet success and unsupported-platform behavior
 - [x] Add deterministic cleanup and failure-path coverage
+
+- [x] Add bounded local privacy activity events for sharing and clearing
+- [x] Persist action metadata without summaries, answers, or shared content
+- [x] Render localized accessible privacy activity history
+- [x] Add deterministic bounds, ordering, redaction, and recovery coverage
