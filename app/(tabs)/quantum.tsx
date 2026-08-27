@@ -67,11 +67,12 @@ export default function QuantumScreen() {
   const conceptLabel = (id: string) => id === "photon-energy" ? tr("quantum.photon") : id === "matter-waves" ? tr("quantum.matterWave") : id === "uncertainty" ? tr("quantum.uncertainty") : id === "qubit" ? tr("quantum.qubit") : id === "tunneling" ? tr("quantum.tunneling") : tr("quantum.spectrum");
   const domainResults = useMemo(() => { try { return { particle: tr("domains.particleResult", { value: formatScientific(restEnergyJ(9.1093837e-31), locale) }), optics: tr("domains.opticsResult", { value: formatNumber(thinLensImageDistanceM(1, 2), locale) }), lightMatter: `${tr("domains.lightMatter")}: ${formatScientific(photonMomentumKgMps(500e-9), locale)} kg·m/s photon momentum`, electronics: tr("domains.electronicsResult", { value: formatNumber(ohmsLawCurrentA(12, 6), locale) }), biophysics: tr("domains.biophysicsResult", { value: formatScientific(diffusionRmsDistanceM(1e-9, 2), locale) }) }; } catch { return null; } }, [locale, tr]);
   const domainTitle = (id: string) => id === "standard-model" ? tr("domains.standardModel") : id === "lenses" ? tr("domains.lenses") : id === "light-matter" ? tr("domains.lightMatter") : id === "circuits" ? tr("domains.circuits") : tr("domains.diffusion");
+  const catalogStatusMessage = loadFailed ? tr("quantum.loadFailed") : usedFallback ? tr("quantum.fallback") : null;
   return (
     <ScreenContainer className="p-5">
       <ScrollView contentContainerStyle={{ paddingBottom: 32 }} showsVerticalScrollIndicator={false}>
         <SectionHeader title={tr("quantum.title")} subtitle={tr("quantum.subtitle")} />
-        {(usedFallback || loadFailed) && <Card accessibilityLabel={tr("quantum.fallback")} style={{ marginBottom: 14, backgroundColor: colors.primary + "0D" }}><Text accessibilityLiveRegion={loadFailed ? "assertive" : "polite"} style={{ color: loadFailed ? colors.warning : colors.primary, lineHeight: 21 }}>{tr("quantum.fallback")}</Text></Card>}
+        {catalogStatusMessage && <Card accessibilityLabel={catalogStatusMessage} style={{ marginBottom: 14, backgroundColor: loadFailed ? colors.warning + "12" : colors.primary + "0D" }}><Text accessibilityLiveRegion={loadFailed ? "assertive" : "polite"} style={{ color: loadFailed ? colors.warning : colors.primary, lineHeight: 21 }}>{catalogStatusMessage}</Text></Card>}
         <Card accessibilityLabel={tr("quantum.title")}>
           <Pill label={conceptLabel(selectedConcept)} active />
           <View accessibilityRole="tablist" style={{ flexDirection: "row", flexWrap: "wrap", gap: 8, marginTop: 12 }}>

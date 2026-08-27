@@ -30,6 +30,11 @@ describe("localization contracts", () => {
     expect(translate(copy, "de", "media.title")).toBe("Physics media");
     expect(translate(copy, "de", "lens.media.permission")).toBe("Permission was not granted. You can enable it in device settings.");
     expect(translate(copy, "es", "tutor.localFallback")).toContain("respaldo local");
+    expect(translate(copy, "fr", "quantum.loadFailed")).toContain("catalogue hors ligne");
+    expect(translate(copy, "es", "notebook.notesFallback")).toContain("nota de demostración");
+    expect(translate(copy, "fr", "notebook.experimentsFallback")).toContain("expérience de démonstration");
+    expect(translate(copy, "de", "lab.preferencesUnavailable")).toContain("safe defaults");
+    expect(translate(copy, "es", "lens.preferencesUnavailable")).toContain("preferencias de visualización");
     expect(translate(copy, "fr", "notebook.saved")).toBe("Réflexion enregistrée dans votre Notebook local.");
     expect(translate(copy, "es", "notebook.closePreview")).toBe("Cerrar vista previa");
     expect(translate(copy, "de", "notebook.previewUnavailable")).toContain("preview");

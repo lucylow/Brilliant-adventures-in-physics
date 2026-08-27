@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { Pressable, ScrollView, Text, View } from "react-native";
 import { router } from "expo-router";
 import { ScreenContainer } from "@/components/screen-container";
@@ -67,10 +67,10 @@ export default function LabScreen() {
   const relativisticMassKg = massMicrograms * 1e-9;
   const [preferences, setPreferences] = useState<Preferences>({ streakEnabled: true, reducedMotion: false, hapticsEnabled: true, locale: "en" });
   const copy = useMemo(() => createAppTranslations(), []);
-  const tr = (key: string) => translate(copy, preferences.locale, key);
+  const tr = useCallback((key: string) => translate(copy, preferences.locale, key), [copy, preferences.locale]);
   const [persistenceMessage, setPersistenceMessage] = useState<string | null>(null);
   const [completionSaving, setCompletionSaving] = useState(false);
-  useEffect(() => { let active = true; void loadPreferencesWithStatus().then((result) => { if (active) setPreferences(result.preferences); }).catch(() => undefined); return () => { active = false; }; }, []);
+  useEffect(() => { let active = true; void loadPreferencesWithStatus().then((result) => { if (!active) return; setPreferences(result.preferences); if (result.recovered) setPersistenceMessage(tr("lab.preferencesUnavailable")); }).catch(() => { if (active) setPersistenceMessage(tr("lab.preferencesUnavailable")); }); return () => { active = false; }; }, [tr]);
   const result = useMemo(() => projectile({ speed, angleDeg: angle, height: 0 }), [speed, angle]);
   const points = useMemo(() => sampleProjectile({ speed, angleDeg: angle, height: 0 }, 10), [speed, angle]);
   const waveResult = useMemo(() => wave({ frequencyHz: frequency, wavelengthM: wavelength }), [frequency, wavelength]);

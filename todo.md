@@ -850,3 +850,8 @@
 - [x] Audit acknowledgment records and localized Settings status patterns
 - [x] Show a per-milestone local B.A.V. acknowledgment breakdown
 - [x] Refresh the breakdown after reset and rerun full validation
+
+- [x] Audit runtime logs, persistence recovery, and existing mock-data boundaries
+- [x] Fix actionable errors and strengthen defensive recovery states
+- [x] Add clearly labeled mock-data feedback with deterministic tests
+- [x] Run full validation and save a recoverable checkpoint
