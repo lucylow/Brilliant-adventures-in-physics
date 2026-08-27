@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
-import { Keyboard, Pressable, ScrollView, Text, TextInput, View } from "react-native";
+import { Keyboard, Platform, Pressable, ScrollView, Text, TextInput, View } from "react-native";
+import * as Haptics from "expo-haptics";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { ScreenContainer } from "@/components/screen-container";
 import { router, useLocalSearchParams } from "expo-router";
@@ -42,7 +43,9 @@ export default function PracticeScreen() {
   const [notebookMessage, setNotebookMessage] = useState<string | null>(null);
   const [reviewDataFallback, setReviewDataFallback] = useState(false);
   const [reducedMotion, setReducedMotion] = useState(false);
-  useEffect(() => { let active = true; void loadPreferences().then((preferences) => { if (active) setReducedMotion(preferences.reducedMotion); }).catch(() => undefined); return () => { active = false; }; }, []);
+  const [hapticsEnabled, setHapticsEnabled] = useState(false);
+  useEffect(() => { let active = true; void loadPreferences().then((preferences) => { if (active) { setReducedMotion(preferences.reducedMotion); setHapticsEnabled(preferences.hapticsEnabled); } }).catch(() => undefined); return () => { active = false; }; }, []);
+  useEffect(() => { if (feedback !== "correct" || !hapticsEnabled || Platform.OS === "web") return; void Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success).catch(() => undefined); }, [feedback, hapticsEnabled]);
   useEffect(() => { if (!isReviewMode) return; let active = true; void Promise.all([loadPuzzleEvidenceWithStatus(), loadResolvedPuzzleIdsWithStatus()]).then(([evidenceResult, resolvedResult]) => { if (!active) return; setReviewDataFallback(evidenceResult.usedFallback || resolvedResult.usedFallback); const items = missedPuzzleReviewQueue(evidenceResult.value, 3, resolvedResult.value); setReviewItems(items); if (items[0]?.topic) setIndex(practiceQuestionIndexForConcept(items[0].topic) ?? 0); }).catch(() => { if (active) { setReviewItems([]); setReviewDataFallback(true); } }); return () => { active = false; }; }, [isReviewMode]);
   const question = practiceQuestions[index % practiceQuestions.length];
   const reviewItem = isReviewMode ? reviewItems[reviewCursor] : undefined;

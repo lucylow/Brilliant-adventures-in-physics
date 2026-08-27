@@ -810,3 +810,7 @@
 - [x] Audit B.A.V. motion, hover, completion feedback, and autosave sync flows
 - [x] Implement reduced-motion-safe transitions, visual completion rewards, and online autosave sync feedback
 - [x] Add deterministic regression coverage and verify accessible interaction states
+
+- [x] Audit the latest core learning, completion, and recovery flows
+- [x] Implement one bounded functionality improvement with safe local fallback behavior
+- [x] Add regression coverage and rerun full validation
