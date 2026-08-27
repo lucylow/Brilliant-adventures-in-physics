@@ -1,6 +1,7 @@
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
-import { Pressable, Text, View } from "react-native";
+import { Text, View } from "react-native";
 import { Card, ProgressBar, SecondaryButton } from "@/components/physica-ui";
+import { MotionPressable, RevealBlock } from "@/components/motion-primitives";
 import { useColors } from "@/hooks/use-colors";
 import { useAppTranslations } from "@/hooks/use-app-translations";
 import { BAV_FALLBACK_QUESTS, BAV_PILLARS, bavQuestProgress, type BAVPillar, type BAVQuest, type BAVRoute } from "@/lib/bav";
@@ -44,7 +45,7 @@ export function BAVPillarMark({ pillar, size = 38 }: { pillar: BAVPillar; size?:
   );
 }
 
-export function BAVDiscoveryPanel({ onPillarPress, learning, onQuestPress }: { onPillarPress: (route: BAVRoute) => void; learning?: LearningState; onQuestPress?: (quest: BAVQuest) => void }) {
+export function BAVDiscoveryPanel({ onPillarPress, learning, onQuestPress, reducedMotion = false }: { onPillarPress: (route: BAVRoute) => void; learning?: LearningState; onQuestPress?: (quest: BAVQuest) => void; reducedMotion?: boolean }) {
   const colors = useColors();
   const { tr } = useAppTranslations();
   return (
@@ -72,11 +73,12 @@ export function BAVDiscoveryPanel({ onPillarPress, learning, onQuestPress }: { o
           const title = tr(pillarTitleKey(pillar.id));
           const detail = tr(pillarDetailKey(pillar.id));
           return (
-            <Pressable
+            <MotionPressable
               key={pillar.id}
               accessibilityRole="button"
               accessibilityLabel={`${title}. ${detail}`}
               onPress={() => onPillarPress(pillar.route)}
+              reducedMotion={reducedMotion}
               style={({ pressed }) => ({ flexDirection: "row", alignItems: "center", gap: 12, minHeight: 72, padding: 12, borderRadius: 16, borderWidth: 1, borderColor: treatment.accent + "45", backgroundColor: treatment.accent + "0B", opacity: pressed ? 0.76 : 1 })}
             >
               <View style={{ flex: 1, flexDirection: "row", alignItems: "center", gap: 12 }}>
@@ -88,7 +90,7 @@ export function BAVDiscoveryPanel({ onPillarPress, learning, onQuestPress }: { o
                 </View>
                 <MaterialIcons name="arrow-forward" size={22} color={treatment.accent} />
               </View>
-            </Pressable>
+            </MotionPressable>
           );
         })}
       </View>
@@ -114,6 +116,7 @@ export function BAVDiscoveryPanel({ onPillarPress, learning, onQuestPress }: { o
                 <Text style={{ color: completed ? colors.success : colors.warning, fontSize: 12, fontWeight: "900" }}>+{quest.rewardXp} XP</Text>
               </View>
               <Text style={{ marginTop: 3, marginLeft: 30, color: completed ? colors.success : colors.muted, fontSize: 12, fontWeight: completed ? "800" : "400" }}>{completed ? tr("home.bavQuestCompleted") : tr("home.bavQuestProgress", { done: completedActions, goal: quest.requiredActions })}</Text>
+              {completed && <RevealBlock index={1} preferences={{ reducedMotion }}><View accessibilityLabel={tr("home.bavQuestRewardAccessibility", { xp: quest.rewardXp })} style={{ alignSelf: "flex-start", flexDirection: "row", alignItems: "center", gap: 6, marginTop: 8, marginLeft: 30, paddingHorizontal: 9, paddingVertical: 6, borderRadius: 999, backgroundColor: colors.success + "18", borderWidth: 1, borderColor: colors.success + "40" }}><MaterialIcons name="workspace-premium" size={15} color={colors.success} /><Text style={{ color: colors.success, fontSize: 11, fontWeight: "900" }}>{tr("home.bavQuestRewardUnlocked", { xp: quest.rewardXp })}</Text></View></RevealBlock>}
               <View style={{ marginTop: 5 }}><ProgressBar value={progress} /></View>
             </View>;
           })}

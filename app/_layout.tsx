@@ -19,6 +19,7 @@ import type { EdgeInsets, Metrics, Rect } from "react-native-safe-area-context";
 import { trpc, createTRPCClient } from "@/lib/trpc";
 import { initManusRuntime, subscribeSafeAreaInsets } from "@/lib/_core/manus-runtime";
 import { AutosaveReconciler } from "@/components/autosave-reconciler";
+import { AutosaveSyncToast } from "@/components/autosave-sync-toast";
 import { NetworkStatusBanner } from "@/components/network-status-banner";
 import { AppErrorBoundary } from "@/components/app-error-boundary";
 
@@ -94,6 +95,7 @@ export default function RootLayout() {
             <Stack.Screen name="oauth/callback" />
           </Stack>
           <AutosaveReconciler />
+          <AutosaveSyncToast />
           <NetworkStatusBanner />
           <StatusBar style="auto" />
         </QueryClientProvider>

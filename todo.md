@@ -806,3 +806,7 @@
 - [x] Audit remaining silent fallback and autosave recovery boundaries
 - [x] Harden queued autosave and Privacy summary fallback handling
 - [x] Add deterministic regression coverage and rerun full validation
+
+- [x] Audit B.A.V. motion, hover, completion feedback, and autosave sync flows
+- [x] Implement reduced-motion-safe transitions, visual completion rewards, and online autosave sync feedback
+- [x] Add deterministic regression coverage and verify accessible interaction states
