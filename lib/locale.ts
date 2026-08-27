@@ -448,6 +448,8 @@ export function createAppTranslations(): TranslationStore {
     "settings.checkingConnection": { en: "Checking connection…", fr: "Vérification de la connexion…", es: "Comprobando conexión…" },
     "settings.checkConnection": { en: "Check connection", fr: "Vérifier la connexion", es: "Comprobar conexión" },
     "settings.autosavesWaiting": { en: "{{count}} autosave(s) waiting to retry.", fr: "{{count}} sauvegarde(s) automatique(s) en attente de nouvel essai.", es: "{{count}} guardado(s) automático(s) esperando reintento." },
+    "settings.syncJustNowOne": { en: "Last successful sync: 1 offline save synced just now.", fr: "Dernière synchronisation réussie : 1 sauvegarde hors ligne synchronisée à l'instant.", es: "Última sincronización correcta: 1 guardado sin conexión sincronizado ahora mismo." },
+    "settings.syncJustNowMany": { en: "Last successful sync: {{count}} offline saves synced just now.", fr: "Dernière synchronisation réussie : {{count}} sauvegardes hors ligne synchronisées à l'instant.", es: "Última sincronización correcta: {{count}} guardados sin conexión sincronizados ahora mismo." },
     "settings.noAutosavesWaiting": { en: "No offline autosaves are waiting.", fr: "Aucune sauvegarde hors ligne n’est en attente.", es: "No hay guardados automáticos sin conexión esperando." },
     "settings.draftQueued": { en: "Draft {{index}} · queued {{age}}", fr: "Brouillon {{index}} · en attente depuis {{age}}", es: "Borrador {{index}} · en cola desde {{age}}" },
     "settings.retryDraft": { en: "Retry draft {{index}}", fr: "Réessayer le brouillon {{index}}", es: "Reintentar borrador {{index}}" },

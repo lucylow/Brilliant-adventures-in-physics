@@ -814,3 +814,7 @@
 - [x] Audit the latest core learning, completion, and recovery flows
 - [x] Implement one bounded functionality improvement with safe local fallback behavior
 - [x] Add regression coverage and rerun full validation
+
+- [x] Audit the latest completion, progress, and recovery flows
+- [x] Implement one bounded functionality improvement with safe local behavior
+- [x] Add regression coverage and rerun full validation
