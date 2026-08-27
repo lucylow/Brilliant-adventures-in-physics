@@ -1,6 +1,4 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { clearExperiments } from "./experiments";
-import { clearRetryQueue } from "./retry-queue";
 import { parseLearningState, summarizeCompletionEvents } from "./progress-store";
 import type { SupportedLocale } from "./locale";
 
@@ -9,7 +7,7 @@ const USAGE_KEY = "physicaai.usage.v1";
 const DRAFT_KEY = "physicaai.drafts.v1";
 const PRIVACY_ACTIVITY_KEY = "physicaai.privacy-activity.v1";
 const MAX_PRIVACY_ACTIVITY_EVENTS = 50;
-export const LOCAL_DATA_STORAGE_KEYS = [LEARNING_KEY, USAGE_KEY, DRAFT_KEY, PRIVACY_ACTIVITY_KEY, "physicaai.experiments.v1", "physicaai.autosave.queue.v1", "physicaai.autosave.last-save.v1"] as const;
+export const LOCAL_DATA_STORAGE_KEYS = [LEARNING_KEY, USAGE_KEY, DRAFT_KEY, PRIVACY_ACTIVITY_KEY, "physicaai.experiments.v1", "physicaai.autosave.queue.v1", "physicaai.autosave.last-save.v1", "physicaai.preferences.v1", "physicaai.onboarding.v1", "physicaai.astronomy-catalog.v1", "physicaai.quantum-catalog.v1", "physicaai.notebook.v1", "physicaai.adventure.v1", "physicaai.puzzle-evidence.v1", "physicaai.puzzle-evidence-resolved.v1", "physicaai.review-mastery.v1"] as const;
 
 export type LocalDataSummary = { learningRecords: number; savedQuestions: number; savedExperiments: number; activeDrafts: number; completionEvents: number; lessonCompletions: number; labCompletions: number };
 export type PrivacyActivityKind = "share" | "clear";
@@ -73,7 +71,7 @@ export async function loadPrivacyActivityWithStatus(): Promise<PrivacyActivityLo
     if (!raw) return { events: [], usedFallback: false };
     let parsed: unknown;
     try { parsed = JSON.parse(raw) as unknown; } catch { return { events: [], usedFallback: true, reason: "malformed" }; }
-    if (!Array.isArray(parsed)) return { events: [], usedFallback: true, reason: "malformed" };
+    if (!Array.isArray(parsed) || !parsed.every(isPrivacyActivityEvent)) return { events: [], usedFallback: true, reason: "malformed" };
     return { events: parsePrivacyActivityEvents(parsed), usedFallback: false };
   } catch {
     return { events: [], usedFallback: true, reason: "unavailable" };
@@ -111,5 +109,6 @@ export function formatPrivacyActivityTimestamp(occurredAt: string, locale: Suppo
 }
 
 export async function clearAllLocalData(): Promise<void> {
-  await Promise.all([AsyncStorage.removeItem(LEARNING_KEY), AsyncStorage.removeItem(USAGE_KEY), AsyncStorage.removeItem(DRAFT_KEY), clearExperiments(), clearRetryQueue()]);
+  const results = await Promise.allSettled(LOCAL_DATA_STORAGE_KEYS.map((key) => AsyncStorage.removeItem(key)));
+  if (results.some((result) => result.status === "rejected")) throw new Error("Some local PhysicaAI data could not be cleared");
 }

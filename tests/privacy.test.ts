@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { buildLocalDataShareText, formatLocalDataSummary, formatPrivacyActivityTimestamp, getLocalDataSummary, loadPrivacyActivity, loadPrivacyActivityWithStatus, localSummaryFileUri, parsePrivacyActivityEvents, recordPrivacyActivity, LOCAL_DATA_STORAGE_KEYS } from "../lib/privacy";
+import { buildLocalDataShareText, clearAllLocalData, formatLocalDataSummary, formatPrivacyActivityTimestamp, getLocalDataSummary, loadPrivacyActivity, loadPrivacyActivityWithStatus, localSummaryFileUri, parsePrivacyActivityEvents, recordPrivacyActivity, LOCAL_DATA_STORAGE_KEYS } from "../lib/privacy";
 
 vi.mock("@react-native-async-storage/async-storage", () => ({
   default: {
@@ -82,6 +82,11 @@ describe("privacy controls", () => {
     await expect(loadPrivacyActivityWithStatus()).resolves.toEqual({ events: [], usedFallback: true, reason: "malformed" });
   });
 
+  it("classifies a partially malformed activity history as recoverable", async () => {
+    vi.mocked(AsyncStorage.getItem).mockResolvedValue(JSON.stringify([{ id: "share:1", kind: "share", outcome: "success", occurredAt: "2026-01-01T00:00:00.000Z" }, { id: "bad" }]));
+    await expect(loadPrivacyActivityWithStatus()).resolves.toEqual({ events: [], usedFallback: true, reason: "malformed" });
+  });
+
   it("does not overwrite activity history after malformed or unavailable reads", async () => {
     vi.mocked(AsyncStorage.getItem).mockResolvedValue("{");
     expect(await recordPrivacyActivity("share", "failure", "2026-01-04T00:00:00.000Z")).toBe(false);
@@ -94,5 +99,18 @@ describe("privacy controls", () => {
     expect(LOCAL_DATA_STORAGE_KEYS).toContain("physicaai.autosave.queue.v1");
     expect(LOCAL_DATA_STORAGE_KEYS).toContain("physicaai.autosave.last-save.v1");
     expect(LOCAL_DATA_STORAGE_KEYS).toContain("physicaai.privacy-activity.v1");
+    expect(LOCAL_DATA_STORAGE_KEYS).toContain("physicaai.onboarding.v1");
+    expect(LOCAL_DATA_STORAGE_KEYS).toContain("physicaai.puzzle-evidence.v1");
+  });
+
+  it("clears every owned local key and reports partial failures", async () => {
+    vi.mocked(AsyncStorage.removeItem).mockResolvedValue(undefined);
+    await expect(clearAllLocalData()).resolves.toBeUndefined();
+    expect(AsyncStorage.removeItem).toHaveBeenCalledTimes(LOCAL_DATA_STORAGE_KEYS.length);
+    vi.mocked(AsyncStorage.removeItem).mockImplementation(async (key) => {
+      if (key === "physicaai.notebook.v1") throw new Error("storage unavailable");
+    });
+    await expect(clearAllLocalData()).rejects.toThrow("could not be cleared");
+    expect(AsyncStorage.removeItem).toHaveBeenCalledTimes(LOCAL_DATA_STORAGE_KEYS.length * 2);
   });
 });

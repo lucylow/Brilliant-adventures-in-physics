@@ -20,6 +20,16 @@ function validEvidence(value: unknown): value is PuzzleEvidence {
   return typeof item.puzzleId === "string" && item.puzzleId.length > 0 && (item.topic === undefined || typeof item.topic === "string") && (item.outcome === "correct" || item.outcome === "assisted-correct" || item.outcome === "incorrect") && typeof item.hintsUsed === "number" && Number.isFinite(item.hintsUsed) && item.hintsUsed >= 0 && typeof item.xp === "number" && Number.isFinite(item.xp) && item.xp >= 0 && typeof item.recordedAt === "string";
 }
 
+function validResolvedIds(value: unknown): value is string[] {
+  return Array.isArray(value) && value.every((id) => typeof id === "string" && id.length > 0);
+}
+
+function validReviewMastery(value: unknown): value is ReviewMasteryRecord {
+  if (!value || typeof value !== "object") return false;
+  const item = value as Partial<ReviewMasteryRecord>;
+  return typeof item.resolutionId === "string" && item.resolutionId.length > 0 && typeof item.topic === "string" && item.topic.length > 0 && typeof item.recordedAt === "string" && !Number.isNaN(Date.parse(item.recordedAt));
+}
+
 export type ReviewLoadResult<T> = { value: T; usedFallback: boolean; reason?: "malformed" | "unavailable" };
 
 export async function loadResolvedPuzzleIdsWithStatus(): Promise<ReviewLoadResult<string[]>> {
@@ -28,8 +38,8 @@ export async function loadResolvedPuzzleIdsWithStatus(): Promise<ReviewLoadResul
     if (!raw) return { value: [], usedFallback: false };
     let parsed: unknown;
     try { parsed = JSON.parse(raw) as unknown; } catch { return { value: [], usedFallback: true, reason: "malformed" }; }
-    if (!Array.isArray(parsed)) return { value: [], usedFallback: true, reason: "malformed" };
-    return { value: parsed.filter((id): id is string => typeof id === "string").slice(-200), usedFallback: false };
+    if (!validResolvedIds(parsed)) return { value: [], usedFallback: true, reason: "malformed" };
+    return { value: parsed.slice(-200), usedFallback: false };
   } catch {
     return { value: [], usedFallback: true, reason: "unavailable" };
   }
@@ -47,8 +57,8 @@ export async function loadReviewMasteryWithStatus(): Promise<ReviewLoadResult<Re
     if (!raw) return { value: [], usedFallback: false };
     let parsed: unknown;
     try { parsed = JSON.parse(raw) as unknown; } catch { return { value: [], usedFallback: true, reason: "malformed" }; }
-    if (!Array.isArray(parsed)) return { value: [], usedFallback: true, reason: "malformed" };
-    return { value: parsed.filter((item): item is ReviewMasteryRecord => Boolean(item && typeof item === "object" && typeof (item as ReviewMasteryRecord).resolutionId === "string" && typeof (item as ReviewMasteryRecord).topic === "string" && typeof (item as ReviewMasteryRecord).recordedAt === "string")).slice(-200), usedFallback: false };
+    if (!Array.isArray(parsed) || !parsed.every(validReviewMastery)) return { value: [], usedFallback: true, reason: "malformed" };
+    return { value: parsed.slice(-200), usedFallback: false };
   } catch {
     return { value: [], usedFallback: true, reason: "unavailable" };
   }
@@ -118,8 +128,8 @@ export async function loadPuzzleEvidenceWithStatus(): Promise<ReviewLoadResult<P
     if (!raw) return { value: [], usedFallback: false };
     let parsed: unknown;
     try { parsed = JSON.parse(raw) as unknown; } catch { return { value: [], usedFallback: true, reason: "malformed" }; }
-    if (!Array.isArray(parsed)) return { value: [], usedFallback: true, reason: "malformed" };
-    return { value: parsed.filter(validEvidence).slice(-200), usedFallback: false };
+    if (!Array.isArray(parsed) || !parsed.every(validEvidence)) return { value: [], usedFallback: true, reason: "malformed" };
+    return { value: parsed.slice(-200), usedFallback: false };
   } catch {
     return { value: [], usedFallback: true, reason: "unavailable" };
   }

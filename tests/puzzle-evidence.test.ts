@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { loadPuzzleEvidence, loadResolvedPuzzleIds, missedPuzzleReviewQueue, recordPuzzleEvidence, resolvePuzzleEvidence, reviewHistorySummary, reviewMasteryPercentDelta, summarizePuzzleEvidence } from "../lib/puzzle-evidence";
+import { loadPuzzleEvidence, loadPuzzleEvidenceWithStatus, loadResolvedPuzzleIds, loadResolvedPuzzleIdsWithStatus, loadReviewMasteryWithStatus, missedPuzzleReviewQueue, recordPuzzleEvidence, resolvePuzzleEvidence, reviewHistorySummary, reviewMasteryPercentDelta, summarizePuzzleEvidence } from "../lib/puzzle-evidence";
 
 vi.mock("@react-native-async-storage/async-storage", () => ({
   default: {
@@ -69,9 +69,17 @@ describe("puzzle evidence", () => {
     ]);
   });
 
-  it("filters malformed records when loading", async () => {
+  it("reports partially malformed evidence instead of filtering it into a writable fallback", async () => {
     vi.mocked(AsyncStorage.getItem).mockResolvedValue(JSON.stringify([{ puzzleId: "valid", outcome: "incorrect", hintsUsed: 1, xp: 0, recordedAt: "now" }, { puzzleId: "bad" }]));
-    await expect(loadPuzzleEvidence()).resolves.toHaveLength(1);
+    await expect(loadPuzzleEvidenceWithStatus()).resolves.toEqual({ value: [], usedFallback: true, reason: "malformed" });
+    await expect(loadPuzzleEvidence()).resolves.toEqual([]);
+  });
+
+  it("reports partially malformed resolved and mastery records", async () => {
+    vi.mocked(AsyncStorage.getItem).mockResolvedValue(JSON.stringify(["p-1", 42]));
+    await expect(loadResolvedPuzzleIdsWithStatus()).resolves.toEqual({ value: [], usedFallback: true, reason: "malformed" });
+    vi.mocked(AsyncStorage.getItem).mockResolvedValue(JSON.stringify([{ resolutionId: "r-1", topic: "energy", recordedAt: "2026-01-01" }, { resolutionId: "bad" }]));
+    await expect(loadReviewMasteryWithStatus()).resolves.toEqual({ value: [], usedFallback: true, reason: "malformed" });
   });
 
   it("derives a capped five-point mastery signal without changing evidence counts", () => {

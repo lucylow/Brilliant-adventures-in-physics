@@ -784,3 +784,8 @@
 - [x] Harden partial-record detection and prevent destructive fallback overwrites
 - [x] Remove remaining source-level pointer-events warning paths
 - [x] Add deterministic regression coverage and rerun full validation
+
+- [x] Re-audit local fallback and clearing boundaries
+- [x] Harden review evidence and privacy activity validation
+- [x] Make clear-all local data coverage complete and report partial failures
+- [x] Add regression coverage and rerun full validation
