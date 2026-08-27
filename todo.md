@@ -875,3 +875,8 @@
 - [x] Implement defensive fixes and consistent retryable recovery states
 - [x] Add clearly labeled mock-data feedback and regression coverage
 - [x] Validate and save a recoverable checkpoint
+
+- [x] Audit runtime errors, fallback boundaries, and current monetization contracts
+- [x] Implement defensive recovery and clearly labeled mock-data feedback
+- [x] Improve monetization UX with transparent usage, entitlement, and retry states
+- [x] Add regression coverage, validate, and save a recoverable checkpoint

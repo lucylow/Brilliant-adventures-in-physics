@@ -1,11 +1,17 @@
 import { describe, expect, it, vi } from "vitest";
-import { canUseSubscription, isExpired, mapPurchaseError, purchaseReducer, retryPurchase, validateCatalog, type Product } from "../lib/monetization";
+import { canUseSubscription, consume, isExpired, mapPurchaseError, purchaseReducer, remaining, retryPurchase, validateCatalog, type Product } from "../lib/monetization";
 
 const product = (overrides: Partial<Product> = {}): Product => ({ id: "plus-monthly", storeProductId: "store.plus.monthly", plan: "plus", title: "PhysicaAI Plus", description: "Expanded physics learning tools.", priceLabel: "$4.99/month", period: "month", ...overrides });
 
 describe("monetization contracts", () => {
-  it("filters fabricated prices and duplicate products from a catalog", () => {
-    expect(validateCatalog([product(), product({ id: "unknown", priceLabel: "TBD" }), product()])).toHaveLength(1);
+  it("filters fabricated prices, invalid metadata, and duplicate products from a catalog", () => {
+    expect(validateCatalog([product(), product({ id: "unknown", priceLabel: "TBD" }), product({ plan: "invalid" as Product["plan"] }), product({ period: "week" as Product["period"] }), product()])).toHaveLength(1);
+  });
+  it("keeps malformed usage display safe and rejects malformed consumption", () => {
+    expect(remaining({ used: Number.NaN, limit: 5 })).toBe(5);
+    expect(remaining({ used: 7, limit: Number.POSITIVE_INFINITY })).toBe(0);
+    expect(() => consume({ used: Number.NaN, limit: 5 })).toThrow("Invalid usage state");
+    expect(() => consume({ used: 1, limit: 5 }, Number.NaN)).toThrow("Invalid usage state");
   });
   it("keeps purchase transitions explicit", () => {
     const loading = purchaseReducer({ state: "idle" }, { type: "START", productId: "plus-monthly" });
@@ -18,6 +24,7 @@ describe("monetization contracts", () => {
     const operation = vi.fn(async () => { attempts += 1; if (attempts < 2) throw { code: "network" }; return "ok"; });
     await expect(retryPurchase(operation, 2)).resolves.toBe("ok");
     expect(operation).toHaveBeenCalledTimes(2);
+    await expect(retryPurchase(async () => "bounded", Number.NaN)).resolves.toBe("bounded");
     expect(mapPurchaseError({ code: "timeout" })).toContain("too long");
   });
   it("handles expired subscriptions without inventing active access", () => {

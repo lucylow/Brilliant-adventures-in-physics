@@ -11,9 +11,14 @@ export function hasFeature(entitlements: Entitlement[], feature: string): boolea
   return Boolean(entitlements.find((item) => item.feature === feature && item.enabled));
 }
 
-export function remaining(usage: { used: number; limit: number }): number { return Math.max(0, usage.limit - usage.used); }
+export function remaining(usage: { used: number; limit: number }): number {
+  const used = Number.isFinite(usage.used) ? Math.max(0, usage.used) : 0;
+  const limit = Number.isFinite(usage.limit) ? Math.max(0, usage.limit) : 0;
+  return Math.max(0, limit - used);
+}
 
 export function consume(usage: { used: number; limit: number }, cost = 1) {
+  if (!Number.isFinite(usage.used) || !Number.isFinite(usage.limit) || !Number.isFinite(cost) || usage.used < 0 || usage.limit <= 0 || cost <= 0) throw new Error("Invalid usage state");
   if (usage.used + cost > usage.limit) throw new Error("Usage limit reached");
   return { ...usage, used: usage.used + cost };
 }
@@ -34,7 +39,10 @@ export function buildPaywall(context: "scan" | "tutor" | "lab" | "exam") {
   return { title: "Unlock deeper physics learning", subtitle: "Core learning stays free. Upgrade when premium tools help.", benefits, primary: "See plans", secondary: "Not now" };
 }
 
-export function annualSavings(monthly: number, annual: number): number { return Math.max(0, monthly * 12 - annual); }
+export function annualSavings(monthly: number, annual: number): number {
+  if (!Number.isFinite(monthly) || !Number.isFinite(annual) || monthly < 0 || annual < 0) return 0;
+  return Math.max(0, monthly * 12 - annual);
+}
 
 export interface BillingProvider {
   loadProducts(ids: string[]): Promise<StoreProduct[]>;
@@ -65,11 +73,21 @@ export interface StoreAdapter {
 
 export interface ProductRepository { listProducts(): Promise<Product[]>; getProduct(id: string): Promise<Product | undefined> }
 
+const VALID_TIERS: readonly Tier[] = ["free", "plus", "family", "education"];
+const VALID_PERIODS: readonly StoreProduct["period"][] = ["month", "year"];
+
 export function isValidProduct(product: Product): boolean {
-  return Boolean(product.id && product.storeProductId && product.plan && product.title && product.description && product.priceLabel && !/^(unknown|tbd|to be replaced|\$0(?:\.00)?)$/i.test(product.priceLabel));
+  if (!product || typeof product !== "object") return false;
+  const candidate = product as Partial<Product>;
+  const strings = [candidate.id, candidate.storeProductId, candidate.title, candidate.description, candidate.priceLabel];
+  return strings.every((value) => typeof value === "string" && value.trim().length > 0)
+    && VALID_TIERS.includes(candidate.plan as Tier)
+    && VALID_PERIODS.includes(candidate.period as StoreProduct["period"])
+    && !/^(unknown|tbd|to be replaced|\$0(?:\.00)?)$/i.test(String(candidate.priceLabel).trim());
 }
 
 export function validateCatalog(products: Product[]): Product[] {
+  if (!Array.isArray(products)) return [];
   return products.filter(isValidProduct).filter((product, index, all) => all.findIndex((candidate) => candidate.id === product.id) === index);
 }
 
@@ -92,7 +110,8 @@ export function mapPurchaseError(error: unknown): string {
 
 export async function retryPurchase<T>(operation: () => Promise<T>, attempts = 2): Promise<T> {
   let lastError: unknown;
-  for (let index = 0; index <= attempts; index += 1) {
+  const retryCount = Number.isFinite(attempts) ? Math.max(0, Math.floor(attempts)) : 0;
+  for (let index = 0; index <= retryCount; index += 1) {
     try { return await operation(); } catch (error) { lastError = error; }
   }
   throw lastError instanceof Error ? lastError : new Error("Purchase failed");
