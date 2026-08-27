@@ -39,7 +39,7 @@ export async function loadNotebookEntriesWithStatus(): Promise<NotebookLoadResul
     if (!raw) return { entries: [], usedFallback: false };
     let parsed: unknown;
     try { parsed = JSON.parse(raw) as unknown; } catch { return { entries: [DEMO_NOTEBOOK_ENTRY], usedFallback: true, reason: "malformed" }; }
-    if (!Array.isArray(parsed)) return { entries: [DEMO_NOTEBOOK_ENTRY], usedFallback: true, reason: "malformed" };
+    if (!Array.isArray(parsed) || !parsed.every(isNotebookEntry)) return { entries: [DEMO_NOTEBOOK_ENTRY], usedFallback: true, reason: "malformed" };
     return { entries: parseNotebookEntries(parsed), usedFallback: false };
   } catch {
     return { entries: [DEMO_NOTEBOOK_ENTRY], usedFallback: true, reason: "unavailable" };
@@ -54,7 +54,7 @@ async function readNotebookEntriesForWrite(): Promise<NotebookEntry[]> {
   const raw = await AsyncStorage.getItem(STORAGE_KEY);
   if (!raw) return [];
   const parsed: unknown = JSON.parse(raw);
-  if (!Array.isArray(parsed)) throw new Error("Notebook storage is malformed");
+  if (!Array.isArray(parsed) || !parsed.every(isNotebookEntry)) throw new Error("Notebook storage is malformed");
   return parseNotebookEntries(parsed);
 }
 

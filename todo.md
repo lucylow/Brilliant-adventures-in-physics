@@ -774,3 +774,8 @@
 - [x] Audit latest persistence, catalog, and screen recovery boundaries
 - [x] Add safe labeled fallback mock data and actionable recovery feedback
 - [x] Add deterministic regression coverage for this resilience pass
+
+- [x] Fix current runtime warning and restart stability issues
+- [x] Add stronger malformed-record fallback and write protection for preferences, onboarding, and Notebook data
+- [x] Localize remaining recovery and retry feedback on secondary screens
+- [x] Add deterministic regression coverage and validate the full project

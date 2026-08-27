@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { createAppTranslations, createLocalizedAnnouncement, translate, type AnnouncementPriority, type SupportedLocale, type TranslationVariables } from "@/lib/locale";
 import { loadPreferencesWithStatus } from "@/lib/preferences";
 
@@ -16,9 +16,7 @@ export function useAppTranslations() {
       active = false;
     };
   }, []);
-  return {
-    locale,
-    tr: (key: string, variables?: TranslationVariables) => translate(copy, locale, key, variables),
-    announce: (key: string, priority: AnnouncementPriority = "polite", variables?: TranslationVariables) => createLocalizedAnnouncement(copy, locale, key, priority, variables),
-  };
+  const tr = useCallback((key: string, variables?: TranslationVariables) => translate(copy, locale, key, variables), [copy, locale]);
+  const announce = useCallback((key: string, priority: AnnouncementPriority = "polite", variables?: TranslationVariables) => createLocalizedAnnouncement(copy, locale, key, priority, variables), [copy, locale]);
+  return { locale, tr, announce };
 }

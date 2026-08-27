@@ -34,6 +34,8 @@ export async function loadOnboarding(): Promise<OnboardingProfile> { return (awa
 export function resetOnboarding(): OnboardingProfile { return DEFAULT_ONBOARDING; }
 
 export async function saveOnboarding(profile: OnboardingProfile): Promise<OnboardingProfile> {
+  const current = await loadOnboardingWithStatus();
+  if (current.recovered) throw new Error("Onboarding storage is unreadable; refusing to overwrite it");
   const next = mergeOnboarding(profile);
   await AsyncStorage.setItem(KEY, JSON.stringify(next));
   return next;

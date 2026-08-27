@@ -1,5 +1,5 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { resolveLocale, type SupportedLocale } from "./locale";
+import { LOCALES, resolveLocale, type SupportedLocale } from "./locale";
 
 const KEY = "physicaai.preferences.v1";
 export type Preferences = { streakEnabled: boolean; reducedMotion: boolean; hapticsEnabled: boolean; locale: SupportedLocale };
@@ -18,12 +18,19 @@ export function mergePreferences(input: unknown): Preferences {
 
 export type PreferenceLoadResult = { preferences: Preferences; recovered: boolean; reason?: "malformed" | "unavailable" };
 
+function isCompletePreferencesRecord(value: unknown): value is Preferences {
+  if (!value || typeof value !== "object") return false;
+  const stored = value as Partial<Preferences>;
+  return typeof stored.streakEnabled === "boolean" && typeof stored.reducedMotion === "boolean" && typeof stored.hapticsEnabled === "boolean" && typeof stored.locale === "string" && LOCALES.some((locale) => locale.code === stored.locale);
+}
+
 export async function loadPreferencesWithStatus(): Promise<PreferenceLoadResult> {
   try {
     const raw = await AsyncStorage.getItem(KEY);
     if (!raw) return { preferences: DEFAULTS, recovered: false };
     let parsed: unknown;
     try { parsed = JSON.parse(raw) as unknown; } catch { return { preferences: DEFAULTS, recovered: true, reason: "malformed" }; }
+    if (!isCompletePreferencesRecord(parsed)) return { preferences: DEFAULTS, recovered: true, reason: "malformed" };
     return { preferences: mergePreferences(parsed), recovered: false };
   } catch {
     return { preferences: DEFAULTS, recovered: true, reason: "unavailable" };
@@ -34,4 +41,10 @@ export async function loadPreferences(): Promise<Preferences> {
   return (await loadPreferencesWithStatus()).preferences;
 }
 
-export async function savePreferences(next: Preferences): Promise<Preferences> { await AsyncStorage.setItem(KEY, JSON.stringify(next)); return next; }
+export async function savePreferences(next: Preferences): Promise<Preferences> {
+  const current = await loadPreferencesWithStatus();
+  if (current.recovered) throw new Error("Preferences storage is unreadable; refusing to overwrite it");
+  const normalized = mergePreferences(next);
+  await AsyncStorage.setItem(KEY, JSON.stringify(normalized));
+  return normalized;
+}
