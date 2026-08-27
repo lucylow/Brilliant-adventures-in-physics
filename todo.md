@@ -880,3 +880,7 @@
 - [x] Implement defensive recovery and clearly labeled mock-data feedback
 - [x] Improve monetization UX with transparent usage, entitlement, and retry states
 - [x] Add regression coverage, validate, and save a recoverable checkpoint
+
+- [x] Audit Upgrade, entitlement, usage, and catalog-state boundaries
+- [x] Implement transparent entitlement and provider-unavailable states
+- [x] Add deterministic monetization regression coverage and validate flows
