@@ -7,7 +7,7 @@ export type PhysicsVector = { id: string; label: string; x: number; y: number; c
 export function PhysicsGrid({ width, height, spacing = 32, children }: { width: number; height: number; spacing?: number; children?: ReactNode }) {
   const columns = Math.floor(width / spacing) + 1;
   const rows = Math.floor(height / spacing) + 1;
-  return <View accessible={false} style={{ width, height, position: "relative", overflow: "hidden", pointerEvents: "none" }}>
+  return <View accessible={false} style={{ width, height, position: "relative", overflow: "hidden" }}>
     {Array.from({ length: columns }, (_, index) => <View key={`x-${index}`} style={{ position: "absolute", left: index * spacing, top: 0, bottom: 0, borderLeftWidth: 1, borderColor: "#CBD5E155" }} />)}
     {Array.from({ length: rows }, (_, index) => <View key={`y-${index}`} style={{ position: "absolute", top: index * spacing, left: 0, right: 0, borderTopWidth: 1, borderColor: "#CBD5E155" }} />)}
     {children}

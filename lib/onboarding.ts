@@ -16,12 +16,21 @@ export function mergeOnboarding(input: unknown): OnboardingProfile {
 }
 
 export type OnboardingLoadResult = { profile: OnboardingProfile; recovered: boolean; reason?: "malformed" | "unavailable" };
+
+function isCompleteOnboardingProfile(value: unknown): value is OnboardingProfile {
+  if (!value || typeof value !== "object") return false;
+  const stored = value as Partial<OnboardingProfile>;
+  return typeof stored.completed === "boolean" && (stored.level === "new" || stored.level === "school" || stored.level === "exam") && (stored.goal === "understand" || stored.goal === "practice" || stored.goal === "experiment") && (stored.step === 0 || stored.step === 1 || stored.step === 2);
+}
+
 export async function loadOnboardingWithStatus(): Promise<OnboardingLoadResult> {
   try {
     const raw = await AsyncStorage.getItem(KEY);
     if (!raw) return { profile: DEFAULT_ONBOARDING, recovered: false };
     try {
-      return { profile: mergeOnboarding(JSON.parse(raw)), recovered: false };
+      const parsed = JSON.parse(raw) as unknown;
+      if (!isCompleteOnboardingProfile(parsed)) return { profile: DEFAULT_ONBOARDING, recovered: true, reason: "malformed" };
+      return { profile: mergeOnboarding(parsed), recovered: false };
     } catch {
       return { profile: DEFAULT_ONBOARDING, recovered: true, reason: "malformed" };
     }

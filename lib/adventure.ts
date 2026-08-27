@@ -104,21 +104,28 @@ export function mergeAdventureState(input: unknown): AdventureState {
 
 export type AdventureLoadResult = { state: AdventureState; recovered: boolean; reason?: "malformed" | "unavailable" };
 
+function isCompleteAdventureState(value: unknown): value is AdventureState {
+  if (!value || typeof value !== "object") return false;
+  const stored = value as Partial<AdventureState>;
+  return isWorldId(stored.worldId) && Array.isArray(stored.completedMissionIds) && stored.completedMissionIds.every((item) => typeof item === "string") && Array.isArray(stored.choices) && stored.choices.every((item) => typeof item === "string") && !!stored.flags && typeof stored.flags === "object" && !Array.isArray(stored.flags) && Object.values(stored.flags).every((item) => typeof item === "boolean");
+}
+
 export async function loadAdventureState(): Promise<AdventureLoadResult> {
   try {
     const raw = await AsyncStorage.getItem(ADVENTURE_STORAGE_KEY);
     if (!raw) return { state: emptyAdventureState(), recovered: false };
     let parsed: unknown;
     try { parsed = JSON.parse(raw) as unknown; } catch { return { state: emptyAdventureState(), recovered: true, reason: "malformed" }; }
-    const state = mergeAdventureState(parsed);
-    const recovered = !parsed || typeof parsed !== "object" || !isWorldId((parsed as Partial<AdventureState>).worldId);
-    return { state, recovered, ...(recovered ? { reason: "malformed" as const } : {}) };
+    if (!isCompleteAdventureState(parsed)) return { state: emptyAdventureState(), recovered: true, reason: "malformed" };
+    return { state: mergeAdventureState(parsed), recovered: false };
   } catch {
     return { state: emptyAdventureState(), recovered: true, reason: "unavailable" };
   }
 }
 
 export async function saveAdventureState(state: AdventureState): Promise<AdventureState> {
+  const current = await loadAdventureState();
+  if (current.recovered) throw new Error("Adventure storage is unreadable; refusing to overwrite it");
   const safeState = mergeAdventureState(state);
   await AsyncStorage.setItem(ADVENTURE_STORAGE_KEY, JSON.stringify(safeState));
   return safeState;

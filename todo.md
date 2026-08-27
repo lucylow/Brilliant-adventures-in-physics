@@ -779,3 +779,8 @@
 - [x] Add stronger malformed-record fallback and write protection for preferences, onboarding, and Notebook data
 - [x] Localize remaining recovery and retry feedback on secondary screens
 - [x] Add deterministic regression coverage and validate the full project
+
+- [x] Re-audit current runtime and local persistence failure boundaries
+- [x] Harden partial-record detection and prevent destructive fallback overwrites
+- [x] Remove remaining source-level pointer-events warning paths
+- [x] Add deterministic regression coverage and rerun full validation

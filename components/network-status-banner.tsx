@@ -25,7 +25,6 @@ export function NetworkStatusBanner() {
       accessibilityLiveRegion="polite"
       accessibilityLabel={`${localizedLabel}. ${localizedMessage}`}
       style={{
-        pointerEvents: "none",
         position: "absolute",
         top: Math.max(insets.top + 8, 12),
         left: 12,

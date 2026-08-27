@@ -26,6 +26,10 @@ describe("onboarding", () => {
     vi.mocked(AsyncStorage.getItem).mockResolvedValue("{");
     await expect(loadOnboardingWithStatus()).resolves.toEqual({ profile: DEFAULT_ONBOARDING, recovered: true, reason: "malformed" });
   });
+  it("classifies a partial onboarding profile as malformed recovery", async () => {
+    vi.mocked(AsyncStorage.getItem).mockResolvedValue(JSON.stringify({ completed: true, level: "exam" }));
+    await expect(loadOnboardingWithStatus()).resolves.toEqual({ profile: DEFAULT_ONBOARDING, recovered: true, reason: "malformed" });
+  });
   it("reports unavailable onboarding storage without inventing saved choices", async () => {
     vi.mocked(AsyncStorage.getItem).mockRejectedValue(new Error("storage unavailable"));
     await expect(loadOnboardingWithStatus()).resolves.toEqual({ profile: DEFAULT_ONBOARDING, recovered: true, reason: "unavailable" });
