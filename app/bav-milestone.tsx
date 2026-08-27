@@ -5,6 +5,7 @@ import { ScreenContainer } from "@/components/screen-container";
 import { Card, PrimaryButton, SecondaryButton, SectionHeader } from "@/components/physica-ui";
 import { BAVPillarMark } from "@/components/bav-discovery-panel";
 import { bavMilestoneProgress, countStrongTopicEvidence, evaluateBAVMilestones, type BAVMilestoneId } from "@/lib/bav-milestones";
+import { nextBAVMilestoneAction } from "@/lib/bav-milestone-actions";
 import { loadLearningStateWithStatus, type LearningState } from "@/lib/progress-store";
 import { useColors } from "@/hooks/use-colors";
 import { useAppTranslations } from "@/hooks/use-app-translations";
@@ -58,6 +59,12 @@ export default function BAVMilestoneScreen() {
     : milestone.id === "adventure-loop"
       ? tr("bavMilestone.adventureEvidence", { lessons: learning.lessonsCompleted, labs: learning.labsCompleted })
       : tr("bavMilestone.visualizeEvidence", { topics: countStrongTopicEvidence(learning) });
+  const nextAction = nextBAVMilestoneAction(milestone.id, learning);
+  const continueEvidence = () => {
+    if (nextAction.target === "lesson") return router.push("/lesson" as never);
+    if (nextAction.target === "lab") return router.push("/lab" as never);
+    return router.push({ pathname: "/practice", params: { concept: nextAction.concept } } as never);
+  };
 
   if (loading) return <ScreenContainer edges={["top", "bottom", "left", "right"]} className="p-5"><Text accessibilityLiveRegion="polite" style={{ color: colors.muted }}>{tr("achievement.loading")}</Text></ScreenContainer>;
   if (loadFailed) return <ScreenContainer edges={["top", "bottom", "left", "right"]} className="p-5"><Text accessibilityLiveRegion="assertive" style={{ color: colors.warning, lineHeight: 20 }}>{tr("persistence.progressLoadFailed")}</Text><View style={{ marginTop: 16 }}><PrimaryButton label={tr("achievement.retryProgress")} onPress={load} /></View></ScreenContainer>;
@@ -70,6 +77,7 @@ export default function BAVMilestoneScreen() {
       <View accessible accessibilityLabel={`${tr("bavMilestone.evidenceTitle")}: ${evidence}`} style={{ marginTop: 18, padding: 14, borderRadius: 14, backgroundColor: accent + "12", borderWidth: 1, borderColor: accent + "35" }}><Text style={{ color: accent, fontWeight: "900" }}>{tr("bavMilestone.evidenceTitle")}</Text><Text style={{ color: colors.muted, marginTop: 6, lineHeight: 20 }}>{evidence}</Text><Text style={{ color: colors.muted, marginTop: 5, lineHeight: 20 }}>{tr("progress.bavMilestoneProgress", { current: milestone.current, goal: milestone.goal })}</Text><View style={{ marginTop: 10 }}><AnimatedProgress value={bavMilestoneProgress(milestone)} preferences={{ reducedMotion: false }} /></View></View>
       <View accessibilityLiveRegion="polite" style={{ marginTop: 16, padding: 14, borderRadius: 14, backgroundColor: milestone.earned ? colors.success + "14" : colors.border + "66" }}><Text style={{ color: milestone.earned ? colors.success : colors.foreground, fontWeight: "900" }}>{milestone.earned ? tr("bavMilestone.earned") : tr("progress.inProgress")}</Text><Text style={{ color: colors.muted, marginTop: 6, lineHeight: 20 }}>{milestone.earned ? tr("progress.bavMilestoneUnlocked", { title }) : tr("bavMilestone.notEarned")}</Text></View>
       <Text style={{ color: colors.muted, marginTop: 16, lineHeight: 20 }}>{tr("bavMilestone.localOnly")}</Text>
+      {!milestone.earned && <View style={{ marginTop: 18, padding: 14, borderRadius: 14, backgroundColor: colors.primary + "0D" }}><Text style={{ color: colors.primary, fontWeight: "900" }}>{tr("bavMilestone.nextAction")}</Text><View style={{ marginTop: 10 }}><PrimaryButton label={tr(nextAction.labelKey)} onPress={continueEvidence} /></View></View>}
       <View style={{ marginTop: 20 }}><PrimaryButton label={tr("bavMilestone.back")} onPress={() => router.back()} /></View>
     </Card>
   </ScrollView></ScreenContainer>;

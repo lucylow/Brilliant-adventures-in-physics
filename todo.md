@@ -830,3 +830,7 @@
 - [x] Audit B.A.V. milestone shelf and evidence-detail interaction patterns
 - [x] Add accessible milestone evidence detail interaction without new cloud state
 - [x] Add regression coverage and rerun full validation
+
+- [x] Audit incomplete B.A.V. milestone routes and evidence gaps
+- [x] Add milestone-specific next actions from evidence details
+- [x] Add regression coverage and rerun full validation
