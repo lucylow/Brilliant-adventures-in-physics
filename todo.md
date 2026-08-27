@@ -754,3 +754,7 @@
 - [x] Audit latest persistence, catalog, and screen recovery boundaries
 - [x] Add safe labeled fallback mock data and actionable recovery feedback
 - [x] Add deterministic regression coverage for this resilience pass
+
+- [x] Audit latest persistence, catalog, and screen recovery boundaries
+- [x] Add safe labeled fallback mock data and actionable recovery feedback
+- [x] Add deterministic regression coverage for this resilience pass

@@ -65,19 +65,31 @@ export function parsePrivacyActivityEvents(value: unknown): PrivacyActivityEvent
   return [...unique.values()].sort((a, b) => Date.parse(b.occurredAt) - Date.parse(a.occurredAt) || b.id.localeCompare(a.id)).slice(0, MAX_PRIVACY_ACTIVITY_EVENTS);
 }
 
-export async function loadPrivacyActivity(): Promise<PrivacyActivityEvent[]> {
+export type PrivacyActivityLoadResult = { events: PrivacyActivityEvent[]; usedFallback: boolean; reason?: "malformed" | "unavailable" };
+
+export async function loadPrivacyActivityWithStatus(): Promise<PrivacyActivityLoadResult> {
   try {
     const raw = await AsyncStorage.getItem(PRIVACY_ACTIVITY_KEY);
-    return parsePrivacyActivityEvents(parseJson<unknown>(raw, []));
+    if (!raw) return { events: [], usedFallback: false };
+    let parsed: unknown;
+    try { parsed = JSON.parse(raw) as unknown; } catch { return { events: [], usedFallback: true, reason: "malformed" }; }
+    if (!Array.isArray(parsed)) return { events: [], usedFallback: true, reason: "malformed" };
+    return { events: parsePrivacyActivityEvents(parsed), usedFallback: false };
   } catch {
-    return [];
+    return { events: [], usedFallback: true, reason: "unavailable" };
   }
+}
+
+export async function loadPrivacyActivity(): Promise<PrivacyActivityEvent[]> {
+  return (await loadPrivacyActivityWithStatus()).events;
 }
 
 export async function recordPrivacyActivity(kind: PrivacyActivityKind, outcome: PrivacyActivityOutcome, occurredAt = new Date().toISOString()): Promise<boolean> {
   if (Number.isNaN(Date.parse(occurredAt))) return false;
   try {
-    const current = await loadPrivacyActivity();
+    const result = await loadPrivacyActivityWithStatus();
+    if (result.usedFallback) return false;
+    const current = result.events;
     const id = `${kind}:${occurredAt}`;
     if (current.some((item) => item.id === id)) return false;
     const event: PrivacyActivityEvent = { id, kind, outcome, occurredAt };

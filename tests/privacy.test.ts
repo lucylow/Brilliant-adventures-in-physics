@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { buildLocalDataShareText, formatLocalDataSummary, formatPrivacyActivityTimestamp, getLocalDataSummary, loadPrivacyActivity, localSummaryFileUri, parsePrivacyActivityEvents, recordPrivacyActivity, LOCAL_DATA_STORAGE_KEYS } from "../lib/privacy";
+import { buildLocalDataShareText, formatLocalDataSummary, formatPrivacyActivityTimestamp, getLocalDataSummary, loadPrivacyActivity, loadPrivacyActivityWithStatus, localSummaryFileUri, parsePrivacyActivityEvents, recordPrivacyActivity, LOCAL_DATA_STORAGE_KEYS } from "../lib/privacy";
 
 vi.mock("@react-native-async-storage/async-storage", () => ({
   default: {
@@ -79,6 +79,15 @@ describe("privacy controls", () => {
   it("recovers to an empty activity history when storage is malformed", async () => {
     vi.mocked(AsyncStorage.getItem).mockResolvedValue("{");
     await expect(loadPrivacyActivity()).resolves.toEqual([]);
+    await expect(loadPrivacyActivityWithStatus()).resolves.toEqual({ events: [], usedFallback: true, reason: "malformed" });
+  });
+
+  it("does not overwrite activity history after malformed or unavailable reads", async () => {
+    vi.mocked(AsyncStorage.getItem).mockResolvedValue("{");
+    expect(await recordPrivacyActivity("share", "failure", "2026-01-04T00:00:00.000Z")).toBe(false);
+    vi.mocked(AsyncStorage.getItem).mockRejectedValue(new Error("storage unavailable"));
+    expect(await recordPrivacyActivity("clear", "failure", "2026-01-05T00:00:00.000Z")).toBe(false);
+    expect(AsyncStorage.setItem).not.toHaveBeenCalled();
   });
 
   it("owns every local storage key, including offline autosave metadata", () => {
