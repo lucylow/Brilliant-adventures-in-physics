@@ -7,7 +7,7 @@ const USAGE_KEY = "physicaai.usage.v1";
 const DRAFT_KEY = "physicaai.drafts.v1";
 const PRIVACY_ACTIVITY_KEY = "physicaai.privacy-activity.v1";
 const MAX_PRIVACY_ACTIVITY_EVENTS = 50;
-export const LOCAL_DATA_STORAGE_KEYS = [LEARNING_KEY, USAGE_KEY, DRAFT_KEY, PRIVACY_ACTIVITY_KEY, "physicaai.experiments.v1", "physicaai.autosave.queue.v1", "physicaai.autosave.last-save.v1", "physicaai.autosave.sync-history.v1", "physicaai.preferences.v1", "physicaai.onboarding.v1", "physicaai.astronomy-catalog.v1", "physicaai.quantum-catalog.v1", "physicaai.notebook.v1", "physicaai.adventure.v1", "physicaai.puzzle-evidence.v1", "physicaai.puzzle-evidence-resolved.v1", "physicaai.review-mastery.v1"] as const;
+export const LOCAL_DATA_STORAGE_KEYS = [LEARNING_KEY, USAGE_KEY, DRAFT_KEY, PRIVACY_ACTIVITY_KEY, "physicaai.experiments.v1", "physicaai.autosave.queue.v1", "physicaai.autosave.last-save.v1", "physicaai.autosave.sync-history.v1", "physicaai.preferences.v1", "physicaai.onboarding.v1", "physicaai.astronomy-catalog.v1", "physicaai.quantum-catalog.v1", "physicaai.notebook.v1", "physicaai.adventure.v1", "physicaai.puzzle-evidence.v1", "physicaai.puzzle-evidence-resolved.v1", "physicaai.review-mastery.v1", "physicaai.bav-milestone-acknowledgements.v1"] as const;
 
 export type LocalDataSummary = { learningRecords: number; savedQuestions: number; savedExperiments: number; activeDrafts: number; completionEvents: number; lessonCompletions: number; labCompletions: number };
 export type LocalDataSummaryLoadResult = { summary: LocalDataSummary; recovered: boolean; reason?: "malformed" | "unavailable" };

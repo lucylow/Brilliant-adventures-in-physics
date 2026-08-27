@@ -111,6 +111,7 @@ describe("privacy controls", () => {
     expect(LOCAL_DATA_STORAGE_KEYS).toContain("physicaai.privacy-activity.v1");
     expect(LOCAL_DATA_STORAGE_KEYS).toContain("physicaai.onboarding.v1");
     expect(LOCAL_DATA_STORAGE_KEYS).toContain("physicaai.puzzle-evidence.v1");
+    expect(LOCAL_DATA_STORAGE_KEYS).toContain("physicaai.bav-milestone-acknowledgements.v1");
   });
 
   it("clears every owned local key and reports partial failures", async () => {

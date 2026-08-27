@@ -244,6 +244,7 @@ export function createAppTranslations(): TranslationStore {
     "bavMilestone.continuePractice": { en: "Continue in Practice", fr: "Continuer dans Pratique", es: "Continuar en Práctica" },
     "bavMilestone.startLesson": { en: "Start the lesson", fr: "Commencer la leçon", es: "Comenzar la lección" },
     "bavMilestone.openLab": { en: "Open the Lab", fr: "Ouvrir le laboratoire", es: "Abrir el laboratorio" },
+    "bavMilestone.celebrationUnavailable": { en: "This milestone is earned, but the one-time celebration could not be saved. Your learning data is safe.", fr: "Ce jalon est obtenu, mais la célébration unique n’a pas pu être enregistrée. Vos données d’apprentissage sont en sécurité.", es: "Este hito se obtuvo, pero no se pudo guardar la celebración única. Tus datos de aprendizaje están seguros." },
     "bavMilestone.back": { en: "Back to Progress", fr: "Retour à Progression", es: "Volver a Progreso" },
     "progress.reviewTitle": { en: "Review a missed principle", fr: "Revoir un principe manqué", es: "Revisar un principio fallado" },
     "progress.reviewCount": { en: "{{count}} principle(s) ready for review", fr: "{{count}} principe(s) à revoir", es: "{{count}} principio(s) listos para repasar" },

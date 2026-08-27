@@ -834,3 +834,7 @@
 - [x] Audit incomplete B.A.V. milestone routes and evidence gaps
 - [x] Add milestone-specific next actions from evidence details
 - [x] Add regression coverage and rerun full validation
+
+- [x] Audit haptics preferences, milestone evidence, and local acknowledgment boundaries
+- [x] Implement one-time local B.A.V. milestone celebration feedback safely
+- [x] Add persistence recovery tests and rerun full validation

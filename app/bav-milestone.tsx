@@ -6,6 +6,9 @@ import { Card, PrimaryButton, SecondaryButton, SectionHeader } from "@/component
 import { BAVPillarMark } from "@/components/bav-discovery-panel";
 import { bavMilestoneProgress, countStrongTopicEvidence, evaluateBAVMilestones, type BAVMilestoneId } from "@/lib/bav-milestones";
 import { nextBAVMilestoneAction } from "@/lib/bav-milestone-actions";
+import { acknowledgeBAVMilestone, loadBAVMilestoneAcknowledgementsWithStatus } from "@/lib/bav-milestone-acknowledgements";
+import { loadPreferences, DEFAULT_PREFERENCES, type Preferences } from "@/lib/preferences";
+import { triggerHaptic } from "@/lib/haptics";
 import { loadLearningStateWithStatus, type LearningState } from "@/lib/progress-store";
 import { useColors } from "@/hooks/use-colors";
 import { useAppTranslations } from "@/hooks/use-app-translations";
@@ -38,6 +41,9 @@ export default function BAVMilestoneScreen() {
   const [loading, setLoading] = useState(true);
   const [loadFailed, setLoadFailed] = useState(false);
   const [loadRecovered, setLoadRecovered] = useState(false);
+  const [preferences, setPreferences] = useState<Preferences>(DEFAULT_PREFERENCES);
+  const [celebrationAcknowledged, setCelebrationAcknowledged] = useState(false);
+  const [celebrationUnavailable, setCelebrationUnavailable] = useState(false);
 
   const load = () => {
     if (loading) return;
@@ -48,7 +54,25 @@ export default function BAVMilestoneScreen() {
 
   useEffect(() => {
     void loadLearningStateWithStatus().then((result) => { setLearning(result.state); setLoadRecovered(result.recovered); }).catch(() => setLoadFailed(true)).finally(() => setLoading(false));
+    void loadPreferences().then(setPreferences).catch(() => setPreferences(DEFAULT_PREFERENCES));
   }, []);
+
+  useEffect(() => {
+    if (loading || loadFailed || !evaluateBAVMilestones(learning).some((item) => item.id === milestoneId && item.earned) || celebrationAcknowledged) return;
+    let active = true;
+    setCelebrationUnavailable(false);
+    void loadBAVMilestoneAcknowledgementsWithStatus().then(async (result) => {
+      if (!active) return;
+      if (result.recovered) { setCelebrationUnavailable(true); return; }
+      if (result.entries.some((entry) => entry.id === milestoneId)) { setCelebrationAcknowledged(true); return; }
+      const write = await acknowledgeBAVMilestone(milestoneId);
+      if (!active) return;
+      if (!write.ok) { setCelebrationUnavailable(true); return; }
+      setCelebrationAcknowledged(true);
+      void triggerHaptic("success", preferences.hapticsEnabled);
+    }).catch(() => { if (active) setCelebrationUnavailable(true); });
+    return () => { active = false; };
+  }, [celebrationAcknowledged, learning, loadFailed, loading, milestoneId, preferences.hapticsEnabled]);
 
   const milestone = evaluateBAVMilestones(learning).find((item) => item.id === milestoneId) ?? evaluateBAVMilestones(learning)[0];
   const title = tr(titleKey(milestone.id));
@@ -74,8 +98,8 @@ export default function BAVMilestoneScreen() {
     <SectionHeader title={tr("bavMilestone.title")} subtitle={tr("bavMilestone.subtitle")} />
     <Card accessibilityLabel={`${title}. ${body}`}>
       <View style={{ flexDirection: "row", alignItems: "center", gap: 12 }}><BAVPillarMark pillar={milestone.pillar} size={46} /><View style={{ flex: 1 }}><Text style={{ color: accent, fontSize: 12, fontWeight: "900", letterSpacing: 0.8 }}>{title}</Text><Text style={{ color: colors.foreground, fontSize: 22, fontWeight: "900", marginTop: 4 }}>{body}</Text></View></View>
-      <View accessible accessibilityLabel={`${tr("bavMilestone.evidenceTitle")}: ${evidence}`} style={{ marginTop: 18, padding: 14, borderRadius: 14, backgroundColor: accent + "12", borderWidth: 1, borderColor: accent + "35" }}><Text style={{ color: accent, fontWeight: "900" }}>{tr("bavMilestone.evidenceTitle")}</Text><Text style={{ color: colors.muted, marginTop: 6, lineHeight: 20 }}>{evidence}</Text><Text style={{ color: colors.muted, marginTop: 5, lineHeight: 20 }}>{tr("progress.bavMilestoneProgress", { current: milestone.current, goal: milestone.goal })}</Text><View style={{ marginTop: 10 }}><AnimatedProgress value={bavMilestoneProgress(milestone)} preferences={{ reducedMotion: false }} /></View></View>
-      <View accessibilityLiveRegion="polite" style={{ marginTop: 16, padding: 14, borderRadius: 14, backgroundColor: milestone.earned ? colors.success + "14" : colors.border + "66" }}><Text style={{ color: milestone.earned ? colors.success : colors.foreground, fontWeight: "900" }}>{milestone.earned ? tr("bavMilestone.earned") : tr("progress.inProgress")}</Text><Text style={{ color: colors.muted, marginTop: 6, lineHeight: 20 }}>{milestone.earned ? tr("progress.bavMilestoneUnlocked", { title }) : tr("bavMilestone.notEarned")}</Text></View>
+      <View accessible accessibilityLabel={`${tr("bavMilestone.evidenceTitle")}: ${evidence}`} style={{ marginTop: 18, padding: 14, borderRadius: 14, backgroundColor: accent + "12", borderWidth: 1, borderColor: accent + "35" }}><Text style={{ color: accent, fontWeight: "900" }}>{tr("bavMilestone.evidenceTitle")}</Text><Text style={{ color: colors.muted, marginTop: 6, lineHeight: 20 }}>{evidence}</Text><Text style={{ color: colors.muted, marginTop: 5, lineHeight: 20 }}>{tr("progress.bavMilestoneProgress", { current: milestone.current, goal: milestone.goal })}</Text><View style={{ marginTop: 10 }}><AnimatedProgress value={bavMilestoneProgress(milestone)} preferences={preferences} /></View></View>
+      <View accessibilityLiveRegion="polite" style={{ marginTop: 16, padding: 14, borderRadius: 14, backgroundColor: milestone.earned ? colors.success + "14" : colors.border + "66" }}><Text style={{ color: milestone.earned ? colors.success : colors.foreground, fontWeight: "900" }}>{milestone.earned ? tr("bavMilestone.earned") : tr("progress.inProgress")}</Text><Text style={{ color: colors.muted, marginTop: 6, lineHeight: 20 }}>{milestone.earned ? tr("progress.bavMilestoneUnlocked", { title }) : tr("bavMilestone.notEarned")}</Text>{celebrationUnavailable && <Text accessibilityLiveRegion="polite" style={{ color: colors.warning, marginTop: 8, lineHeight: 20 }}>{tr("bavMilestone.celebrationUnavailable")}</Text>}</View>
       <Text style={{ color: colors.muted, marginTop: 16, lineHeight: 20 }}>{tr("bavMilestone.localOnly")}</Text>
       {!milestone.earned && <View style={{ marginTop: 18, padding: 14, borderRadius: 14, backgroundColor: colors.primary + "0D" }}><Text style={{ color: colors.primary, fontWeight: "900" }}>{tr("bavMilestone.nextAction")}</Text><View style={{ marginTop: 10 }}><PrimaryButton label={tr(nextAction.labelKey)} onPress={continueEvidence} /></View></View>}
       <View style={{ marginTop: 20 }}><PrimaryButton label={tr("bavMilestone.back")} onPress={() => router.back()} /></View>
