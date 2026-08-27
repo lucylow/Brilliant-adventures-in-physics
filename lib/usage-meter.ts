@@ -6,21 +6,23 @@ export type UsageState = { date: string; tutorUsed: number; tutorLimit: number }
 
 function today() { return new Date().toISOString().slice(0, 10); }
 
-export type UsageLoadResult = { usage: UsageState; recovered: boolean };
+export type UsageLoadResult = { usage: UsageState; recovered: boolean; reason?: "malformed" | "unavailable" };
 
 function defaults(): UsageState { return { date: today(), tutorUsed: 0, tutorLimit: 5 }; }
 
 export async function loadUsageWithStatus(): Promise<UsageLoadResult> {
   try {
     const raw = await AsyncStorage.getItem(STORAGE_KEY);
-    const saved = raw ? JSON.parse(raw) as Partial<UsageState> : {};
-    if (saved.date !== today()) return { usage: defaults(), recovered: false };
+    if (!raw) return { usage: defaults(), recovered: false };
+    let saved: Partial<UsageState>;
+    try { saved = JSON.parse(raw) as Partial<UsageState>; } catch { return { usage: defaults(), recovered: true, reason: "malformed" }; }
+    if (!saved || typeof saved !== "object" || saved.date !== today()) return { usage: defaults(), recovered: false };
     const tutorUsed = Number(saved.tutorUsed);
     const tutorLimit = Number(saved.tutorLimit);
-    if (!Number.isFinite(tutorUsed) || !Number.isFinite(tutorLimit) || tutorUsed < 0 || tutorLimit <= 0) return { usage: defaults(), recovered: true };
+    if (!Number.isFinite(tutorUsed) || !Number.isFinite(tutorLimit) || tutorUsed < 0 || tutorLimit <= 0) return { usage: defaults(), recovered: true, reason: "malformed" };
     return { usage: { date: today(), tutorUsed: Math.min(tutorUsed, tutorLimit), tutorLimit }, recovered: false };
   } catch {
-    return { usage: defaults(), recovered: true };
+    return { usage: defaults(), recovered: true, reason: "unavailable" };
   }
 }
 
@@ -29,7 +31,9 @@ export async function loadUsage(): Promise<UsageState> {
 }
 
 export async function consumeTutorUse(): Promise<UsageState> {
-  const current = await loadUsage();
+  const result = await loadUsageWithStatus();
+  if (result.recovered) throw new Error(`usage storage ${result.reason ?? "unavailable"}`);
+  const current = result.usage;
   const next = consume({ used: current.tutorUsed, limit: current.tutorLimit });
   const updated = { ...current, tutorUsed: next.used };
   await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
