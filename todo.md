@@ -746,3 +746,7 @@
 - [x] Audit BAV and extended-physics failure boundaries
 - [x] Add safe labeled fallback data and actionable recovery feedback
 - [x] Add deterministic regression coverage for this resilience pass
+
+- [x] Audit latest persistence and feature failure boundaries
+- [x] Add safe labeled fallback data and actionable recovery feedback
+- [x] Add deterministic regression coverage for this resilience pass

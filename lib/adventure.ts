@@ -102,18 +102,19 @@ export function mergeAdventureState(input: unknown): AdventureState {
   };
 }
 
-export type AdventureLoadResult = { state: AdventureState; recovered: boolean };
+export type AdventureLoadResult = { state: AdventureState; recovered: boolean; reason?: "malformed" | "unavailable" };
 
 export async function loadAdventureState(): Promise<AdventureLoadResult> {
   try {
     const raw = await AsyncStorage.getItem(ADVENTURE_STORAGE_KEY);
     if (!raw) return { state: emptyAdventureState(), recovered: false };
-    const parsed: unknown = JSON.parse(raw);
+    let parsed: unknown;
+    try { parsed = JSON.parse(raw) as unknown; } catch { return { state: emptyAdventureState(), recovered: true, reason: "malformed" }; }
     const state = mergeAdventureState(parsed);
     const recovered = !parsed || typeof parsed !== "object" || !isWorldId((parsed as Partial<AdventureState>).worldId);
-    return { state, recovered };
+    return { state, recovered, ...(recovered ? { reason: "malformed" as const } : {}) };
   } catch {
-    return { state: emptyAdventureState(), recovered: true };
+    return { state: emptyAdventureState(), recovered: true, reason: "unavailable" };
   }
 }
 

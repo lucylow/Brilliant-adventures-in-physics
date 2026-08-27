@@ -28,6 +28,7 @@ export default function ProgressScreen() {
   const [preferences, setPreferences] = useState<Preferences>({ streakEnabled: true, reducedMotion: false, hapticsEnabled: true, locale: "en" });
   const [loadFailed, setLoadFailed] = useState(false);
   const [reviewDataFallback, setReviewDataFallback] = useState(false);
+  const [adventureDataFallback, setAdventureDataFallback] = useState(false);
   const [adventureState, setAdventureState] = useState<AdventureState>(emptyAdventureState());
   const [adventureSaveFailed, setAdventureSaveFailed] = useState(false);
   const [puzzleEvidence, setPuzzleEvidence] = useState<PuzzleEvidence[]>([]);
@@ -35,7 +36,7 @@ export default function ProgressScreen() {
   const [reviewMastery, setReviewMastery] = useState<ReviewMasteryRecord[]>([]);
   const [showReviewHistory, setShowReviewHistory] = useState(false);
   const [completionFilter, setCompletionFilter] = useState<CompletionEventFilter>("all");
-  const loadProgress = () => { setLoadFailed(false); let active = true; void Promise.all([loadLearningState(), loadPreferencesWithStatus(), loadAdventureState(), loadPuzzleEvidenceWithStatus(), loadResolvedPuzzleIdsWithStatus(), loadReviewMasteryWithStatus()]).then(([nextLearning, preferenceResult, adventureResult, puzzleResult, resolvedResult, masteryResult]) => { if (!active) return; setLearning(nextLearning); setPreferences(preferenceResult.preferences); setAdventureState(adventureResult.state); setPuzzleEvidence(puzzleResult.value); setResolvedPuzzleIds(resolvedResult.value); setReviewMastery(masteryResult.value); setReviewDataFallback(puzzleResult.usedFallback || resolvedResult.usedFallback || masteryResult.usedFallback); }).catch(() => { if (active) { setLoadFailed(true); setReviewDataFallback(true); } }); return () => { active = false; }; };
+  const loadProgress = () => { setLoadFailed(false); let active = true; void Promise.all([loadLearningState(), loadPreferencesWithStatus(), loadAdventureState(), loadPuzzleEvidenceWithStatus(), loadResolvedPuzzleIdsWithStatus(), loadReviewMasteryWithStatus()]).then(([nextLearning, preferenceResult, adventureResult, puzzleResult, resolvedResult, masteryResult]) => { if (!active) return; setLearning(nextLearning); setPreferences(preferenceResult.preferences); setAdventureState(adventureResult.state); setAdventureDataFallback(adventureResult.recovered); setPuzzleEvidence(puzzleResult.value); setResolvedPuzzleIds(resolvedResult.value); setReviewMastery(masteryResult.value); setReviewDataFallback(puzzleResult.usedFallback || resolvedResult.usedFallback || masteryResult.usedFallback); }).catch(() => { if (active) { setLoadFailed(true); setReviewDataFallback(true); } }); return () => { active = false; }; };
   useEffect(() => loadProgress(), []);
   const accuracy = learning.attempts ? learning.correct / learning.attempts : 0;
   const level = levelProgress(learning.correct * 10);
@@ -54,7 +55,7 @@ export default function ProgressScreen() {
   const adventureMission = adventureMissions[0];
   const adventureEvidence = missionEvidenceCount(adventureMission, learning.topics, learning.completionEvents ?? []);
   const adventureComplete = missionIsComplete(adventureState, adventureMission) || adventureEvidence >= adventureMission.goal;
-  useEffect(() => { if (!adventureComplete || missionIsComplete(adventureState, adventureMission)) return; let active = true; const nextState = completeAdventureMission({ ...adventureState, worldId: adventureWorld.id }, adventureMission.id); setAdventureState(nextState); void saveAdventureState(nextState).then(() => { if (active) setAdventureSaveFailed(false); }).catch(() => { if (active) setAdventureSaveFailed(true); }); return () => { active = false; }; }, [adventureComplete, adventureMission, adventureState, adventureWorld.id]);
+  useEffect(() => { if (adventureDataFallback || !adventureComplete || missionIsComplete(adventureState, adventureMission)) return; let active = true; const nextState = completeAdventureMission({ ...adventureState, worldId: adventureWorld.id }, adventureMission.id); setAdventureState(nextState); void saveAdventureState(nextState).then(() => { if (active) setAdventureSaveFailed(false); }).catch(() => { if (active) setAdventureSaveFailed(true); }); return () => { active = false; }; }, [adventureComplete, adventureDataFallback, adventureMission, adventureState, adventureWorld.id]);
   const achievements = evaluateAchievements(learning);
   const [achievementFilter, setAchievementFilter] = useState<"all" | "earned" | "progress">("all");
   const visibleAchievements = achievements.filter((achievement) => achievementFilter === "all" || (achievementFilter === "earned" ? achievement.earned : !achievement.earned));
@@ -65,6 +66,7 @@ export default function ProgressScreen() {
       <ScrollView contentContainerStyle={{ paddingBottom: 32 }}>
         <SectionHeader title={tr("progress.title")} subtitle={tr("progress.subtitle")} />
         {reviewDataFallback && <Text accessibilityLiveRegion="polite" style={{ color: colors.warning, lineHeight: 21, marginBottom: 10 }}>{tr("progress.reviewDataFallback")}</Text>}
+        {adventureDataFallback && <Text accessibilityLiveRegion="polite" style={{ color: colors.warning, lineHeight: 21, marginBottom: 10 }}>{tr("progress.adventureLoadFallback")}</Text>}
         <Card>
           <View style={{ flexDirection: "row", alignItems: "center", gap: 16 }}>
             <MasteryRing value={accuracy} />
