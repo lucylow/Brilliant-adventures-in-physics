@@ -855,3 +855,8 @@
 - [x] Fix actionable errors and strengthen defensive recovery states
 - [x] Add clearly labeled mock-data feedback with deterministic tests
 - [x] Run full validation and save a recoverable checkpoint
+
+- [x] Audit current runtime diagnostics and fallback/error boundaries
+- [x] Implement defensive fixes and clearer retryable recovery states
+- [x] Add labeled mock-data feedback and regression coverage
+- [x] Validate and save a recoverable checkpoint

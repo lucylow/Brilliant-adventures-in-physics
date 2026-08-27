@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Pressable, ScrollView, Text, View } from "react-native";
 
 import { ScreenContainer } from "@/components/screen-container";
@@ -17,24 +17,25 @@ export default function QuantumScreen() {
   const { locale, tr } = useAppTranslations();
   const [catalog, setCatalog] = useState<QuantumCatalog>(FALLBACK_QUANTUM_CATALOG);
   const [usedFallback, setUsedFallback] = useState(true);
-  const [loadFailed, setLoadFailed] = useState(false);
+    const [loadFailed, setLoadFailed] = useState(false);
   const [selectedConcept, setSelectedConcept] = useState("photon-energy");
-
-  useEffect(() => {
-    let active = true;
-    void loadQuantumCatalog().then((result) => {
-      if (!active) return;
+  const mountedRef = useRef(true);
+  useEffect(() => () => { mountedRef.current = false; }, []);
+  const loadCatalog = useCallback(async () => {
+    setLoadFailed(false);
+    try {
+      const result = await loadQuantumCatalog();
+      if (!mountedRef.current) return;
       setCatalog(result.catalog);
       setUsedFallback(result.usedFallback);
-      setLoadFailed(false);
-    }).catch(() => {
-      if (!active) return;
+    } catch {
+      if (!mountedRef.current) return;
       setCatalog(FALLBACK_QUANTUM_CATALOG);
       setUsedFallback(true);
       setLoadFailed(true);
-    });
-    return () => { active = false; };
+    }
   }, []);
+  useEffect(() => { void loadCatalog(); }, [loadCatalog]);
 
   const calculations = useMemo(() => {
     try {
@@ -72,7 +73,7 @@ export default function QuantumScreen() {
     <ScreenContainer className="p-5">
       <ScrollView contentContainerStyle={{ paddingBottom: 32 }} showsVerticalScrollIndicator={false}>
         <SectionHeader title={tr("quantum.title")} subtitle={tr("quantum.subtitle")} />
-        {catalogStatusMessage && <Card accessibilityLabel={catalogStatusMessage} style={{ marginBottom: 14, backgroundColor: loadFailed ? colors.warning + "12" : colors.primary + "0D" }}><Text accessibilityLiveRegion={loadFailed ? "assertive" : "polite"} style={{ color: loadFailed ? colors.warning : colors.primary, lineHeight: 21 }}>{catalogStatusMessage}</Text></Card>}
+        {catalogStatusMessage && <Card accessibilityLabel={catalogStatusMessage} style={{ marginBottom: 14, backgroundColor: loadFailed ? colors.warning + "12" : colors.primary + "0D" }}><Text accessibilityLiveRegion={loadFailed ? "assertive" : "polite"} style={{ color: loadFailed ? colors.warning : colors.primary, lineHeight: 21 }}>{catalogStatusMessage}</Text>{loadFailed && <View style={{ marginTop: 10 }}><Pressable accessibilityRole="button" accessibilityLabel={tr("common.tryAgain")} onPress={() => void loadCatalog()} style={({ pressed }) => [{ alignSelf: "flex-start", paddingVertical: 8, paddingHorizontal: 12, borderRadius: 10, backgroundColor: colors.surface }, pressed && { opacity: 0.7 }]}><Text style={{ color: colors.primary, fontWeight: "800" }}>{tr("common.tryAgain")}</Text></Pressable></View>}</Card>}
         <Card accessibilityLabel={tr("quantum.title")}>
           <Pill label={conceptLabel(selectedConcept)} active />
           <View accessibilityRole="tablist" style={{ flexDirection: "row", flexWrap: "wrap", gap: 8, marginTop: 12 }}>
