@@ -7,6 +7,7 @@ export const MAX_BAV_MILESTONE_ACKNOWLEDGEMENTS = 3;
 export type BAVMilestoneAcknowledgement = { id: BAVMilestoneId; acknowledgedAt: number };
 export type BAVMilestoneAcknowledgementLoadResult = { entries: BAVMilestoneAcknowledgement[]; recovered: boolean; reason?: "malformed" | "unavailable" };
 export type BAVMilestoneAcknowledgementWriteResult = { ok: true; data: BAVMilestoneAcknowledgement[] } | { ok: false; reason: "malformed" | "unavailable" };
+export type BAVMilestoneAcknowledgementResetResult = { ok: true } | { ok: false; reason: "malformed" | "unavailable" };
 
 const isMilestoneId = (value: unknown): value is BAVMilestoneId => value === "build-foundation" || value === "adventure-loop" || value === "visualize-mastery";
 
@@ -45,6 +46,18 @@ export async function acknowledgeBAVMilestone(id: BAVMilestoneId, acknowledgedAt
     const next = [{ id, acknowledgedAt }, ...current.entries].slice(0, MAX_BAV_MILESTONE_ACKNOWLEDGEMENTS);
     await AsyncStorage.setItem(BAV_MILESTONE_ACKNOWLEDGEMENTS_KEY, JSON.stringify(next));
     return { ok: true, data: next };
+  } catch {
+    return { ok: false, reason: "unavailable" };
+  }
+}
+
+export async function resetBAVMilestoneAcknowledgements(): Promise<BAVMilestoneAcknowledgementResetResult> {
+  const current = await loadBAVMilestoneAcknowledgementsWithStatus();
+  if (current.recovered) return { ok: false, reason: current.reason ?? "unavailable" };
+  if (current.entries.length === 0) return { ok: true };
+  try {
+    await AsyncStorage.removeItem(BAV_MILESTONE_ACKNOWLEDGEMENTS_KEY);
+    return { ok: true };
   } catch {
     return { ok: false, reason: "unavailable" };
   }

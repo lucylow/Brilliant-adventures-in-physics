@@ -838,3 +838,7 @@
 - [x] Audit haptics preferences, milestone evidence, and local acknowledgment boundaries
 - [x] Implement one-time local B.A.V. milestone celebration feedback safely
 - [x] Add persistence recovery tests and rerun full validation
+
+- [x] Audit Settings controls and B.A.V. acknowledgment boundaries
+- [x] Add a reset-only celebration control without deleting learning data
+- [x] Add deterministic recovery tests and rerun full validation
