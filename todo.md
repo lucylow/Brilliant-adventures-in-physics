@@ -729,3 +729,7 @@
 - [x] Audit latest extended physics runtime and persistence failure paths
 - [x] Add targeted error handling and clearly labeled fallback mock data
 - [x] Add deterministic regression coverage for newly fixed failure paths
+
+- [x] Audit latest runtime, persistence, and fallback boundaries
+- [x] Fix actionable errors and add safe labeled local fallback data
+- [x] Add deterministic regression coverage for this resilience pass

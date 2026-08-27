@@ -15,14 +15,21 @@ export function mergeOnboarding(input: unknown): OnboardingProfile {
   return { completed: stored.completed === true, level, goal, step };
 }
 
-export async function loadOnboarding(): Promise<OnboardingProfile> {
+export type OnboardingLoadResult = { profile: OnboardingProfile; recovered: boolean; reason?: "malformed" | "unavailable" };
+export async function loadOnboardingWithStatus(): Promise<OnboardingLoadResult> {
   try {
     const raw = await AsyncStorage.getItem(KEY);
-    return mergeOnboarding(raw ? JSON.parse(raw) : {});
+    if (!raw) return { profile: DEFAULT_ONBOARDING, recovered: false };
+    try {
+      return { profile: mergeOnboarding(JSON.parse(raw)), recovered: false };
+    } catch {
+      return { profile: DEFAULT_ONBOARDING, recovered: true, reason: "malformed" };
+    }
   } catch {
-    return DEFAULT_ONBOARDING;
+    return { profile: DEFAULT_ONBOARDING, recovered: true, reason: "unavailable" };
   }
 }
+export async function loadOnboarding(): Promise<OnboardingProfile> { return (await loadOnboardingWithStatus()).profile; }
 
 export function resetOnboarding(): OnboardingProfile { return DEFAULT_ONBOARDING; }
 
