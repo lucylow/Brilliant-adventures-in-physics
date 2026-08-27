@@ -18,9 +18,14 @@ export default function AstronomyScreen() {
   const [selectedPlanetId, setSelectedPlanetId] = useState("earth");
   const [usedFallback, setUsedFallback] = useState(true);
   const [loadFailed, setLoadFailed] = useState(false);
+  const [loading, setLoading] = useState(false);
   const mountedRef = useRef(true);
+  const loadingRef = useRef(false);
   useEffect(() => () => { mountedRef.current = false; }, []);
   const loadCatalog = useCallback(async () => {
+    if (loadingRef.current) return;
+    loadingRef.current = true;
+    setLoading(true);
     setLoadFailed(false);
     try {
       const result = await loadAstronomyCatalog();
@@ -32,6 +37,9 @@ export default function AstronomyScreen() {
       setCatalog(FALLBACK_ASTRONOMY_CATALOG);
       setUsedFallback(true);
       setLoadFailed(true);
+    } finally {
+      loadingRef.current = false;
+      if (mountedRef.current) setLoading(false);
     }
   }, []);
   useEffect(() => { void loadCatalog(); }, [loadCatalog]);
@@ -68,7 +76,7 @@ export default function AstronomyScreen() {
         <SectionHeader title={tr("astronomy.title")} subtitle={tr("astronomy.subtitle")} />
         {(usedFallback || loadFailed) && <Card accessibilityLabel={loadFailed ? tr("astronomy.loadFailed") : tr("astronomy.fallback")} style={{ marginBottom: 14, backgroundColor: loadFailed ? colors.warning + "12" : colors.primary + "0D" }}>
           <Text accessibilityLiveRegion={loadFailed ? "assertive" : "polite"} style={{ color: loadFailed ? colors.warning : colors.primary, lineHeight: 20 }}>{loadFailed ? tr("astronomy.loadFailed") : tr("astronomy.fallback")}</Text>
-          {loadFailed && <View style={{ marginTop: 10 }}><Pressable accessibilityRole="button" accessibilityLabel={tr("common.tryAgain")} onPress={() => void loadCatalog()} style={({ pressed }) => [{ alignSelf: "flex-start", paddingVertical: 8, paddingHorizontal: 12, borderRadius: 10, backgroundColor: colors.surface }, pressed && { opacity: 0.7 }]}><Text style={{ color: colors.primary, fontWeight: "800" }}>{tr("common.tryAgain")}</Text></Pressable></View>}
+          {loadFailed && <View style={{ marginTop: 10 }}><Pressable accessibilityRole="button" accessibilityLabel={tr("common.tryAgain")} onPress={() => void loadCatalog()} disabled={loading} accessibilityState={{ disabled: loading }} style={({ pressed }) => [{ alignSelf: "flex-start", paddingVertical: 8, paddingHorizontal: 12, borderRadius: 10, backgroundColor: colors.surface, opacity: loading ? 0.55 : 1 }, pressed && !loading && { opacity: 0.7 }]}><Text style={{ color: colors.primary, fontWeight: "800" }}>{tr("common.tryAgain")}</Text></Pressable></View>}
         </Card>}
         <Card accessibilityLabel={tr("astronomy.stars")}>
           <Pill label={tr("astronomy.stars")} active />
