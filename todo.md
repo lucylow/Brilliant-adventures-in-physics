@@ -737,3 +737,8 @@
 - [x] Audit remaining persistence and screen-level recovery boundaries
 - [x] Add targeted fallback mock data and actionable retry feedback
 - [x] Add deterministic regression tests for this pass
+
+- [x] Map BAV Build, Adventure, and Visualize concepts to existing PhysicaAI flows
+- [x] Add deterministic BAV pillar, experiment, and mission fallback models
+- [x] Integrate accessible localized BAV discovery content without replacing PhysicaAI navigation
+- [x] Add deterministic regression coverage for BAV models and fallback behavior
