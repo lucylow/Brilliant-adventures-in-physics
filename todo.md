@@ -860,3 +860,8 @@
 - [x] Implement defensive fixes and clearer retryable recovery states
 - [x] Add labeled mock-data feedback and regression coverage
 - [x] Validate and save a recoverable checkpoint
+
+- [x] Audit current runtime diagnostics and secondary-screen fallback boundaries
+- [x] Implement defensive fixes and consistent retryable recovery states
+- [x] Add clearly labeled mock-data feedback and regression coverage
+- [x] Validate and save a recoverable checkpoint

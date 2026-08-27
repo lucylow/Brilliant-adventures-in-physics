@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Pressable, ScrollView, Text, View } from "react-native";
 
 import { Card, Pill, SectionHeader } from "@/components/physica-ui";
@@ -18,22 +18,23 @@ export default function AstronomyScreen() {
   const [selectedPlanetId, setSelectedPlanetId] = useState("earth");
   const [usedFallback, setUsedFallback] = useState(true);
   const [loadFailed, setLoadFailed] = useState(false);
-
-  useEffect(() => {
-    let active = true;
-    void loadAstronomyCatalog().then((result) => {
-      if (!active) return;
+  const mountedRef = useRef(true);
+  useEffect(() => () => { mountedRef.current = false; }, []);
+  const loadCatalog = useCallback(async () => {
+    setLoadFailed(false);
+    try {
+      const result = await loadAstronomyCatalog();
+      if (!mountedRef.current) return;
       setCatalog(result.catalog);
       setUsedFallback(result.usedFallback);
-      setLoadFailed(false);
-    }).catch(() => {
-      if (!active) return;
+    } catch {
+      if (!mountedRef.current) return;
       setCatalog(FALLBACK_ASTRONOMY_CATALOG);
       setUsedFallback(true);
       setLoadFailed(true);
-    });
-    return () => { active = false; };
+    }
   }, []);
+  useEffect(() => { void loadCatalog(); }, [loadCatalog]);
 
   const star = useMemo(() => catalog.stars.find((item) => item.id === selectedStarId) ?? catalog.stars[0] ?? FALLBACK_ASTRONOMY_CATALOG.stars[0], [catalog.stars, selectedStarId]);
   const planet = useMemo(() => catalog.planets.find((item) => item.id === selectedPlanetId) ?? catalog.planets[0] ?? FALLBACK_ASTRONOMY_CATALOG.planets[0], [catalog.planets, selectedPlanetId]);
@@ -65,8 +66,9 @@ export default function AstronomyScreen() {
     <ScreenContainer className="p-5">
       <ScrollView contentContainerStyle={{ paddingBottom: 32 }}>
         <SectionHeader title={tr("astronomy.title")} subtitle={tr("astronomy.subtitle")} />
-        {(usedFallback || loadFailed) && <Card accessibilityLabel={loadFailed ? tr("astronomy.loadFailed") : tr("astronomy.fallback")} style={{ marginBottom: 14, backgroundColor: colors.primary + "0D" }}>
+        {(usedFallback || loadFailed) && <Card accessibilityLabel={loadFailed ? tr("astronomy.loadFailed") : tr("astronomy.fallback")} style={{ marginBottom: 14, backgroundColor: loadFailed ? colors.warning + "12" : colors.primary + "0D" }}>
           <Text accessibilityLiveRegion={loadFailed ? "assertive" : "polite"} style={{ color: loadFailed ? colors.warning : colors.primary, lineHeight: 20 }}>{loadFailed ? tr("astronomy.loadFailed") : tr("astronomy.fallback")}</Text>
+          {loadFailed && <View style={{ marginTop: 10 }}><Pressable accessibilityRole="button" accessibilityLabel={tr("common.tryAgain")} onPress={() => void loadCatalog()} style={({ pressed }) => [{ alignSelf: "flex-start", paddingVertical: 8, paddingHorizontal: 12, borderRadius: 10, backgroundColor: colors.surface }, pressed && { opacity: 0.7 }]}><Text style={{ color: colors.primary, fontWeight: "800" }}>{tr("common.tryAgain")}</Text></Pressable></View>}
         </Card>}
         <Card accessibilityLabel={tr("astronomy.stars")}>
           <Pill label={tr("astronomy.stars")} active />
