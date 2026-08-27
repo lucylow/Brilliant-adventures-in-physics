@@ -1,9 +1,10 @@
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { Pressable, Text, View } from "react-native";
-import { Card } from "@/components/physica-ui";
+import { Card, ProgressBar, SecondaryButton } from "@/components/physica-ui";
 import { useColors } from "@/hooks/use-colors";
 import { useAppTranslations } from "@/hooks/use-app-translations";
-import { BAV_PILLARS, type BAVPillar, type BAVRoute } from "@/lib/bav";
+import { BAV_FALLBACK_QUESTS, BAV_PILLARS, bavQuestProgress, type BAVPillar, type BAVQuest, type BAVRoute } from "@/lib/bav";
+import type { LearningState } from "@/lib/progress-store";
 
 const PILLAR_STYLE: Record<BAVPillar, { accent: string; icon: "build" | "explore" | "visibility"; number: string }> = {
   build: { accent: "#19A896", icon: "build", number: "01" },
@@ -23,6 +24,10 @@ function pillarMetaKey(pillar: BAVPillar) {
   return pillar === "build" ? "home.bavBuildMeta" : pillar === "adventure" ? "home.bavAdventureMeta" : "home.bavVisualizeMeta";
 }
 
+function questTitleKey(quest: BAVQuest) {
+  return quest.id === "first-observation" ? "home.bavQuestFirst" : quest.id === "evidence-builder" ? "home.bavQuestEvidence" : "home.bavQuestCosmic";
+}
+
 export function BAVPillarMark({ pillar, size = 38 }: { pillar: BAVPillar; size?: number }) {
   const colors = useColors();
   const treatment = PILLAR_STYLE[pillar];
@@ -39,7 +44,7 @@ export function BAVPillarMark({ pillar, size = 38 }: { pillar: BAVPillar; size?:
   );
 }
 
-export function BAVDiscoveryPanel({ onPillarPress }: { onPillarPress: (route: BAVRoute) => void }) {
+export function BAVDiscoveryPanel({ onPillarPress, learning, onQuestPress }: { onPillarPress: (route: BAVRoute) => void; learning?: LearningState; onQuestPress?: (quest: BAVQuest) => void }) {
   const colors = useColors();
   const { tr } = useAppTranslations();
   return (
@@ -87,6 +92,34 @@ export function BAVDiscoveryPanel({ onPillarPress }: { onPillarPress: (route: BA
           );
         })}
       </View>
+      {learning && <View style={{ paddingHorizontal: 16, paddingTop: 15, paddingBottom: 4, borderTopWidth: 1, borderTopColor: colors.border }}>
+        <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", gap: 12 }}>
+          <View style={{ flex: 1 }}>
+            <Text style={{ color: colors.foreground, fontSize: 16, fontWeight: "900" }}>{tr("home.bavQuestTitle")}</Text>
+            <Text style={{ marginTop: 3, color: colors.muted, lineHeight: 18 }}>{tr("home.bavQuestSubtitle")}</Text>
+          </View>
+          <View style={{ paddingHorizontal: 8, paddingVertical: 5, borderRadius: 999, backgroundColor: colors.warning + "18" }}>
+            <Text style={{ color: colors.warning, fontSize: 10, fontWeight: "900", letterSpacing: 0.6 }}>{tr("home.bavQuestBadge")}</Text>
+          </View>
+        </View>
+        <View style={{ gap: 12, marginTop: 12 }}>
+          {BAV_FALLBACK_QUESTS.map((quest) => {
+            const progress = bavQuestProgress(quest, learning);
+            const completedActions = Math.min(quest.requiredActions, Math.floor(progress * quest.requiredActions));
+            const completed = progress >= 1;
+            return <View key={quest.id} accessibilityLabel={tr("home.bavQuestAccessibility", { title: tr(questTitleKey(quest)), done: completedActions, goal: quest.requiredActions, xp: quest.rewardXp, status: completed ? tr("home.bavQuestCompleted") : tr("home.bavQuestInProgress") })}>
+              <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
+                <MaterialIcons name={completed ? "check-circle" : "radio-button-unchecked"} size={20} color={completed ? colors.success : colors.muted} />
+                <Text style={{ flex: 1, color: completed ? colors.success : colors.foreground, fontWeight: "800" }}>{tr(questTitleKey(quest))}</Text>
+                <Text style={{ color: completed ? colors.success : colors.warning, fontSize: 12, fontWeight: "900" }}>+{quest.rewardXp} XP</Text>
+              </View>
+              <Text style={{ marginTop: 3, marginLeft: 30, color: completed ? colors.success : colors.muted, fontSize: 12, fontWeight: completed ? "800" : "400" }}>{completed ? tr("home.bavQuestCompleted") : tr("home.bavQuestProgress", { done: completedActions, goal: quest.requiredActions })}</Text>
+              <View style={{ marginTop: 5 }}><ProgressBar value={progress} /></View>
+            </View>;
+          })}
+        </View>
+        {onQuestPress && <View style={{ marginTop: 12 }}><SecondaryButton label={BAV_FALLBACK_QUESTS.every((quest) => bavQuestProgress(quest, learning) >= 1) ? tr("home.bavQuestReplay") : tr("home.bavQuestAction")} onPress={() => onQuestPress(BAV_FALLBACK_QUESTS.find((quest) => bavQuestProgress(quest, learning) < 1) ?? BAV_FALLBACK_QUESTS[0])} /></View>}
+      </View>}
       <Text accessibilityLiveRegion="polite" style={{ paddingHorizontal: 16, paddingBottom: 15, color: colors.muted, fontSize: 12, lineHeight: 18 }}>{tr("home.bavFallback")}</Text>
     </Card>
   );

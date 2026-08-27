@@ -798,3 +798,7 @@
 - [x] Audit current B.A.V. branding and discovery card hierarchy
 - [x] Refine B.A.V. colors, typography, iconography, and interaction states
 - [x] Verify branded discovery surfaces across responsive and accessible layouts
+
+- [x] Audit current gamified missions, rewards, and B.A.V. progression
+- [x] Add a deterministic, local-first gamified learning improvement
+- [x] Verify accessible interactions, fallback behavior, and responsive presentation
