@@ -66,6 +66,13 @@ describe("retry queue copy", () => {
     await expect(loadRetryQueueWithStatus()).resolves.toEqual({ items: [], recovered: true, reason: "malformed" });
   });
 
+  it("classifies partially malformed queues as recovery data", async () => {
+    vi.mocked(AsyncStorage.getItem).mockResolvedValue(JSON.stringify([{ id: "valid", payload: "kept", queuedAt: 2 }, { id: "broken", payload: "lost", queuedAt: -1 }]));
+    await expect(loadRetryQueueWithStatus()).resolves.toEqual({ items: [], recovered: true, reason: "malformed" });
+    await expect(retryQueue(async () => undefined)).rejects.toThrow("retry queue malformed");
+    expect(AsyncStorage.setItem).not.toHaveBeenCalled();
+  });
+
   it("does not clear the queue when a retry read is unavailable", async () => {
     vi.mocked(AsyncStorage.getItem).mockRejectedValue(new Error("storage unavailable"));
     await expect(retryQueue(async () => undefined)).rejects.toThrow("retry queue unavailable");

@@ -802,3 +802,7 @@
 - [x] Audit current gamified missions, rewards, and B.A.V. progression
 - [x] Add a deterministic, local-first gamified learning improvement
 - [x] Verify accessible interactions, fallback behavior, and responsive presentation
+
+- [x] Audit remaining silent fallback and autosave recovery boundaries
+- [x] Harden queued autosave and Privacy summary fallback handling
+- [x] Add deterministic regression coverage and rerun full validation

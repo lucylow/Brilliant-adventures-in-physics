@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { buildLocalDataShareText, clearAllLocalData, formatLocalDataSummary, formatPrivacyActivityTimestamp, getLocalDataSummary, loadPrivacyActivity, loadPrivacyActivityWithStatus, localSummaryFileUri, parsePrivacyActivityEvents, recordPrivacyActivity, LOCAL_DATA_STORAGE_KEYS } from "../lib/privacy";
+import { buildLocalDataShareText, clearAllLocalData, formatLocalDataSummary, formatPrivacyActivityTimestamp, getLocalDataSummary, getLocalDataSummaryWithStatus, loadPrivacyActivity, loadPrivacyActivityWithStatus, localSummaryFileUri, parsePrivacyActivityEvents, recordPrivacyActivity, LOCAL_DATA_STORAGE_KEYS } from "../lib/privacy";
 
 vi.mock("@react-native-async-storage/async-storage", () => ({
   default: {
@@ -53,6 +53,15 @@ describe("privacy controls", () => {
   it("recovers with zero counts when local JSON is malformed", async () => {
     vi.mocked(AsyncStorage.getItem).mockResolvedValue("{");
     await expect(getLocalDataSummary()).resolves.toEqual({ learningRecords: 0, savedQuestions: 0, savedExperiments: 0, activeDrafts: 0, completionEvents: 0, lessonCompletions: 0, labCompletions: 0 });
+  });
+
+  it("labels malformed summary storage and preserves valid summaries", async () => {
+    vi.mocked(AsyncStorage.getItem).mockImplementation(async (key) => key === "physicaai.learning.v2" ? "{" : key === "physicaai.experiments.v1" ? JSON.stringify([{ id: "experiment-1" }]) : "{}");
+    await expect(getLocalDataSummaryWithStatus()).resolves.toEqual({ summary: { learningRecords: 0, savedQuestions: 0, savedExperiments: 0, activeDrafts: 0, completionEvents: 0, lessonCompletions: 0, labCompletions: 0 }, recovered: true, reason: "malformed" });
+    vi.mocked(AsyncStorage.getItem).mockImplementation(async (key) => key === "physicaai.learning.v2" ? null : key === "physicaai.experiments.v1" ? JSON.stringify([{ id: "experiment-1" }]) : "{}");
+    await expect(getLocalDataSummaryWithStatus()).resolves.toMatchObject({ summary: { savedExperiments: 1 }, recovered: false });
+    vi.mocked(AsyncStorage.getItem).mockImplementation(async (key) => key === "physicaai.learning.v2" ? JSON.stringify({ attempts: 1 }) : key === "physicaai.experiments.v1" ? JSON.stringify({ invalid: true }) : "{}");
+    await expect(getLocalDataSummaryWithStatus()).resolves.toMatchObject({ recovered: true, reason: "malformed" });
   });
 
   it("parses only bounded metadata and orders activity newest-first", () => {

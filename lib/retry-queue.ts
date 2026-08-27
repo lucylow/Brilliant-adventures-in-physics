@@ -9,15 +9,19 @@ export const RETRY_ITEM_DISCARD_COPY = "This removes only the selected queued au
 export const RETRY_ITEM_DISCARDED_COPY = "Queued autosave discarded. Other local data was kept.";
 export type RetryItem = { id: string; payload: unknown; queuedAt: number };
 
+function isRetryItem(item: unknown): item is RetryItem {
+  return Boolean(item) && typeof item === "object" && typeof (item as RetryItem).id === "string" && (item as RetryItem).id.trim().length > 0 && Number.isFinite((item as RetryItem).queuedAt) && (item as RetryItem).queuedAt >= 0;
+}
+
 export function parseRetryQueue(input: unknown): RetryItem[] {
   if (!Array.isArray(input)) return [];
-  const valid = input.filter((item): item is RetryItem => Boolean(item) && typeof item === "object" && typeof (item as RetryItem).id === "string" && (item as RetryItem).id.trim().length > 0 && Number.isFinite((item as RetryItem).queuedAt) && (item as RetryItem).queuedAt >= 0);
+  const valid = input.filter(isRetryItem);
   const unique = valid.filter((item, index, items) => items.findIndex((candidate) => candidate.id === item.id) === index);
   return unique.slice(-MAX_ITEMS);
 }
 
 export type RetryQueueLoadResult = { items: RetryItem[]; recovered: boolean; reason?: "malformed" | "unavailable" };
-export async function loadRetryQueueWithStatus(): Promise<RetryQueueLoadResult> { try { const raw = await AsyncStorage.getItem(QUEUE_KEY); if (!raw) return { items: [], recovered: false }; let parsed: unknown; try { parsed = JSON.parse(raw) as unknown; } catch { return { items: [], recovered: true, reason: "malformed" }; } if (!Array.isArray(parsed)) return { items: [], recovered: true, reason: "malformed" }; return { items: parseRetryQueue(parsed), recovered: false }; } catch { return { items: [], recovered: true, reason: "unavailable" }; } }
+export async function loadRetryQueueWithStatus(): Promise<RetryQueueLoadResult> { try { const raw = await AsyncStorage.getItem(QUEUE_KEY); if (!raw) return { items: [], recovered: false }; let parsed: unknown; try { parsed = JSON.parse(raw) as unknown; } catch { return { items: [], recovered: true, reason: "malformed" }; } if (!Array.isArray(parsed) || parsed.some((item) => !isRetryItem(item))) return { items: [], recovered: true, reason: "malformed" }; return { items: parseRetryQueue(parsed), recovered: false }; } catch { return { items: [], recovered: true, reason: "unavailable" }; } }
 async function readQueue(): Promise<RetryItem[]> { const result = await loadRetryQueueWithStatus(); if (result.recovered) throw new Error(`retry queue ${result.reason ?? "unavailable"}`); return result.items; }
 export async function enqueueRetry(item: RetryItem): Promise<number> { const current = (await readQueue()).filter((entry) => entry.id !== item.id); const next = [...current, item].slice(-MAX_ITEMS); await AsyncStorage.setItem(QUEUE_KEY, JSON.stringify(next)); return next.length; }
 export type RetryProgress = { processed: number; total: number; saved: number };
