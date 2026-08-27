@@ -789,3 +789,8 @@
 - [x] Harden review evidence and privacy activity validation
 - [x] Make clear-all local data coverage complete and report partial failures
 - [x] Add regression coverage and rerun full validation
+
+- [x] Audit local fallback and privacy clearing behavior again
+- [x] Harden partially malformed review and activity history records
+- [x] Ensure clear-all removes every local data category and reports partial failure
+- [x] Add regression coverage and rerun full validation
