@@ -1,7 +1,11 @@
-import { describe, expect, it } from "vitest";
-import { formatLastSave, formatRetryItemAge, formatRetryItemResult, formatRetryProgress, formatRetryResult, parseRetryQueue, removeRetryItem, RETRY_ITEM_DISCARD_COPY, RETRY_ITEM_DISCARDED_COPY, RETRY_QUEUE_DISCARD_COPY, RETRY_QUEUE_DISCARDED_COPY } from "../lib/retry-queue";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { beforeEach, describe, expect, it, vi } from "vitest";
+import { formatLastSave, formatRetryItemAge, formatRetryItemResult, formatRetryProgress, formatRetryResult, loadRetryQueueWithStatus, parseRetryQueue, removeRetryItem, retryQueue, RETRY_ITEM_DISCARD_COPY, RETRY_ITEM_DISCARDED_COPY, RETRY_QUEUE_DISCARD_COPY, RETRY_QUEUE_DISCARDED_COPY } from "../lib/retry-queue";
+
+vi.mock("@react-native-async-storage/async-storage", () => ({ default: { getItem: vi.fn(), setItem: vi.fn(), removeItem: vi.fn() } }));
 
 describe("retry queue copy", () => {
+  beforeEach(() => { vi.clearAllMocks(); vi.mocked(AsyncStorage.getItem).mockResolvedValue(null); vi.mocked(AsyncStorage.setItem).mockResolvedValue(undefined); });
   it("describes recovered, pending, and empty queue outcomes", () => {
     expect(formatRetryResult(1, 0)).toBe("Recovered 1 offline save.");
     expect(formatRetryResult(2, 0)).toBe("Recovered 2 offline saves.");
@@ -54,5 +58,17 @@ describe("retry queue copy", () => {
   it("formats retry progress for accessible live feedback", () => {
     expect(formatRetryProgress({ processed: 1, total: 3, saved: 1 })).toBe("Recovering offline saves: 1 of 3 checked; 1 saved.");
     expect(() => formatRetryProgress({ processed: 4, total: 3, saved: 1 })).toThrow("invalid retry progress");
+  });
+
+  it("distinguishes a clean empty queue from malformed queue storage", async () => {
+    await expect(loadRetryQueueWithStatus()).resolves.toEqual({ items: [], recovered: false });
+    vi.mocked(AsyncStorage.getItem).mockResolvedValue("{");
+    await expect(loadRetryQueueWithStatus()).resolves.toEqual({ items: [], recovered: true, reason: "malformed" });
+  });
+
+  it("does not clear the queue when a retry read is unavailable", async () => {
+    vi.mocked(AsyncStorage.getItem).mockRejectedValue(new Error("storage unavailable"));
+    await expect(retryQueue(async () => undefined)).rejects.toThrow("retry queue unavailable");
+    expect(AsyncStorage.setItem).not.toHaveBeenCalled();
   });
 });

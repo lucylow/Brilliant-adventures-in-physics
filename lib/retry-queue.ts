@@ -16,7 +16,9 @@ export function parseRetryQueue(input: unknown): RetryItem[] {
   return unique.slice(-MAX_ITEMS);
 }
 
-async function readQueue(): Promise<RetryItem[]> { try { const raw = await AsyncStorage.getItem(QUEUE_KEY); return parseRetryQueue(raw ? JSON.parse(raw) : []); } catch { return []; } }
+export type RetryQueueLoadResult = { items: RetryItem[]; recovered: boolean; reason?: "malformed" | "unavailable" };
+export async function loadRetryQueueWithStatus(): Promise<RetryQueueLoadResult> { try { const raw = await AsyncStorage.getItem(QUEUE_KEY); if (!raw) return { items: [], recovered: false }; let parsed: unknown; try { parsed = JSON.parse(raw) as unknown; } catch { return { items: [], recovered: true, reason: "malformed" }; } if (!Array.isArray(parsed)) return { items: [], recovered: true, reason: "malformed" }; return { items: parseRetryQueue(parsed), recovered: false }; } catch { return { items: [], recovered: true, reason: "unavailable" }; } }
+async function readQueue(): Promise<RetryItem[]> { const result = await loadRetryQueueWithStatus(); if (result.recovered) throw new Error(`retry queue ${result.reason ?? "unavailable"}`); return result.items; }
 export async function enqueueRetry(item: RetryItem): Promise<number> { const current = (await readQueue()).filter((entry) => entry.id !== item.id); const next = [...current, item].slice(-MAX_ITEMS); await AsyncStorage.setItem(QUEUE_KEY, JSON.stringify(next)); return next.length; }
 export type RetryProgress = { processed: number; total: number; saved: number };
 export async function retryQueue(save: (item: RetryItem) => Promise<void>, onProgress?: (progress: RetryProgress) => void): Promise<{ saved: number; remaining: number }> { const current = await readQueue(); const remaining: RetryItem[] = []; let saved = 0; onProgress?.({ processed: 0, total: current.length, saved }); for (const item of current) { try { await save(item); saved += 1; } catch { remaining.push(item); } onProgress?.({ processed: saved + remaining.length, total: current.length, saved }); } await AsyncStorage.setItem(QUEUE_KEY, JSON.stringify(remaining)); return { saved, remaining: remaining.length }; }

@@ -733,3 +733,7 @@
 - [x] Audit latest runtime, persistence, and fallback boundaries
 - [x] Fix actionable errors and add safe labeled local fallback data
 - [x] Add deterministic regression coverage for this resilience pass
+
+- [x] Audit remaining persistence and screen-level recovery boundaries
+- [x] Add targeted fallback mock data and actionable retry feedback
+- [x] Add deterministic regression tests for this pass
