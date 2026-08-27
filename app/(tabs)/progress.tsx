@@ -102,11 +102,11 @@ export default function ProgressScreen() {
               const body = tr(bodyKey);
               const status = milestone.earned ? tr("progress.bavMilestoneEarned") : tr("progress.inProgress");
               const label = tr("progress.bavMilestoneAccessibility", { title, body, status, current: milestone.current, goal: milestone.goal });
-              return <RevealBlock key={milestone.id} index={index} preferences={preferences}><View accessibilityLabel={label} style={{ padding: 12, borderRadius: 16, borderWidth: 1, borderColor: accent + "45", backgroundColor: accent + "0B" }}>
+              return <RevealBlock key={milestone.id} index={index} preferences={preferences}><Pressable accessibilityRole="button" accessibilityLabel={`${label}. ${tr("bavMilestone.openDetails")}`} onPress={() => router.push({ pathname: "/bav-milestone", params: { id: milestone.id } } as never)} style={({ pressed }) => ({ opacity: pressed ? 0.76 : 1 })}><View accessibilityLabel={label} style={{ padding: 12, borderRadius: 16, borderWidth: 1, borderColor: accent + "45", backgroundColor: accent + "0B" }}>
                 <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}><BAVPillarMark pillar={milestone.pillar} size={34} /><View style={{ flex: 1 }}><Text style={{ color: accent, fontSize: 11, fontWeight: "900", letterSpacing: 0.7 }}>{title}</Text><Text style={{ color: colors.muted, marginTop: 3, lineHeight: 18 }}>{body}</Text></View><Text accessibilityLiveRegion={milestone.earned ? "polite" : undefined} style={{ color: milestone.earned ? colors.success : colors.muted, fontSize: 11, fontWeight: "900" }}>{milestone.earned ? tr("progress.bavMilestoneEarned") : `${milestone.current}/${milestone.goal}`}</Text></View>
                 <Text style={{ color: milestone.earned ? colors.success : colors.muted, marginTop: 7, fontSize: 12, fontWeight: milestone.earned ? "800" : "400" }}>{milestone.earned ? tr("progress.bavMilestoneUnlocked", { title }) : tr("progress.bavMilestoneProgress", { current: milestone.current, goal: milestone.goal })}</Text>
                 <View style={{ marginTop: 7 }}><AnimatedProgress value={bavMilestoneProgress(milestone)} preferences={preferences} /></View>
-              </View></RevealBlock>;
+              </View></Pressable></RevealBlock>;
             })}
           </View>
         </Card>

@@ -826,3 +826,7 @@
 - [x] Audit Progress timeline and completion-event contracts
 - [x] Implement deterministic local milestone badges with accessible feedback
 - [x] Add regression coverage and rerun full validation
+
+- [x] Audit B.A.V. milestone shelf and evidence-detail interaction patterns
+- [x] Add accessible milestone evidence detail interaction without new cloud state
+- [x] Add regression coverage and rerun full validation

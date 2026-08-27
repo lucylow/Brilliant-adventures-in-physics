@@ -11,14 +11,14 @@ export type BAVMilestone = {
   earned: boolean;
 };
 
-function strongTopicCount(learning: LearningState): number {
+export function countStrongTopicEvidence(learning: LearningState): number {
   return Object.values(learning.topics).filter((topic) => topic.attempts >= 3 && topic.correct / topic.attempts >= 0.8).length;
 }
 
 export function evaluateBAVMilestones(learning: LearningState): BAVMilestone[] {
   const buildCurrent = Math.min(learning.attempts, 5);
   const adventureCurrent = Math.min(learning.lessonsCompleted, learning.labsCompleted, 1);
-  const visualizeCurrent = Math.min(strongTopicCount(learning), 1);
+  const visualizeCurrent = Math.min(countStrongTopicEvidence(learning), 1);
   return [
     { id: "build-foundation", pillar: "build", current: buildCurrent, goal: 5, earned: buildCurrent >= 5 },
     { id: "adventure-loop", pillar: "adventure", current: adventureCurrent, goal: 1, earned: adventureCurrent >= 1 },
