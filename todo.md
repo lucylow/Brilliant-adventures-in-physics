@@ -794,3 +794,7 @@
 - [x] Harden partially malformed review and activity history records
 - [x] Ensure clear-all removes every local data category and reports partial failure
 - [x] Add regression coverage and rerun full validation
+
+- [x] Audit current B.A.V. branding and discovery card hierarchy
+- [x] Refine B.A.V. colors, typography, iconography, and interaction states
+- [x] Verify branded discovery surfaces across responsive and accessible layouts

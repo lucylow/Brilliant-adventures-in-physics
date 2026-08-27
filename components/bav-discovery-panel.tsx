@@ -1,0 +1,93 @@
+import MaterialIcons from "@expo/vector-icons/MaterialIcons";
+import { Pressable, Text, View } from "react-native";
+import { Card } from "@/components/physica-ui";
+import { useColors } from "@/hooks/use-colors";
+import { useAppTranslations } from "@/hooks/use-app-translations";
+import { BAV_PILLARS, type BAVPillar, type BAVRoute } from "@/lib/bav";
+
+const PILLAR_STYLE: Record<BAVPillar, { accent: string; icon: "build" | "explore" | "visibility"; number: string }> = {
+  build: { accent: "#19A896", icon: "build", number: "01" },
+  adventure: { accent: "#E59A3A", icon: "explore", number: "02" },
+  visualize: { accent: "#7C83F5", icon: "visibility", number: "03" },
+};
+
+function pillarTitleKey(pillar: BAVPillar) {
+  return pillar === "build" ? "home.bavBuild" : pillar === "adventure" ? "home.bavAdventure" : "home.bavVisualize";
+}
+
+function pillarDetailKey(pillar: BAVPillar) {
+  return pillar === "build" ? "home.bavBuildDetail" : pillar === "adventure" ? "home.bavAdventureDetail" : "home.bavVisualizeDetail";
+}
+
+function pillarMetaKey(pillar: BAVPillar) {
+  return pillar === "build" ? "home.bavBuildMeta" : pillar === "adventure" ? "home.bavAdventureMeta" : "home.bavVisualizeMeta";
+}
+
+export function BAVPillarMark({ pillar, size = 38 }: { pillar: BAVPillar; size?: number }) {
+  const colors = useColors();
+  const treatment = PILLAR_STYLE[pillar];
+  return (
+    <View
+      accessible={false}
+      style={{ width: size, height: size, borderRadius: size * 0.3, alignItems: "center", justifyContent: "center", backgroundColor: treatment.accent + "20", borderWidth: 1, borderColor: treatment.accent + "55" }}
+    >
+      <MaterialIcons name={treatment.icon} size={Math.round(size * 0.5)} color={treatment.accent} />
+      <View style={{ position: "absolute", right: -4, bottom: -4, minWidth: 18, height: 18, paddingHorizontal: 3, borderRadius: 9, alignItems: "center", justifyContent: "center", backgroundColor: colors.foreground }}>
+        <Text style={{ color: colors.background, fontSize: 9, fontWeight: "900" }}>{treatment.number}</Text>
+      </View>
+    </View>
+  );
+}
+
+export function BAVDiscoveryPanel({ onPillarPress }: { onPillarPress: (route: BAVRoute) => void }) {
+  const colors = useColors();
+  const { tr } = useAppTranslations();
+  return (
+    <Card accessibilityLabel={tr("home.bavTitle")} style={{ padding: 0, overflow: "hidden", borderColor: colors.primary + "45" }}>
+      <View style={{ padding: 16, backgroundColor: colors.primary + "0D", borderBottomWidth: 1, borderBottomColor: colors.primary + "20" }}>
+        <View style={{ flexDirection: "row", alignItems: "center", gap: 12 }}>
+          <View style={{ width: 48, height: 48, borderRadius: 16, alignItems: "center", justifyContent: "center", backgroundColor: colors.foreground }}>
+            <Text style={{ color: colors.background, fontSize: 13, fontWeight: "900", letterSpacing: 1 }}>B·A·V</Text>
+            <View style={{ width: 24, height: 2, marginTop: 4, borderRadius: 2, backgroundColor: colors.primary }} />
+          </View>
+          <View style={{ flex: 1 }}>
+            <Text style={{ color: colors.foreground, fontSize: 20, fontWeight: "900", letterSpacing: 0.2 }}>{tr("home.bavTitle")}</Text>
+            <Text style={{ marginTop: 3, color: colors.primary, fontSize: 12, fontWeight: "900", letterSpacing: 1 }}>{tr("home.bavTagline")}</Text>
+          </View>
+          <View style={{ paddingHorizontal: 8, paddingVertical: 5, borderRadius: 999, backgroundColor: colors.success + "18" }}>
+            <Text style={{ color: colors.success, fontSize: 10, fontWeight: "900", letterSpacing: 0.6 }}>{tr("home.bavLocalBadge")}</Text>
+          </View>
+        </View>
+        <Text style={{ marginTop: 14, color: colors.muted, lineHeight: 20 }}>{tr("home.bavSubtitle")}</Text>
+        <Text style={{ marginTop: 6, color: colors.foreground, fontWeight: "800" }}>{tr("home.bavPrompt")}</Text>
+      </View>
+      <View style={{ padding: 12, gap: 10 }}>
+        {BAV_PILLARS.map((pillar) => {
+          const treatment = PILLAR_STYLE[pillar.id];
+          const title = tr(pillarTitleKey(pillar.id));
+          const detail = tr(pillarDetailKey(pillar.id));
+          return (
+            <Pressable
+              key={pillar.id}
+              accessibilityRole="button"
+              accessibilityLabel={`${title}. ${detail}`}
+              onPress={() => onPillarPress(pillar.route)}
+              style={({ pressed }) => ({ flexDirection: "row", alignItems: "center", gap: 12, minHeight: 72, padding: 12, borderRadius: 16, borderWidth: 1, borderColor: treatment.accent + "45", backgroundColor: treatment.accent + "0B", opacity: pressed ? 0.76 : 1 })}
+            >
+              <View style={{ flex: 1, flexDirection: "row", alignItems: "center", gap: 12 }}>
+                <BAVPillarMark pillar={pillar.id} />
+                <View style={{ flex: 1 }}>
+                  <Text style={{ color: treatment.accent, fontSize: 11, fontWeight: "900", letterSpacing: 1 }}>{tr(pillarMetaKey(pillar.id))}</Text>
+                  <Text style={{ marginTop: 3, color: colors.foreground, fontSize: 17, fontWeight: "900" }}>{title}</Text>
+                  <Text style={{ marginTop: 3, color: colors.muted, lineHeight: 18 }}>{detail}</Text>
+                </View>
+                <MaterialIcons name="arrow-forward" size={22} color={treatment.accent} />
+              </View>
+            </Pressable>
+          );
+        })}
+      </View>
+      <Text accessibilityLiveRegion="polite" style={{ paddingHorizontal: 16, paddingBottom: 15, color: colors.muted, fontSize: 12, lineHeight: 18 }}>{tr("home.bavFallback")}</Text>
+    </Card>
+  );
+}
