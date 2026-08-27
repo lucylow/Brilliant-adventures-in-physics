@@ -884,3 +884,7 @@
 - [x] Audit Upgrade, entitlement, usage, and catalog-state boundaries
 - [x] Implement transparent entitlement and provider-unavailable states
 - [x] Add deterministic monetization regression coverage and validate flows
+
+- [x] Audit Upgrade, entitlement, usage, and provider-state boundaries
+- [x] Implement transparent entitlement-status feedback and safe restore behavior
+- [x] Add deterministic monetization regression coverage and validate flows

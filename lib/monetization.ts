@@ -3,6 +3,17 @@ export type BillingState = "active" | "trial" | "grace" | "expired" | "canceled"
 
 export type Entitlement = { feature: string; enabled: boolean; limit?: number; used?: number };
 export type Subscription = { tier: Tier; state: BillingState; productId?: string; expiresAt?: string };
+export type EntitlementStatus = "free" | "active" | "trial" | "grace" | "pending" | "expired" | "canceled" | "unavailable";
+export type EntitlementSnapshot = { providerAvailable: boolean; subscription?: Subscription };
+export type EntitlementResult = { status: EntitlementStatus; premiumAvailable: boolean };
+
+export function getEntitlementStatus(snapshot: EntitlementSnapshot, now = Date.now()): EntitlementResult {
+  if (!snapshot.providerAvailable) return { status: "unavailable", premiumAvailable: false };
+  if (!snapshot.subscription) return { status: "free", premiumAvailable: false };
+  if (isExpired(snapshot.subscription, now)) return { status: "expired", premiumAvailable: false };
+  if (!isUsable(snapshot.subscription.state)) return { status: snapshot.subscription.state, premiumAvailable: false };
+  return { status: snapshot.subscription.state, premiumAvailable: true };
+}
 export type StoreProduct = { id: string; title: string; priceLabel: string; period: "month" | "year" };
 
 export const PREMIUM_FEATURES = ["unlimited_tutor", "advanced_scans", "advanced_simulations", "physics_lens", "ai_lab_reports", "exam_generator", "personalized_study_plans", "priority_ai"] as const;
@@ -118,7 +129,9 @@ export async function retryPurchase<T>(operation: () => Promise<T>, attempts = 2
 }
 
 export function isExpired(subscription: Subscription, now = Date.now()): boolean {
-  return Boolean(subscription.expiresAt && Number.isFinite(Date.parse(subscription.expiresAt)) && Date.parse(subscription.expiresAt) <= now);
+  if (!subscription.expiresAt) return false;
+  const timestamp = Date.parse(subscription.expiresAt);
+  return !Number.isFinite(timestamp) || timestamp <= now;
 }
 
 export function canUseSubscription(subscription: Subscription, now = Date.now()): boolean {
