@@ -22,11 +22,12 @@ export async function loadExperimentsWithStatus(): Promise<ExperimentLoadResult>
   try {
     const raw = await AsyncStorage.getItem(STORAGE_KEY);
     if (!raw) return { experiments: [], usedFallback: false };
-    const parsed = JSON.parse(raw);
-    if (!Array.isArray(parsed)) return { experiments: [DEMO_EXPERIMENT], usedFallback: true, reason: "malformed" };
+    let parsed: unknown;
+    try { parsed = JSON.parse(raw) as unknown; } catch { return { experiments: [DEMO_EXPERIMENT], usedFallback: true, reason: "malformed" }; }
+    if (!Array.isArray(parsed) || !parsed.every(isSavedExperiment)) return { experiments: [DEMO_EXPERIMENT], usedFallback: true, reason: "malformed" };
     return { experiments: parseSavedExperiments(parsed), usedFallback: false };
   } catch {
-    return { experiments: [DEMO_EXPERIMENT], usedFallback: true };
+    return { experiments: [DEMO_EXPERIMENT], usedFallback: true, reason: "unavailable" };
   }
 }
 
@@ -37,8 +38,9 @@ export async function loadExperiments(): Promise<SavedExperiment[]> {
 async function readExperimentsForWrite(): Promise<SavedExperiment[]> {
   const raw = await AsyncStorage.getItem(STORAGE_KEY);
   if (!raw) return [];
-  const parsed: unknown = JSON.parse(raw);
-  if (!Array.isArray(parsed)) throw new Error("Experiment storage is malformed");
+  let parsed: unknown;
+  try { parsed = JSON.parse(raw) as unknown; } catch { throw new Error("Experiment storage is malformed"); }
+  if (!Array.isArray(parsed) || !parsed.every(isSavedExperiment)) throw new Error("Experiment storage is malformed");
   return parseSavedExperiments(parsed);
 }
 
