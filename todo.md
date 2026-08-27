@@ -818,3 +818,7 @@
 - [x] Audit the latest completion, progress, and recovery flows
 - [x] Implement one bounded functionality improvement with safe local behavior
 - [x] Add regression coverage and rerun full validation
+
+- [x] Add a bounded local history of successful offline autosave reconciliations
+- [x] Show recent sync history accessibly in Settings with localized copy
+- [x] Add strict recovery tests and rerun full validation

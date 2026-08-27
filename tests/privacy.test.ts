@@ -107,6 +107,7 @@ describe("privacy controls", () => {
   it("owns every local storage key, including offline autosave metadata", () => {
     expect(LOCAL_DATA_STORAGE_KEYS).toContain("physicaai.autosave.queue.v1");
     expect(LOCAL_DATA_STORAGE_KEYS).toContain("physicaai.autosave.last-save.v1");
+    expect(LOCAL_DATA_STORAGE_KEYS).toContain("physicaai.autosave.sync-history.v1");
     expect(LOCAL_DATA_STORAGE_KEYS).toContain("physicaai.privacy-activity.v1");
     expect(LOCAL_DATA_STORAGE_KEYS).toContain("physicaai.onboarding.v1");
     expect(LOCAL_DATA_STORAGE_KEYS).toContain("physicaai.puzzle-evidence.v1");

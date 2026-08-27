@@ -6,6 +6,7 @@ import { saveDraft } from "@/lib/progress-store";
 import { getRetryCount, markLastSave, retryQueue, type RetryItem } from "@/lib/retry-queue";
 import { shouldReconcileOnForeground, shouldReconcileOnNetwork, type AppLifecycleState } from "@/lib/retry-reconciliation";
 import { publishAutosaveSync } from "@/lib/autosave-sync";
+import { recordSyncHistory } from "@/lib/sync-history";
 
 function normalizeState(state: AppStateStatus): AppLifecycleState {
   return state === "active" || state === "background" || state === "inactive" ? state : "unknown";
@@ -21,7 +22,7 @@ export function AutosaveReconciler() {
       const result = await retryQueue(async (item: RetryItem) => {
         await saveDraft({ id: item.id, data: item.payload, updatedAt: item.queuedAt });
       });
-      if (result.saved > 0) { await markLastSave(); publishAutosaveSync(result.saved); }
+      if (result.saved > 0) { const occurredAt = Date.now(); await markLastSave(); await recordSyncHistory({ saved: result.saved, occurredAt }); publishAutosaveSync(result.saved, occurredAt); }
     } catch {
       // Keep failed items queued for the next foreground attempt.
     } finally {
