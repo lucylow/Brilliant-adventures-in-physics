@@ -842,3 +842,7 @@
 - [x] Audit Settings controls and B.A.V. acknowledgment boundaries
 - [x] Add a reset-only celebration control without deleting learning data
 - [x] Add deterministic recovery tests and rerun full validation
+
+- [x] Audit acknowledgment loading and Settings lifecycle
+- [x] Show a localized live count of stored B.A.V. celebrations
+- [x] Refresh the count after reset and rerun full validation
