@@ -846,3 +846,7 @@
 - [x] Audit acknowledgment loading and Settings lifecycle
 - [x] Show a localized live count of stored B.A.V. celebrations
 - [x] Refresh the count after reset and rerun full validation
+
+- [x] Audit acknowledgment records and localized Settings status patterns
+- [x] Show a per-milestone local B.A.V. acknowledgment breakdown
+- [x] Refresh the breakdown after reset and rerun full validation
