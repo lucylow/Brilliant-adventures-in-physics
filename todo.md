@@ -679,3 +679,32 @@
 - [x] Persist action metadata without summaries, answers, or shared content
 - [x] Render localized accessible privacy activity history
 - [x] Add deterministic bounds, ordering, redaction, and recovery coverage
+
+- [x] Audit high-risk runtime and persistence error paths
+- [x] Add clearly labeled deterministic fallback data where safe
+- [x] Improve user-facing recovery states without masking existing data
+- [x] Add deterministic failure-path and fallback coverage
+
+- [x] Audit actionable runtime and persistence errors
+- [x] Add clearly labeled deterministic fallback mock data at safe boundaries
+- [x] Improve user-facing recovery and retry feedback
+- [x] Add deterministic failure-path and fallback regression coverage
+
+- [x] Map attachment additions to compatible PhysicaAI modules
+- [x] Add validated astronomy models, constants, and deterministic calculations
+- [x] Add a localized accessible astronomy learning surface with safe fallback catalog
+- [x] Add deterministic astronomy and fallback regression coverage
+
+- [x] Map compatible cosmology additions from the second attachment
+- [x] Add validated cosmology calculations and bounded offline timeline content
+- [x] Integrate accessible localized cosmology sections into Astronomy
+- [x] Add deterministic cosmology and fallback regression coverage
+
+- [x] Remove unused and duplicate imports from touched mobile screens
+- [x] Resolve hook dependency warnings without changing runtime behavior
+- [x] Replace remaining forbidden Array<T> annotations in onboarding
+
+- [x] Map compatible advanced cosmic-time and spacetime additions
+- [x] Add validated cosmic-time, light-cone, and beta-based relativity helpers
+- [x] Integrate accessible localized advanced controls into Astronomy
+- [x] Add deterministic advanced-physics regression coverage

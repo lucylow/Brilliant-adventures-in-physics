@@ -88,13 +88,27 @@ export function isValidDraft<T>(value: unknown): value is SessionDraft<T> {
   return typeof draft.id === "string" && draft.id.length > 0 && typeof draft.updatedAt === "number" && Number.isFinite(draft.updatedAt) && draft.updatedAt > 0 && "data" in draft;
 }
 
-export async function loadLearningState(): Promise<LearningState> {
+export type LearningLoadResult = { state: LearningState; recovered: boolean; reason?: "malformed" | "unavailable" };
+
+export async function loadLearningStateWithStatus(): Promise<LearningLoadResult> {
   try {
     const raw = await AsyncStorage.getItem(STORAGE_KEY);
-    if (!raw) return EMPTY;
-    const parsed = JSON.parse(raw) as unknown;
-    return parseLearningState(parsed);
-  } catch { return EMPTY; }
+    if (!raw) return { state: { ...EMPTY, savedQuestions: [], topics: {}, completionEvents: [] }, recovered: false };
+    let parsed: unknown;
+    try {
+      parsed = JSON.parse(raw) as unknown;
+    } catch {
+      return { state: { ...EMPTY, savedQuestions: [], topics: {}, completionEvents: [] }, recovered: true, reason: "malformed" };
+    }
+    if (!parsed || typeof parsed !== "object") return { state: { ...EMPTY, savedQuestions: [], topics: {}, completionEvents: [] }, recovered: true, reason: "malformed" };
+    return { state: parseLearningState(parsed), recovered: false };
+  } catch {
+    return { state: { ...EMPTY, savedQuestions: [], topics: {}, completionEvents: [] }, recovered: true, reason: "unavailable" };
+  }
+}
+
+export async function loadLearningState(): Promise<LearningState> {
+  return (await loadLearningStateWithStatus()).state;
 }
 
 export async function recordAttempt(correct: boolean, topic: string, hints = 0, confidence = 3): Promise<LearningState> {

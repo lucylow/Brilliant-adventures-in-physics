@@ -17,6 +17,7 @@ export default function TabLayout() {
       <Tabs.Screen name="index" options={{ title: tr("tabs.home"), tabBarIcon: ({ color }) => <IconSymbol size={25} name="house.fill" color={color} /> }} />
       <Tabs.Screen name="tutor" options={{ title: tr("tabs.tutor"), tabBarIcon: ({ color }) => <IconSymbol size={25} name="message.fill" color={color} /> }} />
       <Tabs.Screen name="lab" options={{ title: tr("tabs.lab"), tabBarIcon: ({ color }) => <IconSymbol size={25} name="atom" color={color} /> }} />
+      <Tabs.Screen name="astronomy" options={{ title: tr("tabs.astronomy"), tabBarIcon: ({ color }) => <IconSymbol size={25} name="star.fill" color={color} /> }} />
       <Tabs.Screen name="practice" options={{ title: tr("tabs.practice"), tabBarIcon: ({ color }) => <IconSymbol size={25} name="checkmark.circle.fill" color={color} /> }} />
       <Tabs.Screen name="progress" options={{ title: tr("tabs.progress"), tabBarIcon: ({ color }) => <IconSymbol size={25} name="chart.bar.fill" color={color} /> }} />
     </Tabs>

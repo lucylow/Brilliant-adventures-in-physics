@@ -16,8 +16,9 @@ export default function PrivacyScreen() {
   const [shareMessage, setShareMessage] = useState<string | null>(null);
   const [sharing, setSharing] = useState(false);
   const [activity, setActivity] = useState<PrivacyActivityEvent[]>([]);
-  const refresh = () => { void Promise.all([getLocalDataSummary(), loadPrivacyActivity()]).then(([next, events]) => { setSummary(next); setActivity(events); setShareMessage(null); }).catch(() => setShareMessage(tr("privacy.loadFailed"))); };
-  useEffect(refresh, []);
+  const loadFailureMessage = tr("privacy.loadFailed");
+  const refresh = () => { void Promise.all([getLocalDataSummary(), loadPrivacyActivity()]).then(([next, events]) => { setSummary(next); setActivity(events); setShareMessage(null); }).catch(() => setShareMessage(loadFailureMessage)); };
+  useEffect(() => { let active = true; void Promise.all([getLocalDataSummary(), loadPrivacyActivity()]).then(([next, events]) => { if (!active) return; setSummary(next); setActivity(events); setShareMessage(null); }).catch(() => { if (active) setShareMessage(loadFailureMessage); }); return () => { active = false; }; }, [loadFailureMessage]);
   const rows = [{ label: tr("privacy.practiceAttempts"), value: summary.learningRecords }, { label: tr("privacy.savedQuestions"), value: summary.savedQuestions }, { label: tr("privacy.savedExperiments"), value: summary.savedExperiments }, { label: tr("privacy.activeDrafts"), value: summary.activeDrafts }, { label: tr("privacy.completionEvents"), value: summary.completionEvents }, { label: tr("privacy.lessonsCompleted"), value: summary.lessonCompletions }, { label: tr("privacy.labsCompleted"), value: summary.labCompletions }];
   const activityOutcome = (outcome: PrivacyActivityEvent["outcome"]) => tr(outcome === "success" ? "privacy.activitySuccess" : outcome === "unavailable" ? "privacy.activityUnavailable" : "privacy.activityFailure");
   const activityLabel = (event: PrivacyActivityEvent) => tr("privacy.activityEntry", { action: tr(event.kind === "share" ? "privacy.activityShare" : "privacy.activityClear"), outcome: activityOutcome(event.outcome), date: formatPrivacyActivityTimestamp(event.occurredAt, locale) });

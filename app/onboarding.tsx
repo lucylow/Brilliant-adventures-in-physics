@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ScrollView, Text, View } from "react-native";
 import { router } from "expo-router";
 import { ScreenContainer } from "@/components/screen-container";
@@ -6,15 +6,14 @@ import { Card, Pill, PrimaryButton, SecondaryButton, SectionHeader } from "@/com
 import { useColors } from "@/hooks/use-colors";
 import { loadOnboarding, saveOnboarding, type LearnerGoal, type LearnerLevel } from "@/lib/onboarding";
 import { persistSafely, persistenceRecoveryMessage } from "@/lib/persistence";
-import { useEffect } from "react";
 import { useAppTranslations } from "@/hooks/use-app-translations";
 
-const levels: Array<{ value: LearnerLevel; titleKey: string; bodyKey: string }> = [
+const levels: { value: LearnerLevel; titleKey: string; bodyKey: string }[] = [
   { value: "new", titleKey: "onboarding.levelNew", bodyKey: "onboarding.levelNewBody" },
   { value: "school", titleKey: "onboarding.levelSchool", bodyKey: "onboarding.levelSchoolBody" },
   { value: "exam", titleKey: "onboarding.levelExam", bodyKey: "onboarding.levelExamBody" },
 ];
-const goals: Array<{ value: LearnerGoal; titleKey: string; bodyKey: string }> = [
+const goals: { value: LearnerGoal; titleKey: string; bodyKey: string }[] = [
   { value: "understand", titleKey: "onboarding.goalUnderstand", bodyKey: "onboarding.goalUnderstandBody" },
   { value: "practice", titleKey: "onboarding.goalPractice", bodyKey: "onboarding.goalPracticeBody" },
   { value: "experiment", titleKey: "onboarding.goalExperiment", bodyKey: "onboarding.goalExperimentBody" },

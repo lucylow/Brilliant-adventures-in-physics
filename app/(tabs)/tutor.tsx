@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { router } from "expo-router";
 import { Keyboard, Pressable, ScrollView, Text, TextInput, View } from "react-native";
 import { ScreenContainer } from "@/components/screen-container";
@@ -13,7 +13,6 @@ import { DraftStatus } from "@/components/draft-status";
 import { deleteDraft } from "@/lib/progress-store";
 import { normalizeServiceError, type ServiceError } from "@/lib/service-result";
 import { recoveryMessage } from "@/lib/network";
-import { createAppTranslations, translate, type SupportedLocale } from "@/lib/locale";
 import { useAppTranslations } from "@/hooks/use-app-translations";
 
 type Message = { role: "assistant" | "user"; text: string };
@@ -29,12 +28,13 @@ export default function TutorScreen() {
   const [lastQuestion, setLastQuestion] = useState("");
   const tutorService = createDeterministicTutorService();
   const [usage, setUsage] = useState<UsageState>({ date: "", tutorUsed: 0, tutorLimit: 5 });
-  const [usageMessage, setUsageMessage] = useState<string | null>(null);
+  const [usageMessageKey, setUsageMessageKey] = useState<"tutor.usageRecovered" | "tutor.usageUnavailable" | null>(null);
   const mountedRef = useRef(true);
   useEffect(() => { return () => { mountedRef.current = false; }; }, []);
-  useEffect(() => { let active = true; void loadUsageWithStatus().then((result) => { if (!active) return; setUsage(result.usage); if (result.recovered) setUsageMessage(tr("tutor.usageRecovered")); }).catch(() => { if (active) setUsageMessage(tr("tutor.usageUnavailable")); }); return () => { active = false; }; }, []);
+  useEffect(() => { let active = true; void loadUsageWithStatus().then((result) => { if (!active) return; setUsage(result.usage); setUsageMessageKey(result.recovered ? "tutor.usageRecovered" : null); }).catch(() => { if (active) setUsageMessageKey("tutor.usageUnavailable"); }); return () => { active = false; }; }, [locale]);
   const remaining = remainingTutorUses(usage);
   const checkingAnnouncement = announce("tutor.checking", "polite");
+  const usageMessage = usageMessageKey ? tr(usageMessageKey) : null;
   const usageAnnouncement = usageMessage ? { message: usageMessage, accessibilityLiveRegion: "polite" as const } : null;
   const draftStatus = useDraftAutosave("tutor", { question: draft });
   const send = async (text = draft) => {
@@ -49,7 +49,7 @@ export default function TutorScreen() {
       if (!mountedRef.current) return;
       if (!response.ok) { setServiceError(response.error); return; }
       if (response.usedFallback) {
-        setUsageMessage(tr("tutor.localFallback"));
+        setUsageMessageKey(null);
       } else {
         const nextUsage = await consumeTutorUse();
         if (!mountedRef.current) return;

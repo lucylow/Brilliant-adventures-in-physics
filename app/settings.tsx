@@ -9,7 +9,7 @@ import { manualNetworkCheckMessage, networkStateToStatus, networkStatusLabel, sh
 import { persistSafely, persistenceRecoveryMessage } from "@/lib/persistence";
 import { useColors } from "@/hooks/use-colors";
 import { PersistenceDiagnostics } from "@/components/persistence-diagnostics";
-import { loadOnboarding, resetOnboarding, saveOnboarding } from "@/lib/onboarding";
+import { resetOnboarding, saveOnboarding } from "@/lib/onboarding";
 import { clearRetryQueue, formatLastSave, formatRetryItemAge, formatRetryItemResult, formatRetryProgress, formatRetryResult, getLastSave, getRetryCount, getRetryItems, markLastSave, removeRetryItem, retryOneItem, retryQueue, RETRY_ITEM_DISCARD_COPY, RETRY_ITEM_DISCARDED_COPY, RETRY_QUEUE_DISCARD_COPY, RETRY_QUEUE_DISCARDED_COPY, type RetryItem, type RetryProgress } from "@/lib/retry-queue";
 import { saveDraft } from "@/lib/progress-store";
 import { LOCALES, type SupportedLocale } from "@/lib/locale";

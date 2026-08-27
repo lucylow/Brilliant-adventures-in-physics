@@ -5,7 +5,6 @@ import { ScreenContainer } from "@/components/screen-container";
 import { Card, PrimaryButton, SectionHeader, SecondaryButton } from "@/components/physica-ui";
 import { PHYSICS, angularSpeedFromRpm, averagePowerFromWork, buoyantForce, centripetalAcceleration, coulombForce, deBroglieWavelength, electricField, elasticCollision1D, elasticPotentialEnergy, gravitationalPotentialEnergy, harmonicDisplacement, harmonicVelocity, hydrostaticPressure, impulse, kineticEnergy, massEnergyEquivalent, momentum, ohmsLaw, photonEnergyFromWavelength, photoelectricEffect, projectile, relativisticKineticEnergy, relativisticMomentum, refraction, rotationalKineticEnergy, sampleProjectile, solidDiskMomentOfInertia, springForce, tangentialSpeed, thermalEnergy, volumetricFlowRate, wave, weightForce, workFromForce } from "@/lib/physics";
 import { useColors } from "@/hooks/use-colors";
-import { useAppTranslations } from "@/hooks/use-app-translations";
 import { energyMomentum, lorentzGamma, normalizeWavefunction, probabilityDensity, properTime, quantumOscillatorEnergy, tunnelingFactor } from "@/lib/advanced-physics";
 import { createAppTranslations, formatNumber, formatScientific, physicsTerm, translate, unitLabel, type SupportedLocale } from "@/lib/locale";
 import { FreeBodyDiagram, RelativityMeter, WavefunctionPlot } from "@/components/physics-visuals";
