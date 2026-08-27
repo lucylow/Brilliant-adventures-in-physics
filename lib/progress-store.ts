@@ -112,7 +112,9 @@ export async function loadLearningState(): Promise<LearningState> {
 }
 
 export async function recordAttempt(correct: boolean, topic: string, hints = 0, confidence = 3): Promise<LearningState> {
-  const current = await loadLearningState();
+  const result = await loadLearningStateWithStatus();
+  if (result.recovered) throw new Error(`learning storage ${result.reason ?? "unavailable"}`);
+  const current = result.state;
   const today = new Date().toISOString().slice(0, 10);
   const previousTopic = current.topics[topic] ?? { attempts: 0, correct: 0, hints: 0, confidenceTotal: 0 };
   const sameDay = current.lastStudyDate === today;
@@ -122,7 +124,7 @@ export async function recordAttempt(correct: boolean, topic: string, hints = 0, 
   return next;
 }
 
-async function updateLearning(update: (state: LearningState) => LearningState): Promise<LearningState> { const next = update(await loadLearningState()); await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(next)); return next; }
+async function updateLearning(update: (state: LearningState) => LearningState): Promise<LearningState> { const result = await loadLearningStateWithStatus(); if (result.recovered) throw new Error(`learning storage ${result.reason ?? "unavailable"}`); const next = update(result.state); await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(next)); return next; }
 
 function recordCompletion(kind: CompletionEvent["kind"], contentId: string, topic: string, completedAt: string): Promise<LearningState> {
   const safeContentId = normalizedCompletionIdentifier(contentId);
@@ -146,8 +148,8 @@ export async function recordLabCompletion(input: string | CompletionOptions = "p
   return recordCompletion("lab", details.contentId, details.topic, details.completedAt);
 }
 export async function saveQuestion(question: string): Promise<LearningState> { return updateLearning((current) => ({ ...current, savedQuestions: current.savedQuestions.includes(question) ? current.savedQuestions : [...current.savedQuestions, question] })); }
-export async function saveDraft<T>(draft: SessionDraft<T>): Promise<void> { const raw = await AsyncStorage.getItem(DRAFT_KEY); const drafts = raw ? JSON.parse(raw) as Record<string, SessionDraft<T>> : {}; drafts[draft.id] = draft; await AsyncStorage.setItem(DRAFT_KEY, JSON.stringify(drafts)); }
+export async function saveDraft<T>(draft: SessionDraft<T>): Promise<void> { const raw = await AsyncStorage.getItem(DRAFT_KEY); if (!raw) { await AsyncStorage.setItem(DRAFT_KEY, JSON.stringify({ [draft.id]: draft })); return; } let parsed: unknown; try { parsed = JSON.parse(raw) as unknown; } catch { throw new Error("draft storage is malformed"); } if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) throw new Error("draft storage is malformed"); const drafts = parsed as Record<string, SessionDraft<T>>; drafts[draft.id] = draft; await AsyncStorage.setItem(DRAFT_KEY, JSON.stringify(drafts)); }
 export type DraftLoadResult<T> = { draft: SessionDraft<T> | null; recovered: boolean; reason?: "malformed" | "unavailable" };
 export async function loadDraftWithStatus<T>(id: string, maxAge = 86400000): Promise<DraftLoadResult<T>> { try { const raw = await AsyncStorage.getItem(DRAFT_KEY); if (!raw) return { draft: null, recovered: false }; let parsed: unknown; try { parsed = JSON.parse(raw) as unknown; } catch { return { draft: null, recovered: true, reason: "malformed" }; } if (!parsed || typeof parsed !== "object") return { draft: null, recovered: true, reason: "malformed" }; const drafts = parsed as Record<string, unknown>; const draft = drafts[id]; if (!isValidDraft<T>(draft)) return Object.prototype.hasOwnProperty.call(drafts, id) ? { draft: null, recovered: true, reason: "malformed" } : { draft: null, recovered: false }; if (Date.now() - draft.updatedAt >= maxAge) return { draft: null, recovered: false }; return { draft, recovered: false }; } catch { return { draft: null, recovered: true, reason: "unavailable" }; } }
 export async function loadDraft<T>(id: string, maxAge = 86400000): Promise<SessionDraft<T> | null> { return (await loadDraftWithStatus<T>(id, maxAge)).draft; }
-export async function deleteDraft(id: string): Promise<void> { const raw = await AsyncStorage.getItem(DRAFT_KEY); const drafts = raw ? JSON.parse(raw) as Record<string, SessionDraft<unknown>> : {}; delete drafts[id]; await AsyncStorage.setItem(DRAFT_KEY, JSON.stringify(drafts)); }
+export async function deleteDraft(id: string): Promise<void> { const raw = await AsyncStorage.getItem(DRAFT_KEY); if (!raw) return; let parsed: unknown; try { parsed = JSON.parse(raw) as unknown; } catch { throw new Error("draft storage is malformed"); } if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) throw new Error("draft storage is malformed"); const drafts = parsed as Record<string, SessionDraft<unknown>>; delete drafts[id]; await AsyncStorage.setItem(DRAFT_KEY, JSON.stringify(drafts)); }
