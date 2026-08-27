@@ -12,7 +12,7 @@ import { loadPreferencesWithStatus, type Preferences } from "@/lib/preferences";
 import { AnimatedProgress } from "@/components/motion-primitives";
 import { useAppTranslations } from "@/hooks/use-app-translations";
 import { adventureProgress, completeAdventureMission, emptyAdventureState, generateAdventureMissions, loadAdventureState, missionEvidenceCount, missionIsComplete, saveAdventureState, worldForLevel, type AdventureState } from "@/lib/adventure";
-import { loadPuzzleEvidence, loadResolvedPuzzleIds, loadReviewMastery, missedPuzzleReviewQueue, reviewHistorySummary, reviewMasteryPercentDelta, reviewReinforcementDelta, summarizePuzzleEvidence, summarizeReviewMastery, type PuzzleEvidence, type ReviewMasteryRecord } from "@/lib/puzzle-evidence";
+import { loadPuzzleEvidenceWithStatus, loadResolvedPuzzleIdsWithStatus, loadReviewMasteryWithStatus, missedPuzzleReviewQueue, reviewHistorySummary, reviewMasteryPercentDelta, reviewReinforcementDelta, summarizePuzzleEvidence, summarizeReviewMastery, type PuzzleEvidence, type ReviewMasteryRecord } from "@/lib/puzzle-evidence";
 
 const TOPICS = [
   { name: "Kinematics", detail: "Review motion graphs and units." },
@@ -27,6 +27,7 @@ export default function ProgressScreen() {
   const [learning, setLearning] = useState<LearningState>({ attempts: 0, correct: 0, savedQuestions: [], topics: {}, streak: 0, lessonsCompleted: 0, labsCompleted: 0 });
   const [preferences, setPreferences] = useState<Preferences>({ streakEnabled: true, reducedMotion: false, hapticsEnabled: true, locale: "en" });
   const [loadFailed, setLoadFailed] = useState(false);
+  const [reviewDataFallback, setReviewDataFallback] = useState(false);
   const [adventureState, setAdventureState] = useState<AdventureState>(emptyAdventureState());
   const [adventureSaveFailed, setAdventureSaveFailed] = useState(false);
   const [puzzleEvidence, setPuzzleEvidence] = useState<PuzzleEvidence[]>([]);
@@ -34,7 +35,7 @@ export default function ProgressScreen() {
   const [reviewMastery, setReviewMastery] = useState<ReviewMasteryRecord[]>([]);
   const [showReviewHistory, setShowReviewHistory] = useState(false);
   const [completionFilter, setCompletionFilter] = useState<CompletionEventFilter>("all");
-  const loadProgress = () => { setLoadFailed(false); let active = true; void Promise.all([loadLearningState(), loadPreferencesWithStatus(), loadAdventureState(), loadPuzzleEvidence(), loadResolvedPuzzleIds(), loadReviewMastery()]).then(([nextLearning, preferenceResult, adventureResult, puzzleResult, resolvedIds, masteryRecords]) => { if (!active) return; setLearning(nextLearning); setPreferences(preferenceResult.preferences); setAdventureState(adventureResult.state); setPuzzleEvidence(puzzleResult); setResolvedPuzzleIds(resolvedIds); setReviewMastery(masteryRecords); }).catch(() => { if (active) setLoadFailed(true); }); return () => { active = false; }; };
+  const loadProgress = () => { setLoadFailed(false); let active = true; void Promise.all([loadLearningState(), loadPreferencesWithStatus(), loadAdventureState(), loadPuzzleEvidenceWithStatus(), loadResolvedPuzzleIdsWithStatus(), loadReviewMasteryWithStatus()]).then(([nextLearning, preferenceResult, adventureResult, puzzleResult, resolvedResult, masteryResult]) => { if (!active) return; setLearning(nextLearning); setPreferences(preferenceResult.preferences); setAdventureState(adventureResult.state); setPuzzleEvidence(puzzleResult.value); setResolvedPuzzleIds(resolvedResult.value); setReviewMastery(masteryResult.value); setReviewDataFallback(puzzleResult.usedFallback || resolvedResult.usedFallback || masteryResult.usedFallback); }).catch(() => { if (active) { setLoadFailed(true); setReviewDataFallback(true); } }); return () => { active = false; }; };
   useEffect(() => loadProgress(), []);
   const accuracy = learning.attempts ? learning.correct / learning.attempts : 0;
   const level = levelProgress(learning.correct * 10);
@@ -57,12 +58,13 @@ export default function ProgressScreen() {
   const achievements = evaluateAchievements(learning);
   const [achievementFilter, setAchievementFilter] = useState<"all" | "earned" | "progress">("all");
   const visibleAchievements = achievements.filter((achievement) => achievementFilter === "all" || (achievementFilter === "earned" ? achievement.earned : !achievement.earned));
-  if (loadFailed) return <ScreenContainer className="p-5"><View style={{ flex: 1, justifyContent: "center" }}><Text accessibilityLiveRegion="assertive" style={{ color: colors.warning, lineHeight: 21 }}>We could not load your progress data. Your local learning records are safe.</Text><View style={{ marginTop: 16 }}><PrimaryButton label={tr("progress.retry")} onPress={loadProgress} /></View></View></ScreenContainer>;
+  if (loadFailed) return <ScreenContainer className="p-5"><View style={{ flex: 1, justifyContent: "center" }}><Text accessibilityLiveRegion="assertive" style={{ color: colors.warning, lineHeight: 21 }}>{tr("progress.learningRecovered")}</Text><View style={{ marginTop: 16 }}><PrimaryButton label={tr("progress.retry")} onPress={loadProgress} /></View></View></ScreenContainer>;
 
   return (
     <ScreenContainer className="p-5">
       <ScrollView contentContainerStyle={{ paddingBottom: 32 }}>
         <SectionHeader title={tr("progress.title")} subtitle={tr("progress.subtitle")} />
+        {reviewDataFallback && <Text accessibilityLiveRegion="polite" style={{ color: colors.warning, lineHeight: 21, marginBottom: 10 }}>{tr("progress.reviewDataFallback")}</Text>}
         <Card>
           <View style={{ flexDirection: "row", alignItems: "center", gap: 16 }}>
             <MasteryRing value={accuracy} />

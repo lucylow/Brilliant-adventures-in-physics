@@ -6,6 +6,16 @@ const MAX_ENTRIES = 50;
 
 export type NotebookMediaContext = { uri?: string; caption?: string; capturedAt?: string };
 export type NotebookEntry = { id: string; title: string; type: "experiment" | "reflection" | "mistake"; content: string; links: string[]; createdAt: string; media?: NotebookMediaContext };
+export type NotebookLoadResult = { entries: NotebookEntry[]; usedFallback: boolean; reason?: "malformed" | "unavailable" };
+
+export const DEMO_NOTEBOOK_ENTRY: NotebookEntry = {
+  id: "demo-local-notebook",
+  title: "[Demo] Kinematics observation",
+  type: "experiment",
+  content: "Demo data only — storage was unavailable. A local observation can connect position, time, and velocity without replacing saved notes.",
+  links: ["kinematics"],
+  createdAt: "2026-01-01T00:00:00.000Z",
+};
 
 function isNotebookMediaContext(value: unknown): value is NotebookMediaContext {
   if (!value || typeof value !== "object") return false;
@@ -23,14 +33,34 @@ export function parseNotebookEntries(value: unknown): NotebookEntry[] { return A
 
 export function sameNotebookEntry(a: Pick<NotebookEntry, "title" | "type" | "content" | "links">, b: Pick<NotebookEntry, "title" | "type" | "content" | "links">): boolean { return a.title.trim() === b.title.trim() && a.type === b.type && a.content.trim() === b.content.trim() && a.links.map((link) => link.trim()).filter(Boolean).join("|") === b.links.map((link) => link.trim()).filter(Boolean).join("|"); }
 
+export async function loadNotebookEntriesWithStatus(): Promise<NotebookLoadResult> {
+  try {
+    const raw = await AsyncStorage.getItem(STORAGE_KEY);
+    if (!raw) return { entries: [], usedFallback: false };
+    const parsed: unknown = JSON.parse(raw);
+    if (!Array.isArray(parsed)) return { entries: [DEMO_NOTEBOOK_ENTRY], usedFallback: true, reason: "malformed" };
+    return { entries: parseNotebookEntries(parsed), usedFallback: false };
+  } catch {
+    return { entries: [DEMO_NOTEBOOK_ENTRY], usedFallback: true, reason: "unavailable" };
+  }
+}
+
 export async function loadNotebookEntries(): Promise<NotebookEntry[]> {
-  try { const raw = await AsyncStorage.getItem(STORAGE_KEY); return parseNotebookEntries(raw ? JSON.parse(raw) : []); } catch { return []; }
+  return (await loadNotebookEntriesWithStatus()).entries;
+}
+
+async function readNotebookEntriesForWrite(): Promise<NotebookEntry[]> {
+  const raw = await AsyncStorage.getItem(STORAGE_KEY);
+  if (!raw) return [];
+  const parsed: unknown = JSON.parse(raw);
+  if (!Array.isArray(parsed)) throw new Error("Notebook storage is malformed");
+  return parseNotebookEntries(parsed);
 }
 
 export async function saveNotebookEntry(entry: Omit<NotebookEntry, "id" | "createdAt">): Promise<NotebookEntry> {
   const normalized = { ...entry, title: entry.title.trim(), content: entry.content.trim(), links: entry.links.map((link) => link.trim()).filter(Boolean) };
   if (!normalized.title || !normalized.content || !normalized.links.length) throw new Error("Notebook entry is invalid");
-  const current = await loadNotebookEntries();
+  const current = await readNotebookEntriesForWrite();
   const duplicate = current.find((item) => sameNotebookEntry(item, normalized));
   if (duplicate) return duplicate;
   const next: NotebookEntry = { ...normalized, id: `${Date.now()}-${Math.random().toString(16).slice(2)}`, createdAt: new Date().toISOString() };
@@ -38,7 +68,7 @@ export async function saveNotebookEntry(entry: Omit<NotebookEntry, "id" | "creat
   return next;
 }
 
-export async function deleteNotebookEntry(id: string): Promise<void> { const current = await loadNotebookEntries(); await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(current.filter((entry) => entry.id !== id))); }
+export async function deleteNotebookEntry(id: string): Promise<void> { const current = await readNotebookEntriesForWrite(); await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(current.filter((entry) => entry.id !== id))); }
 
 export async function clearNotebook(): Promise<void> { await AsyncStorage.removeItem(STORAGE_KEY); }
 

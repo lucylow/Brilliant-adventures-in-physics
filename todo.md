@@ -708,3 +708,20 @@
 - [x] Add validated cosmic-time, light-cone, and beta-based relativity helpers
 - [x] Integrate accessible localized advanced controls into Astronomy
 - [x] Add deterministic advanced-physics regression coverage
+
+- [x] Audit current runtime and persistence failure paths for actionable errors
+- [x] Add clearly labeled deterministic fallback mock data at safe local boundaries
+- [x] Improve user-facing recovery and retry feedback without masking saved data
+- [x] Add deterministic regression coverage for the new failure paths
+
+- [x] Map the quantum and advanced-physics attachments to PhysicaAI modules
+- [x] Add validated quantum mechanics helpers with bounded deterministic inputs
+- [x] Add atomic, molecular, nuclear, and condensed-matter helpers with validation
+- [x] Add a localized accessible Quantum learning tab with safe fallback content
+- [x] Add deterministic regression tests for quantum and advanced-physics helpers
+
+- [x] Map the particle, optics, light-matter, electronics, and biophysics attachment domains
+- [x] Add validated particle and optics calculation helpers with physical-domain guards
+- [x] Add bounded local fallback catalogs for the new physics domains
+- [x] Integrate the new domains into the accessible Quantum learning surface
+- [x] Add deterministic regression coverage for the new domain helpers
