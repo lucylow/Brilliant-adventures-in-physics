@@ -725,3 +725,7 @@
 - [x] Add bounded local fallback catalogs for the new physics domains
 - [x] Integrate the new domains into the accessible Quantum learning surface
 - [x] Add deterministic regression coverage for the new domain helpers
+
+- [x] Audit latest extended physics runtime and persistence failure paths
+- [x] Add targeted error handling and clearly labeled fallback mock data
+- [x] Add deterministic regression coverage for newly fixed failure paths

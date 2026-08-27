@@ -6,12 +6,11 @@ import { Card, Pill, SectionHeader } from "@/components/physica-ui";
 import { useColors } from "@/hooks/use-colors";
 import { useAppTranslations } from "@/hooks/use-app-translations";
 import { formatScientific, formatNumber } from "@/lib/locale";
-import { loadQuantumCatalog, photonEnergy, photonFrequency, matterWave, minimumMomentumUncertainty, qubitProbabilities, blochCoordinates, tunnelingProbability, hydrogenTransitionEnergyEV, transitionWavelengthNm, type QuantumCatalog } from "@/lib/quantum";
+import { FALLBACK_QUANTUM_CATALOG, loadQuantumCatalog, photonEnergy, photonFrequency, matterWave, minimumMomentumUncertainty, qubitProbabilities, blochCoordinates, tunnelingProbability, hydrogenTransitionEnergyEV, transitionWavelengthNm, type QuantumCatalog } from "@/lib/quantum";
 import { FALLBACK_ADVANCED_PHYSICS_CATALOG, hydrogenicTransitionEnergyEV, spectralWavelengthNm, vibrationalEnergyJ, radioactiveRemaining, braggAngleRad } from "@/lib/advanced-physics";
 import { FALLBACK_DOMAIN_CATALOG, STANDARD_MODEL_PARTICLES, diffusionRmsDistanceM, ohmsLawCurrentA, photonMomentumKgMps, restEnergyJ, thinLensImageDistanceM } from "@/lib/physics-domains";
 
 const FALLBACK_WAVELENGTH_M = 500e-9;
-const FALLBACK_QUANTUM_CATALOG: QuantumCatalog = { concepts: [] };
 
 export default function QuantumScreen() {
   const colors = useColors();
