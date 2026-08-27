@@ -9,7 +9,8 @@ import { achievementProgress } from "@/lib/achievement-progress";
 import { generateMission, levelProgress, missionProgress, streakMessage } from "@/lib/gamification";
 import { useColors } from "@/hooks/use-colors";
 import { loadPreferencesWithStatus, type Preferences } from "@/lib/preferences";
-import { AnimatedProgress } from "@/components/motion-primitives";
+import { AnimatedProgress, RevealBlock } from "@/components/motion-primitives";
+import { bavMilestoneProgress, evaluateBAVMilestones } from "@/lib/bav-milestones";
 import { useAppTranslations } from "@/hooks/use-app-translations";
 import { BAVPillarMark } from "@/components/bav-discovery-panel";
 import { adventureProgress, completeAdventureMission, emptyAdventureState, generateAdventureMissions, loadAdventureState, missionEvidenceCount, missionIsComplete, saveAdventureState, worldForLevel, type AdventureState } from "@/lib/adventure";
@@ -43,6 +44,7 @@ export default function ProgressScreen() {
   const level = levelProgress(learning.correct * 10);
   const mission = generateMission(new Date().getDate());
   const missionValue = mission.kind === "practice" ? learning.attempts : 0;
+  const bavMilestones = evaluateBAVMilestones(learning);
   const puzzleSummary = summarizePuzzleEvidence(puzzleEvidence);
   const completionSummary = summarizeCompletionEvents(learning.completionEvents ?? []);
   const completionTimeline = completionTimelineEntries(learning.completionEvents ?? [], completionFilter, 10);
@@ -87,6 +89,26 @@ export default function ProgressScreen() {
           <Text style={{ color: colors.foreground, fontSize: 18, fontWeight: "800", marginTop: 6 }}>{mission.title}</Text>
           <Text style={{ color: colors.muted, marginTop: 4 }}>{Math.min(missionValue, mission.goal)} of {mission.goal} complete · +{mission.rewardXp} XP</Text>
           <View style={{ marginTop: 10 }}><AnimatedProgress value={missionProgress(mission.goal, missionValue)} preferences={preferences} /></View>
+        </Card>
+        <Card accessibilityLabel={tr("progress.bavMilestonesTitle")} style={{ marginTop: 14, borderColor: colors.primary + "45" }}>
+          <Text style={{ color: colors.foreground, fontSize: 18, fontWeight: "900" }}>{tr("progress.bavMilestonesTitle")}</Text>
+          <Text style={{ color: colors.muted, marginTop: 4, lineHeight: 20 }}>{tr("progress.bavMilestonesSubtitle")}</Text>
+          <View style={{ gap: 10, marginTop: 12 }}>
+            {bavMilestones.map((milestone, index) => {
+              const titleKey = milestone.id === "build-foundation" ? "progress.bavBuildTitle" : milestone.id === "adventure-loop" ? "progress.bavAdventureTitle" : "progress.bavVisualizeTitle";
+              const bodyKey = milestone.id === "build-foundation" ? "progress.bavBuildBody" : milestone.id === "adventure-loop" ? "progress.bavAdventureBody" : "progress.bavVisualizeBody";
+              const accent = milestone.pillar === "build" ? "#19A896" : milestone.pillar === "adventure" ? "#E59A3A" : "#7C83F5";
+              const title = tr(titleKey);
+              const body = tr(bodyKey);
+              const status = milestone.earned ? tr("progress.bavMilestoneEarned") : tr("progress.inProgress");
+              const label = tr("progress.bavMilestoneAccessibility", { title, body, status, current: milestone.current, goal: milestone.goal });
+              return <RevealBlock key={milestone.id} index={index} preferences={preferences}><View accessibilityLabel={label} style={{ padding: 12, borderRadius: 16, borderWidth: 1, borderColor: accent + "45", backgroundColor: accent + "0B" }}>
+                <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}><BAVPillarMark pillar={milestone.pillar} size={34} /><View style={{ flex: 1 }}><Text style={{ color: accent, fontSize: 11, fontWeight: "900", letterSpacing: 0.7 }}>{title}</Text><Text style={{ color: colors.muted, marginTop: 3, lineHeight: 18 }}>{body}</Text></View><Text accessibilityLiveRegion={milestone.earned ? "polite" : undefined} style={{ color: milestone.earned ? colors.success : colors.muted, fontSize: 11, fontWeight: "900" }}>{milestone.earned ? tr("progress.bavMilestoneEarned") : `${milestone.current}/${milestone.goal}`}</Text></View>
+                <Text style={{ color: milestone.earned ? colors.success : colors.muted, marginTop: 7, fontSize: 12, fontWeight: milestone.earned ? "800" : "400" }}>{milestone.earned ? tr("progress.bavMilestoneUnlocked", { title }) : tr("progress.bavMilestoneProgress", { current: milestone.current, goal: milestone.goal })}</Text>
+                <View style={{ marginTop: 7 }}><AnimatedProgress value={bavMilestoneProgress(milestone)} preferences={preferences} /></View>
+              </View></RevealBlock>;
+            })}
+          </View>
         </Card>
         <Card accessibilityLabel={`${tr("progress.adventure")}: ${adventureWorld.title}. ${adventureMission.title}.`} style={{ marginTop: 14, borderColor: "#E59A3A55" }}>
           <View style={{ flexDirection: "row", alignItems: "center", gap: 12 }}><BAVPillarMark pillar="adventure" /><View style={{ flex: 1 }}><Text style={{ color: "#E59A3A", fontSize: 11, fontWeight: "900", letterSpacing: 1 }}>{tr("progress.adventure")}</Text><Text style={{ color: colors.foreground, fontSize: 18, fontWeight: "900", marginTop: 4 }}>{adventureWorld.title}</Text></View></View>

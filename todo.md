@@ -822,3 +822,7 @@
 - [x] Add a bounded local history of successful offline autosave reconciliations
 - [x] Show recent sync history accessibly in Settings with localized copy
 - [x] Add strict recovery tests and rerun full validation
+
+- [x] Audit Progress timeline and completion-event contracts
+- [x] Implement deterministic local milestone badges with accessible feedback
+- [x] Add regression coverage and rerun full validation
