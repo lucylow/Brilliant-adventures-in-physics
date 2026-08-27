@@ -147,7 +147,9 @@ export async function loadQuantumCatalog(): Promise<{ catalog: QuantumCatalog; u
   try {
     const raw = await AsyncStorage.getItem(QUANTUM_CATALOG_KEY);
     if (!raw) return { catalog: FALLBACK_QUANTUM_CATALOG, usedFallback: true };
-    const parsed = parseQuantumCatalog(JSON.parse(raw));
+    let parsedRaw: unknown;
+    try { parsedRaw = JSON.parse(raw) as unknown; } catch { return { catalog: FALLBACK_QUANTUM_CATALOG, usedFallback: true, reason: "malformed" }; }
+    const parsed = parseQuantumCatalog(parsedRaw);
     return parsed ? { catalog: parsed, usedFallback: false } : { catalog: FALLBACK_QUANTUM_CATALOG, usedFallback: true, reason: "malformed" };
   } catch {
     return { catalog: FALLBACK_QUANTUM_CATALOG, usedFallback: true, reason: "unavailable" };

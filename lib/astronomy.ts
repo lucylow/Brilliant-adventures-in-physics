@@ -34,6 +34,7 @@ export interface AstronomyCatalog {
 export interface AstronomyCatalogResult {
   catalog: AstronomyCatalog;
   usedFallback: boolean;
+  reason?: "malformed" | "unavailable";
 }
 
 export const ASTRONOMY_STORAGE_KEY = "physicaai.astronomy-catalog.v1";
@@ -115,10 +116,12 @@ export async function loadAstronomyCatalog(): Promise<AstronomyCatalogResult> {
   try {
     const raw = await AsyncStorage.getItem(ASTRONOMY_STORAGE_KEY);
     if (!raw) return { catalog: FALLBACK_ASTRONOMY_CATALOG, usedFallback: true };
-    const parsed = parseAstronomyCatalog(JSON.parse(raw));
-    return parsed ? { catalog: parsed, usedFallback: false } : { catalog: FALLBACK_ASTRONOMY_CATALOG, usedFallback: true };
+    let parsedRaw: unknown;
+    try { parsedRaw = JSON.parse(raw) as unknown; } catch { return { catalog: FALLBACK_ASTRONOMY_CATALOG, usedFallback: true, reason: "malformed" }; }
+    const parsed = parseAstronomyCatalog(parsedRaw);
+    return parsed ? { catalog: parsed, usedFallback: false } : { catalog: FALLBACK_ASTRONOMY_CATALOG, usedFallback: true, reason: "malformed" };
   } catch {
-    return { catalog: FALLBACK_ASTRONOMY_CATALOG, usedFallback: true };
+    return { catalog: FALLBACK_ASTRONOMY_CATALOG, usedFallback: true, reason: "unavailable" };
   }
 }
 

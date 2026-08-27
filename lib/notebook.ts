@@ -37,7 +37,8 @@ export async function loadNotebookEntriesWithStatus(): Promise<NotebookLoadResul
   try {
     const raw = await AsyncStorage.getItem(STORAGE_KEY);
     if (!raw) return { entries: [], usedFallback: false };
-    const parsed: unknown = JSON.parse(raw);
+    let parsed: unknown;
+    try { parsed = JSON.parse(raw) as unknown; } catch { return { entries: [DEMO_NOTEBOOK_ENTRY], usedFallback: true, reason: "malformed" }; }
     if (!Array.isArray(parsed)) return { entries: [DEMO_NOTEBOOK_ENTRY], usedFallback: true, reason: "malformed" };
     return { entries: parseNotebookEntries(parsed), usedFallback: false };
   } catch {

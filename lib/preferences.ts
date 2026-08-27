@@ -16,14 +16,17 @@ export function mergePreferences(input: unknown): Preferences {
   };
 }
 
-export type PreferenceLoadResult = { preferences: Preferences; recovered: boolean };
+export type PreferenceLoadResult = { preferences: Preferences; recovered: boolean; reason?: "malformed" | "unavailable" };
 
 export async function loadPreferencesWithStatus(): Promise<PreferenceLoadResult> {
   try {
     const raw = await AsyncStorage.getItem(KEY);
-    return { preferences: mergePreferences(raw ? JSON.parse(raw) : {}), recovered: false };
+    if (!raw) return { preferences: DEFAULTS, recovered: false };
+    let parsed: unknown;
+    try { parsed = JSON.parse(raw) as unknown; } catch { return { preferences: DEFAULTS, recovered: true, reason: "malformed" }; }
+    return { preferences: mergePreferences(parsed), recovered: false };
   } catch {
-    return { preferences: DEFAULTS, recovered: true };
+    return { preferences: DEFAULTS, recovered: true, reason: "unavailable" };
   }
 }
 

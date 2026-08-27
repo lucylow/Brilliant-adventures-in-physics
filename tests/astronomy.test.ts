@@ -33,7 +33,7 @@ describe("astronomy", () => {
   it("uses a clearly labeled offline fallback for missing or malformed storage", async () => {
     vi.mocked(AsyncStorage.getItem).mockResolvedValueOnce(null).mockResolvedValueOnce("{");
     await expect(loadAstronomyCatalog()).resolves.toEqual({ catalog: FALLBACK_ASTRONOMY_CATALOG, usedFallback: true });
-    await expect(loadAstronomyCatalog()).resolves.toEqual({ catalog: FALLBACK_ASTRONOMY_CATALOG, usedFallback: true });
+    await expect(loadAstronomyCatalog()).resolves.toEqual({ catalog: FALLBACK_ASTRONOMY_CATALOG, usedFallback: true, reason: "malformed" });
     expect(AsyncStorage.getItem).toHaveBeenCalledWith(ASTRONOMY_STORAGE_KEY);
   });
 });
