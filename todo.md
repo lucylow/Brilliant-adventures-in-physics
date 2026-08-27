@@ -742,3 +742,7 @@
 - [x] Add deterministic BAV pillar, experiment, and mission fallback models
 - [x] Integrate accessible localized BAV discovery content without replacing PhysicaAI navigation
 - [x] Add deterministic regression coverage for BAV models and fallback behavior
+
+- [x] Audit BAV and extended-physics failure boundaries
+- [x] Add safe labeled fallback data and actionable recovery feedback
+- [x] Add deterministic regression coverage for this resilience pass

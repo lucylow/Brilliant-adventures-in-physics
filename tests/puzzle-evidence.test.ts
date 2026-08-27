@@ -81,4 +81,17 @@ describe("puzzle evidence", () => {
     expect(reviewMasteryPercentDelta(records, "waves")).toBe(0);
     expect(reviewMasteryPercentDelta(records, "energy", 0)).toBe(0);
   });
+
+  it("refuses to write new evidence after a malformed evidence read", async () => {
+    vi.mocked(AsyncStorage.getItem).mockResolvedValue("not-json");
+    await expect(recordPuzzleEvidence({ puzzleId: "p-2", outcome: "correct", hintsUsed: 0, xp: 10 })).rejects.toThrow("puzzle evidence storage malformed");
+    expect(AsyncStorage.setItem).not.toHaveBeenCalled();
+  });
+
+  it("refuses to resolve or reinforce after unavailable review storage", async () => {
+    vi.mocked(AsyncStorage.getItem).mockRejectedValue(new Error("storage unavailable"));
+    await expect(resolvePuzzleEvidence("p-2")).rejects.toThrow("resolved puzzle storage unavailable");
+    await expect((await import("../lib/puzzle-evidence")).recordReviewMastery({ resolutionId: "r-2", topic: "energy", recordedAt: "2026-01-01" })).rejects.toThrow("review mastery storage unavailable");
+    expect(AsyncStorage.setItem).not.toHaveBeenCalled();
+  });
 });

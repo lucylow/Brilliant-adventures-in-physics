@@ -26,7 +26,8 @@ export async function loadResolvedPuzzleIdsWithStatus(): Promise<ReviewLoadResul
   try {
     const raw = await AsyncStorage.getItem(RESOLVED_KEY);
     if (!raw) return { value: [], usedFallback: false };
-    const parsed: unknown = JSON.parse(raw);
+    let parsed: unknown;
+    try { parsed = JSON.parse(raw) as unknown; } catch { return { value: [], usedFallback: true, reason: "malformed" }; }
     if (!Array.isArray(parsed)) return { value: [], usedFallback: true, reason: "malformed" };
     return { value: parsed.filter((id): id is string => typeof id === "string").slice(-200), usedFallback: false };
   } catch {
@@ -44,7 +45,8 @@ export async function loadReviewMasteryWithStatus(): Promise<ReviewLoadResult<Re
   try {
     const raw = await AsyncStorage.getItem(REVIEW_MASTERY_KEY);
     if (!raw) return { value: [], usedFallback: false };
-    const parsed: unknown = JSON.parse(raw);
+    let parsed: unknown;
+    try { parsed = JSON.parse(raw) as unknown; } catch { return { value: [], usedFallback: true, reason: "malformed" }; }
     if (!Array.isArray(parsed)) return { value: [], usedFallback: true, reason: "malformed" };
     return { value: parsed.filter((item): item is ReviewMasteryRecord => Boolean(item && typeof item === "object" && typeof (item as ReviewMasteryRecord).resolutionId === "string" && typeof (item as ReviewMasteryRecord).topic === "string" && typeof (item as ReviewMasteryRecord).recordedAt === "string")).slice(-200), usedFallback: false };
   } catch {
@@ -58,7 +60,9 @@ export async function loadReviewMastery(): Promise<ReviewMasteryRecord[]> {
 
 export async function recordReviewMastery(record: ReviewMasteryRecord): Promise<boolean> {
   if (!record.resolutionId || !record.topic) return false;
-  const current = await loadReviewMastery();
+  const result = await loadReviewMasteryWithStatus();
+  if (result.usedFallback) throw new Error(`review mastery storage ${result.reason ?? "unavailable"}`);
+  const current = result.value;
   if (current.some((item) => item.resolutionId === record.resolutionId)) return false;
   await AsyncStorage.setItem(REVIEW_MASTERY_KEY, JSON.stringify([...current, record].slice(-200)));
   return true;
@@ -100,7 +104,9 @@ export function reviewHistorySummary(records: readonly ReviewMasteryRecord[], li
 
 export async function resolvePuzzleEvidence(puzzleId: string): Promise<boolean> {
   if (!puzzleId) return false;
-  const current = await loadResolvedPuzzleIds();
+  const result = await loadResolvedPuzzleIdsWithStatus();
+  if (result.usedFallback) throw new Error(`resolved puzzle storage ${result.reason ?? "unavailable"}`);
+  const current = result.value;
   if (current.includes(puzzleId)) return false;
   await AsyncStorage.setItem(RESOLVED_KEY, JSON.stringify([...current, puzzleId].slice(-200)));
   return true;
@@ -110,7 +116,8 @@ export async function loadPuzzleEvidenceWithStatus(): Promise<ReviewLoadResult<P
   try {
     const raw = await AsyncStorage.getItem(KEY);
     if (!raw) return { value: [], usedFallback: false };
-    const parsed: unknown = JSON.parse(raw);
+    let parsed: unknown;
+    try { parsed = JSON.parse(raw) as unknown; } catch { return { value: [], usedFallback: true, reason: "malformed" }; }
     if (!Array.isArray(parsed)) return { value: [], usedFallback: true, reason: "malformed" };
     return { value: parsed.filter(validEvidence).slice(-200), usedFallback: false };
   } catch {
@@ -138,7 +145,9 @@ export function summarizePuzzleEvidence(entries: readonly PuzzleEvidence[]) {
 }
 
 export async function recordPuzzleEvidence(entry: Omit<PuzzleEvidence, "recordedAt">, now = new Date().toISOString()): Promise<{ entry: PuzzleEvidence; recorded: boolean }> {
-  const current = await loadPuzzleEvidence();
+  const result = await loadPuzzleEvidenceWithStatus();
+  if (result.usedFallback) throw new Error(`puzzle evidence storage ${result.reason ?? "unavailable"}`);
+  const current = result.value;
   const existing = current.find((item) => item.puzzleId === entry.puzzleId);
   if (existing) return { entry: existing, recorded: false };
   const next: PuzzleEvidence = { ...entry, hintsUsed: Math.max(0, Math.floor(entry.hintsUsed)), xp: Math.max(0, entry.xp), recordedAt: now };
