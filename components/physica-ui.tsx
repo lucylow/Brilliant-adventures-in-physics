@@ -16,9 +16,9 @@ export function PrimaryButton({ label, onPress, disabled = false, reducedMotion 
   return <MotionPressable accessibilityRole="button" accessibilityLabel={label} accessibilityState={{ disabled }} disabled={disabled} onPress={onPress} reducedMotion={reducedMotion} style={({ pressed }) => ({ minHeight: 50, padding: 14, borderRadius: 14, alignItems: "center", justifyContent: "center", backgroundColor: colors.primary, opacity: disabled ? 0.45 : pressed ? 0.82 : 1 })}><Text style={{ color: "#FFFFFF", fontWeight: "800", textAlign: "center" }}>{label}</Text></MotionPressable>;
 }
 
-export function SecondaryButton({ label, onPress, reducedMotion = false }: { label: string; onPress: () => void; reducedMotion?: boolean }) {
+export function SecondaryButton({ label, onPress, disabled = false, reducedMotion = false }: { label: string; onPress: () => void; disabled?: boolean; reducedMotion?: boolean }) {
   const colors = useColors();
-  return <MotionPressable accessibilityRole="button" accessibilityLabel={label} onPress={onPress} reducedMotion={reducedMotion} style={({ pressed }) => ({ minHeight: 50, padding: 14, borderRadius: 14, alignItems: "center", justifyContent: "center", backgroundColor: colors.surface, borderWidth: 1, borderColor: colors.border, opacity: pressed ? 0.72 : 1 })}><Text style={{ color: colors.foreground, fontWeight: "800", textAlign: "center" }}>{label}</Text></MotionPressable>;
+  return <MotionPressable accessibilityRole="button" accessibilityLabel={label} accessibilityState={{ disabled }} disabled={disabled} onPress={onPress} reducedMotion={reducedMotion} style={({ pressed }) => ({ minHeight: 50, padding: 14, borderRadius: 14, alignItems: "center", justifyContent: "center", backgroundColor: colors.surface, borderWidth: 1, borderColor: colors.border, opacity: disabled ? 0.45 : pressed ? 0.72 : 1 })}><Text style={{ color: colors.foreground, fontWeight: "800", textAlign: "center" }}>{label}</Text></MotionPressable>;
 }
 
 export function Pill({ label, active = false }: { label: string; active?: boolean }) {

@@ -888,3 +888,7 @@
 - [x] Audit Upgrade, entitlement, usage, and provider-state boundaries
 - [x] Implement transparent entitlement-status feedback and safe restore behavior
 - [x] Add deterministic monetization regression coverage and validate flows
+
+- [x] Audit Upgrade, catalog, restore, and entitlement boundaries
+- [x] Implement explicit catalog and restore lifecycle feedback
+- [x] Add deterministic monetization tests and validate free-tier behavior
