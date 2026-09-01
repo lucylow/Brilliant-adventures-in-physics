@@ -7,9 +7,23 @@ export type EntitlementStatus = "free" | "active" | "trial" | "grace" | "pending
 export type EntitlementSnapshot = { providerAvailable: boolean; subscription?: Subscription };
 export type EntitlementResult = { status: EntitlementStatus; premiumAvailable: boolean };
 
+const VALID_TIERS: readonly Tier[] = ["free", "plus", "family", "education"];
+const VALID_BILLING_STATES: readonly BillingState[] = ["active", "trial", "grace", "expired", "canceled", "pending"];
+
+export function isValidSubscription(value: unknown): value is Subscription {
+  if (!value || typeof value !== "object") return false;
+  const candidate = value as Partial<Subscription>;
+  if (!VALID_TIERS.includes(candidate.tier as Tier) || !VALID_BILLING_STATES.includes(candidate.state as BillingState)) return false;
+  if (candidate.productId !== undefined && (typeof candidate.productId !== "string" || candidate.productId.trim().length === 0)) return false;
+  if (candidate.expiresAt !== undefined && (typeof candidate.expiresAt !== "string" || !Number.isFinite(Date.parse(candidate.expiresAt)))) return false;
+  return true;
+}
+
 export function getEntitlementStatus(snapshot: EntitlementSnapshot, now = Date.now()): EntitlementResult {
-  if (!snapshot.providerAvailable) return { status: "unavailable", premiumAvailable: false };
+  if (!snapshot || snapshot.providerAvailable !== true) return { status: "unavailable", premiumAvailable: false };
   if (!snapshot.subscription) return { status: "free", premiumAvailable: false };
+  if (!isValidSubscription(snapshot.subscription)) return { status: "unavailable", premiumAvailable: false };
+  if (snapshot.subscription.tier === "free") return { status: "free", premiumAvailable: false };
   if (isExpired(snapshot.subscription, now)) return { status: "expired", premiumAvailable: false };
   if (!isUsable(snapshot.subscription.state)) return { status: snapshot.subscription.state, premiumAvailable: false };
   return { status: snapshot.subscription.state, premiumAvailable: true };
@@ -84,7 +98,6 @@ export interface StoreAdapter {
 
 export interface ProductRepository { listProducts(): Promise<Product[]>; getProduct(id: string): Promise<Product | undefined> }
 
-const VALID_TIERS: readonly Tier[] = ["free", "plus", "family", "education"];
 const VALID_PERIODS: readonly StoreProduct["period"][] = ["month", "year"];
 
 export function isValidProduct(product: Product): boolean {
@@ -135,5 +148,5 @@ export function isExpired(subscription: Subscription, now = Date.now()): boolean
 }
 
 export function canUseSubscription(subscription: Subscription, now = Date.now()): boolean {
-  return isUsable(subscription.state) && !isExpired(subscription, now);
+  return isValidSubscription(subscription) && subscription.tier !== "free" && isUsable(subscription.state) && !isExpired(subscription, now);
 }

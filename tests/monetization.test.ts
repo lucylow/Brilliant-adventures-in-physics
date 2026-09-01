@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
-import { canUseSubscription, consume, getEntitlementStatus, isExpired, mapPurchaseError, purchaseReducer, remaining, retryPurchase, validateCatalog, type Product } from "../lib/monetization";
+import { canUseSubscription, consume, getEntitlementStatus, isExpired, isValidSubscription, mapPurchaseError, purchaseReducer, remaining, retryPurchase, validateCatalog, type Product } from "../lib/monetization";
 
 const product = (overrides: Partial<Product> = {}): Product => ({ id: "plus-monthly", storeProductId: "store.plus.monthly", plan: "plus", title: "PhysicaAI Plus", description: "Expanded physics learning tools.", priceLabel: "$4.99/month", period: "month", ...overrides });
 
@@ -35,5 +35,10 @@ describe("monetization contracts", () => {
     expect(getEntitlementStatus({ providerAvailable: false }, 2_000)).toEqual({ status: "unavailable", premiumAvailable: false });
     expect(getEntitlementStatus({ providerAvailable: true }, 2_000)).toEqual({ status: "free", premiumAvailable: false });
     expect(getEntitlementStatus({ providerAvailable: true, subscription: { ...subscription, state: "active", expiresAt: new Date(3_000).toISOString() } }, 2_000)).toEqual({ status: "active", premiumAvailable: true });
+    expect(isValidSubscription({ tier: "plus", state: "active", productId: "plus-monthly", expiresAt: "not-a-date" })).toBe(false);
+    expect(getEntitlementStatus({ providerAvailable: "yes" as unknown as boolean, subscription }, 2_000)).toEqual({ status: "unavailable", premiumAvailable: false });
+    const freeTierPayload = { tier: "free" as const, state: "active" as const };
+    expect(getEntitlementStatus({ providerAvailable: true, subscription: freeTierPayload }, 2_000)).toEqual({ status: "free", premiumAvailable: false });
+    expect(canUseSubscription(freeTierPayload, 2_000)).toBe(false);
   });
 });

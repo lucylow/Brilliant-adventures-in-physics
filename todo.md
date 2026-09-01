@@ -892,3 +892,11 @@
 - [x] Audit Upgrade, catalog, restore, and entitlement boundaries
 - [x] Implement explicit catalog and restore lifecycle feedback
 - [x] Add deterministic monetization tests and validate free-tier behavior
+
+- [x] Audit billing-provider, entitlement, and Upgrade display boundaries
+- [x] Implement explicit provider-state and entitlement-detail feedback
+- [x] Add deterministic monetization coverage and validate accessibility
+
+- [x] Review remaining monetization and build issues for final delivery
+- [x] Finish final monetization hardening and fix discovered errors
+- [x] Run full validation and package the final working source ZIP
