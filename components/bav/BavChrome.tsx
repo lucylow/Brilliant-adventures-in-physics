@@ -7,6 +7,10 @@ import { BavIcon } from "./BavIcon";
 import { BavCard } from "./BavCard";
 import { BAV_ICON_MAP, type BavIconName } from "@/lib/design-system";
 
+function isBavIconName(value: unknown): value is BavIconName {
+  return typeof value === "string" && Object.prototype.hasOwnProperty.call(BAV_ICON_MAP, value);
+}
+
 export function BavBadge({
   label,
   tone = "info",
@@ -168,9 +172,9 @@ export function BavListItem({
   return (
     <BavCard onPress={onPress} accessibilityLabel={accessibilityLabel ?? title} padded elevation="border">
       <View style={{ flexDirection: "row", alignItems: "center", gap: 12 }}>
-        {typeof icon === "string" && icon in BAV_ICON_MAP ? (
+        {isBavIconName(icon) ? (
           <View style={{ width: 40, height: 40, borderRadius: 12, backgroundColor: withAlpha(colors.primary, 0.1), alignItems: "center", justifyContent: "center" }}>
-            <BavIcon name={icon as BavIconName} color={colors.primary} size="sm" />
+            <BavIcon name={icon} color={colors.primary} size="sm" />
           </View>
         ) : (
           icon
