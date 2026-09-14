@@ -112,12 +112,6 @@ export function BavToast({
   visible: boolean;
 }) {
   if (!visible) return null;
-  const colors = {
-    info: "info",
-    success: "success",
-    warning: "warning",
-    danger: "danger",
-  } as const;
   return (
     <View
       accessibilityLiveRegion="polite"

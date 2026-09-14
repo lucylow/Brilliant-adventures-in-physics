@@ -1,16 +1,21 @@
 import { useState } from "react";
 import { router } from "expo-router";
-import { ScrollView, Text, TextInput, View } from "react-native";
+import { ScrollView, View } from "react-native";
 import { ScreenContainer } from "@/components/screen-container";
-import { Card, Pill, PrimaryButton, SecondaryButton, SectionHeader } from "@/components/physica-ui";
+import { BavButton, BavSectionHeader, BodySmall } from "@/components/bav";
 import { InlineError } from "@/components/states";
-import { useColors } from "@/hooks/use-colors";
+import { ScanCaptureFrame, ScanReviewCard } from "@/components/scan/ScanCapture";
 import { safeProjectile } from "@/lib/physics-validation";
 import { scanScreenModel } from "@/lib/mock/ai/ai-screen-adapters";
+import { buildScanViewModel } from "@/lib/view-models/practice";
+import { canUseCamera, takePhoto } from "@/lib/media-adapters";
+import { layout, spacing } from "@/lib/design-system";
 
 export default function ScanProblemScreen() {
-  const colors = useColors();
   const demoScan = scanScreenModel();
+  const [step, setStep] = useState<"capture" | "review">("capture");
+  const [capturing, setCapturing] = useState(false);
+  const [confirmed, setConfirmed] = useState(false);
   const [question, setQuestion] = useState(demoScan?.scan.detectedText ?? "A ball is launched at 18 m/s at 42° from level ground. Find its range.");
   const [speed, setSpeed] = useState("18");
   const [angle, setAngle] = useState("42");
@@ -20,7 +25,29 @@ export default function ScanProblemScreen() {
   const numericAngle = Number(angle.replace(",", "."));
   const inputValid = Number.isFinite(numericSpeed) && numericSpeed > 0 && Number.isFinite(numericAngle) && numericAngle > 0 && numericAngle < 90;
   const computed = inputValid ? safeProjectile({ speed: numericSpeed, angleDeg: numericAngle, height: 0 }) : null;
+  const model = buildScanViewModel({ prompt: question, speed, angle, solved });
+  const capture = () => {
+    if (capturing) return;
+    setCapturing(true);
+    const finish = () => {
+      setCapturing(false);
+      setStep("review");
+      setSolved(false);
+    };
+    if (!canUseCamera()) {
+      finish();
+      return;
+    }
+    void takePhoto()
+      .then(() => finish())
+      .catch(() => finish());
+  };
   const solve = () => {
+    if (model.confidence === "low" && !confirmed) {
+      setValidationMessage("Low-confidence extraction needs a confirmation tap before the engine runs.");
+      setConfirmed(true);
+      return;
+    }
     if (!inputValid || !computed || !computed.ok) {
       setSolved(false);
       setValidationMessage(computed && !computed.ok ? computed.error.userMessage : "Enter a speed greater than 0 and an angle between 0° and 90°.");
@@ -32,42 +59,31 @@ export default function ScanProblemScreen() {
   const result = computed?.ok ? computed.data : null;
   return (
     <ScreenContainer className="p-5">
-      <ScrollView contentContainerStyle={{ paddingBottom: 32 }}>
-        <SectionHeader title="Scan Problem" subtitle="Review the extracted values before solving." />
-        <Card>
-          <Pill label={demoScan ? `DEMO AI · ${demoScan.scan.confidenceBand.toUpperCase()}` : "MANUAL REVIEW"} active />
-          {demoScan && <Text style={{ marginTop: 10, color: colors.primary, lineHeight: 20 }}>{demoScan.demoLabel}</Text>}
-          {demoScan?.scan.clarificationQuestion ? <Text style={{ marginTop: 8, color: colors.warning, lineHeight: 20 }}>{demoScan.scan.clarificationQuestion}</Text> : null}
-          <Text style={{ marginTop: 14, color: colors.muted, lineHeight: 20 }}>Camera recognition can be uncertain. Editing the values keeps you in control.</Text>
-          <TextInput accessibilityLabel="Physics problem statement" value={question} onChangeText={setQuestion} multiline placeholder="Type or paste a physics problem" placeholderTextColor={colors.muted} style={{ marginTop: 14, minHeight: 84, borderWidth: 1, borderColor: colors.border, borderRadius: 14, padding: 12, color: colors.foreground, textAlignVertical: "top" }} />
-          <View style={{ flexDirection: "row", gap: 10, marginTop: 14 }}>
-            <View style={{ flex: 1 }}>
-              <Text style={{ color: colors.muted, fontSize: 12 }}>Speed · m/s</Text>
-              <TextInput accessibilityLabel="Launch speed in meters per second" value={speed} onChangeText={(value) => { setSpeed(value); setValidationMessage(null); setSolved(false); }} keyboardType="decimal-pad" style={{ marginTop: 5, borderWidth: 1, borderColor: colors.border, borderRadius: 12, padding: 12, color: colors.foreground }} />
-            </View>
-            <View style={{ flex: 1 }}>
-              <Text style={{ color: colors.muted, fontSize: 12 }}>Angle · °</Text>
-              <TextInput accessibilityLabel="Launch angle in degrees" value={angle} onChangeText={(value) => { setAngle(value); setValidationMessage(null); setSolved(false); }} keyboardType="decimal-pad" style={{ marginTop: 5, borderWidth: 1, borderColor: colors.border, borderRadius: 12, padding: 12, color: colors.foreground }} />
-            </View>
+      <ScrollView contentContainerStyle={{ paddingBottom: 32, gap: spacing.md }} keyboardShouldPersistTaps="handled">
+        <BavSectionHeader title="Scan Problem" subtitle="Capture, review values, then solve with the verified engine." />
+        {step === "capture" ? (
+          <ScanCaptureFrame onCapture={capture} capturing={capturing} />
+        ) : (
+          <ScanReviewCard
+            model={model}
+            onPromptChange={(value) => { setQuestion(value); setSolved(false); }}
+            onSpeedChange={(value) => { setSpeed(value); setValidationMessage(null); setSolved(false); }}
+            onAngleChange={(value) => { setAngle(value); setValidationMessage(null); setSolved(false); }}
+            onSolve={solve}
+            solvedBody={solved && result ? `${result.range.toFixed(2)} m range · flight time ${result.flightTime.toFixed(2)} s · peak ${result.peakHeight.toFixed(2)} m` : undefined}
+          />
+        )}
+        {demoScan ? <BodySmall tone="secondary">{demoScan.demoLabel}</BodySmall> : null}
+        {validationMessage ? <InlineError message={validationMessage} /> : null}
+        {solved ? (
+          <View style={{ gap: 8 }}>
+            <BavButton label="Practice a similar problem" onPress={() => router.push("/practice" as never)} />
+            <BavButton label="Ask Bavi to explain" variant="secondary" onPress={() => router.push("/tutor" as never)} />
           </View>
-          <View style={{ marginTop: 14 }}>
-            <Text style={{ color: colors.warning, fontWeight: "700" }}>Medium confidence · please verify highlighted values</Text>
-          </View>
-          <View style={{ marginTop: 16 }}>
-            <PrimaryButton label="Solve with verified engine" disabled={!inputValid} onPress={solve} />
-          </View>
-          {validationMessage ? <InlineError message={validationMessage} /> : null}
-          <View style={{ marginTop: 10 }}>
-            <SecondaryButton label="Back to tutor" onPress={() => router.push("/tutor" as never)} />
-          </View>
-          {solved && result ? (
-            <View style={{ marginTop: 18, padding: 14, borderRadius: 14, backgroundColor: colors.success + "14" }}>
-              <Text style={{ color: colors.success, fontWeight: "800" }}>Verified result</Text>
-              <Text style={{ marginTop: 5, color: colors.foreground, fontSize: 20, fontWeight: "800" }}>{result.range.toFixed(2)} m range</Text>
-              <Text style={{ marginTop: 5, color: colors.muted }}>Flight time {result.flightTime.toFixed(2)} s · peak height {result.peakHeight.toFixed(2)} m</Text>
-            </View>
-          ) : null}
-        </Card>
+        ) : null}
+        {step === "review" ? <BavButton label="Recapture" variant="ghost" onPress={() => setStep("capture")} /> : null}
+        <BavButton label="Back to tutor" variant="secondary" onPress={() => router.push("/tutor" as never)} />
+        <View style={{ height: layout.sectionGap }} />
       </ScrollView>
     </ScreenContainer>
   );

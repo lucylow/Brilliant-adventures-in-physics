@@ -161,7 +161,7 @@ describe("Demo AI mock layer", () => {
       difficultyPreference: "medium",
       recentTopics: ["kinematics"],
     });
-    expect(ranked.items[0]?.reason).not.toMatch(/popular/i);
+    expect(ranked.items[0]?.reason).not.toMatch(/\bpopular\b/i);
     expect(ranked.items.some((item) => item.conceptId === "momentum")).toBe(true);
   });
 

@@ -1,6 +1,8 @@
-import { practiceQuestions, type PracticeQuestion } from "@/lib/practice";
+import { practiceQuestions } from "@/lib/practice";
+import type { PracticeQuestion } from "@/lib/practice";
 import { getPhysicsHints } from "@/lib/puzzles";
 import type { ScreenStatus } from "@/lib/screen-recovery";
+import { getActivePracticeQuestions } from "@/lib/mock/adapters/catalog";
 
 export type PracticeFeedbackKind = "idle" | "correct" | "incorrect";
 
@@ -24,12 +26,14 @@ export function buildPracticeViewModel(input: {
   feedback: PracticeFeedbackKind;
   expected?: number;
 }): PracticeViewModel {
-  const question = practiceQuestions[Math.abs(input.index) % practiceQuestions.length];
+  const catalog = getActivePracticeQuestions();
+  const questions = catalog.length ? catalog : practiceQuestions;
+  const question = questions[Math.abs(input.index) % questions.length];
   const hints = getPhysicsHints(question.concept).map((hint) => hint.text);
   return {
     status: "success",
-    index: Math.abs(input.index) % practiceQuestions.length,
-    total: practiceQuestions.length,
+    index: Math.abs(input.index) % questions.length,
+    total: questions.length,
     difficulty: difficultyFor(question),
     prompt: question.prompt,
     unit: question.unit,

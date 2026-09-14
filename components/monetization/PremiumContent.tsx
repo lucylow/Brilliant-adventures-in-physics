@@ -122,8 +122,8 @@ export function PremiumQuantumCard({ locked, onPress }: { locked: boolean; onPre
   const colors = useColors();
   return (
     <BavCard accessibilityLabel="Quantum lab">
-      <View style={{ height: 88, borderRadius: radius.md, overflow: "hidden", backgroundColor: withAlpha("#7C3AED", 0.16), marginBottom: spacing.sm }}>
-        <ScientificPreview motif="particle" accent="#7C3AED" />
+      <View style={{ height: 88, borderRadius: radius.md, overflow: "hidden", backgroundColor: withAlpha(colors.primary, 0.16), marginBottom: spacing.sm }}>
+        <ScientificPreview motif="particle" accent={colors.primary} />
       </View>
       <BAVPlusBadge />
       <Heading3 style={{ marginTop: spacing.sm }}>Quantum lab</Heading3>

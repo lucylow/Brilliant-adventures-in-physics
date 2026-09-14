@@ -51,3 +51,13 @@ Use `ScrollScreen` / `DetailScreen` / `ChatScreenShell` / `ExperimentScreen` fro
 ## Visual demo
 
 Development only: `/dev/showcase`.
+
+## Scan flow
+
+Capture (camera viewport or review fallback) → editable values → confidence band → verified engine solve → practice/tutor.
+
+Low-confidence extraction always asks for confirmation. Generic AI prose is never labeled Verified.
+
+## Adding components
+
+Place primitives in `components/bav/`. Feature chrome lives next to the screen it serves (`components/tutor`, `components/practice`, `components/scan`).

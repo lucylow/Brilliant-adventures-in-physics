@@ -1,6 +1,7 @@
 import { isMockAIEnabled, getMockAIConfig, isProductionRuntime } from "./config";
 import { getAIDatasetCounts } from "./ai-validators";
 import { getAIDemoScenario } from "./ai-scenarios";
+import { inspectExpansion } from "./expansion/debug";
 
 export function inspectMockAI() {
   if (isProductionRuntime()) return null;
@@ -22,5 +23,6 @@ export function inspectMockAI() {
         return config.scenarioId;
       }
     })(),
+    expansion: inspectExpansion(),
   };
 }

@@ -16,6 +16,7 @@ The visual source is the Figma Make project [RedesignB.A.V.MobileApp](https://gi
 | Simulation detail | `app/simulation.tsx` | `projectile()` deterministic engine |
 | Progress | `app/(tabs)/progress.tsx` | Learning store + `ProgressInsights` |
 | Profile | `app/profile.tsx` | Same home adapter |
+| Adventure | Explore + Progress | `buildAdventureViewModel` + existing worlds |
 
 Bottom navigation is five tabs: Home, Build, Play, Explore, Tutor. Practice, Progress, Astronomy, and Quantum remain as routes (`href: null` on the tab bar) so no feature was deleted.
 

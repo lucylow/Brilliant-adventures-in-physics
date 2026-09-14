@@ -61,7 +61,7 @@ function subscriptionFor(index: number): Subscription | undefined {
   return { tier: plan === "lifetime" ? "lifetime" : "plus", state, productId: `fixture-${index}`, expiresAt: plan === "lifetime" ? undefined : expires };
 }
 
-export function buildSubscriptionStateFixtures(count = 120): Array<{ id: string; subscription?: Subscription; period: BillingPeriod; platform: BillingPlatform }> {
+export function buildSubscriptionStateFixtures(count = 120): { id: string; subscription?: Subscription; period: BillingPeriod; platform: BillingPlatform }[] {
   return Array.from({ length: count }, (_, index) => ({
     id: `sub-state-${index + 1}`,
     subscription: subscriptionFor(index),
@@ -81,17 +81,18 @@ export function buildEntitlementStateFixtures(count = 120): Entitlements[] {
   });
 }
 
-export function buildPaywallStateFixtures(count = 120): Array<{ id: string; variant: PaywallVariantId; flow: PurchaseFlowState; userState: MonetizationUserState; selected: BillingPeriod }> {
+export function buildPaywallStateFixtures(count = 120): { id: string; variant: PaywallVariantId; flow: PurchaseFlowState; userState: MonetizationUserState; selected: BillingPeriod; access: FeatureAccessState }[] {
   return Array.from({ length: count }, (_, index) => ({
     id: `paywall-state-${index + 1}`,
     variant: PAYWALL_VARIANTS[index % PAYWALL_VARIANTS.length].id,
     flow: FLOW[index % FLOW.length],
     userState: USER_STATES[index % USER_STATES.length],
     selected: PERIODS[(index % 3) + 1] as BillingPeriod,
+    access: ACCESS[index % ACCESS.length],
   }));
 }
 
-export function buildBillingEventFixtures(count = 120): Array<{ id: string; event: string; productId: string; atOffsetHours: number }> {
+export function buildBillingEventFixtures(count = 120): { id: string; event: string; productId: string; atOffsetHours: number }[] {
   const events = ["paywall_viewed", "plan_selected", "purchase_started", "purchase_succeeded", "purchase_failed", "restore_started", "restore_succeeded", "trial_started", "lifetime_purchased"];
   return Array.from({ length: count }, (_, index) => ({
     id: `billing-event-${index + 1}`,
@@ -101,7 +102,7 @@ export function buildBillingEventFixtures(count = 120): Array<{ id: string; even
   }));
 }
 
-export function buildUsageStateFixtures(count = 120): Array<{ id: string; snapshot: UsageSnapshot; percent: number; unlimited: boolean }> {
+export function buildUsageStateFixtures(count = 120): { id: string; snapshot: UsageSnapshot; percent: number; unlimited: boolean }[] {
   return Array.from({ length: count }, (_, index) => {
     const snapshot = emptyUsageSnapshot();
     const percent = [0, 25, 50, 75, 90, 100][index % 6];
@@ -111,8 +112,8 @@ export function buildUsageStateFixtures(count = 120): Array<{ id: string; snapsh
   });
 }
 
-export function buildPurchaseScenarioFixtures(count = 50): Array<{ id: string; from: MonetizationUserState; to: MonetizationUserState; product: string }> {
-  const pairs: Array<[MonetizationUserState, MonetizationUserState]> = [
+export function buildPurchaseScenarioFixtures(count = 50): { id: string; from: MonetizationUserState; to: MonetizationUserState; product: string }[] {
+  const pairs: [MonetizationUserState, MonetizationUserState][] = [
     ["free", "trial"],
     ["trial", "plus_annual"],
     ["trial", "expired"],
@@ -130,7 +131,7 @@ export function buildPurchaseScenarioFixtures(count = 50): Array<{ id: string; f
   });
 }
 
-export function buildPricingScenarioFixtures(count = 50): Array<{ id: string; currency: string; locale: string; monthlyMicros: number; annualMicros: number }> {
+export function buildPricingScenarioFixtures(count = 50): { id: string; currency: string; locale: string; monthlyMicros: number; annualMicros: number }[] {
   const currencies = ["USD", "CAD", "EUR", "GBP", "JPY", "AUD", "BRL", "INR"];
   const locales = ["en-US", "en-CA", "fr-FR", "en-GB", "ja-JP", "en-AU", "pt-BR", "hi-IN"];
   return Array.from({ length: count }, (_, index) => ({
@@ -142,7 +143,7 @@ export function buildPricingScenarioFixtures(count = 50): Array<{ id: string; cu
   }));
 }
 
-export function buildErrorScenarioFixtures(count = 30): Array<{ id: string; code: MonetizationErrorCode }> {
+export function buildErrorScenarioFixtures(count = 30): { id: string; code: MonetizationErrorCode }[] {
   return Array.from({ length: count }, (_, index) => ({
     id: `error-${index + 1}`,
     code: ERRORS[index % ERRORS.length],
@@ -190,8 +191,8 @@ export function buildUserJourneys(): MonetizationJourney[] {
   ];
 }
 
-export function featureAccessMatrix(): Array<{ plan: PlanCode; state: string; feature: FeatureId; access: FeatureAccessState }> {
-  const plans: Array<{ plan: PlanCode; snapshot: Parameters<typeof getEntitlements>[0] }> = [
+export function featureAccessMatrix(): { plan: PlanCode; state: string; feature: FeatureId; access: FeatureAccessState }[] {
+  const plans: { plan: PlanCode; snapshot: Parameters<typeof getEntitlements>[0] }[] = [
     { plan: "free", snapshot: { snapshot: { providerAvailable: true, subscription: { tier: "free", state: "active" } } } },
     { plan: "plus", snapshot: { snapshot: { providerAvailable: true, subscription: { tier: "plus", state: "trial", expiresAt: "2027-01-01T00:00:00.000Z" } } } },
     { plan: "plus", snapshot: { snapshot: { providerAvailable: true, subscription: { tier: "plus", state: "active", expiresAt: "2027-01-01T00:00:00.000Z" } } } },
@@ -201,7 +202,7 @@ export function featureAccessMatrix(): Array<{ plan: PlanCode; state: string; fe
     { plan: "free", snapshot: { snapshot: { providerAvailable: false } } },
     { plan: "plus", snapshot: { snapshot: { providerAvailable: true, subscription: { tier: "plus", state: "pending" } } } },
   ];
-  const rows: Array<{ plan: PlanCode; state: string; feature: FeatureId; access: FeatureAccessState }> = [];
+  const rows: { plan: PlanCode; state: string; feature: FeatureId; access: FeatureAccessState }[] = [];
   for (const entry of plans) {
     const entitlements = getEntitlements(entry.snapshot);
     for (const feature of ALL_FEATURES) {

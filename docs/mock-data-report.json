@@ -1,0 +1,58 @@
+{
+  "generatedAt": "2026-09-14T16:00:00.000Z",
+  "version": "1.1.0",
+  "expansionVersion": "1.1.0",
+  "scenario": "active-learner",
+  "counts": {
+    "users": 24,
+    "topics": 30,
+    "concepts": 172,
+    "lessons": 120,
+    "equations": 89,
+    "problems": 331,
+    "attempts": 520,
+    "simulations": 55,
+    "experiments": 120,
+    "measurements": 164,
+    "graphs": 9,
+    "missions": 74,
+    "achievements": 50,
+    "tutorSessions": 58,
+    "notebook": 62,
+    "notifications": 56,
+    "activities": 180,
+    "discoveryCards": 100,
+    "misconceptions": 104,
+    "flashcards": 300,
+    "dailyChallenges": 90,
+    "questionsOfTheDay": 365,
+    "reviewItems": 36,
+    "labExperiments": 80,
+    "freeBodies": 50,
+    "microLessons": 105,
+    "facts": 300
+  },
+  "validation": {
+    "dataset": [],
+    "references": [],
+    "relationships": [],
+    "duplicateIds": [],
+    "invalidConceptRefs": []
+  },
+  "packsLoaded": [
+    "mechanics",
+    "waves",
+    "electricity",
+    "optics",
+    "thermal",
+    "modern",
+    "space",
+    "literacy",
+    "classroom"
+  ],
+  "notes": [
+    "MOCK DATA IS A DEVELOPMENT CONTENT LAYER.",
+    "Social-proof and leaderboard values are DEMO_AGGREGATE_NOT_PRODUCTION / fictional.",
+    "Astro fixtures labeled EDUCATIONAL_FIXTURE are not real discoveries."
+  ]
+}

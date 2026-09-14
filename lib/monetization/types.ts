@@ -3,7 +3,7 @@
  * Existing Subscription / Entitlement contracts live in compat.ts and are not duplicated.
  */
 
-import type { BillingState, Entitlement, Subscription, Tier } from "./compat";
+import type { Entitlement, Subscription } from "./compat";
 
 export const PLANS = {
   FREE: "free",

@@ -21,6 +21,9 @@ import { createActivityFeed } from "./generators/activity";
 import { createAttemptHistory, createDailyActivity, masteryFromAttempts } from "./generators/history";
 import { buildRecommendations } from "./recommendations";
 import { MOCK_DATA_VERSION } from "./version";
+import { buildMockExpansion } from "./expansion/compose";
+import { createActivityTimeline } from "./expansion/factories";
+import { createMockNotebookEntry } from "./factories/notebook";
 import type { MockAuthState, MockDataset, MockErrorScenarioId, MockLearnerProfile, MockOfflineState, MockScenarioId } from "./types";
 import type { Entitlement, Subscription } from "@/lib/monetization";
 
@@ -38,6 +41,10 @@ const SCENARIO_TO_PACK: Record<MockScenarioId, SeedPackId> = {
   "returning-user": "demo",
   "empty-state": "minimal",
   "error-state": "errors",
+  showcase: "rich",
+  "mechanics-lab": "explorer",
+  "space-week": "advanced",
+  "exam-sprint": "exam-prep",
 };
 
 const SCENARIO_LEARNER: Record<MockScenarioId, string> = {
@@ -52,6 +59,10 @@ const SCENARIO_LEARNER: Record<MockScenarioId, string> = {
   "returning-user": "user-sam",
   "empty-state": "user-cameron",
   "error-state": "user-maya",
+  showcase: "user-jordan",
+  "mechanics-lab": "user-noah",
+  "space-week": "user-priya",
+  "exam-sprint": "user-taylor",
 };
 
 function learningFromUser(user: MockLearnerProfile, mastery: MockDataset["mastery"], attempts: MockDataset["attempts"], lessonsCompleted: number, labsCompleted: number): LearningState {
@@ -91,6 +102,13 @@ function mockEntitlements(premium: boolean): Entitlement[] {
     { feature: "unlimited_tutor", enabled: premium, limit: premium ? undefined : 5, used: premium ? 0 : 2 },
     { feature: "advanced_simulations", enabled: premium },
     { feature: "physics_lens", enabled: premium },
+    { feature: "advanced_labs", enabled: premium },
+    { feature: "exam_generator", enabled: premium },
+    { feature: "quantum_labs", enabled: premium },
+    { feature: "advanced_astronomy", enabled: premium },
+    { feature: "premium_missions", enabled: premium },
+    { feature: "personalized_study_plans", enabled: premium },
+    { feature: "ai_lab_reports", enabled: premium },
   ];
 }
 
@@ -133,6 +151,7 @@ export function buildMockDataset(scenario: MockScenarioId = "active-learner", le
   const selectedId = learnerId ?? SCENARIO_LEARNER[scenario];
   const user = users.find((item) => item.id === selectedId) ?? users[1];
   const empty = scenario === "empty-state";
+  const expansion = buildMockExpansion();
 
   const topics = createTopicCatalog();
   const concepts = createConceptCatalog();
@@ -141,9 +160,9 @@ export function buildMockDataset(scenario: MockScenarioId = "active-learner", le
   const problems = [...createProblemCatalog(), ...createExtendedProblemCatalog()];
   const simulations = createSimulationCatalog();
   const snapshots = createSimulationSnapshots(simulations);
-  const experiments = empty ? [] : createExperimentCatalog();
+  const experiments = empty ? [] : [...createExperimentCatalog(), ...expansion.labExperiments];
   const completedMissionIds = empty || scenario === "fresh-user" || scenario === "beginner" ? new Set<string>() : new Set(["mission-first-trajectory", "lesson-projectile-motion", "problem-projectile-range-1"]);
-  const missions = createMissionCatalog(completedMissionIds);
+  const missions = empty ? [] : [...createMissionCatalog(completedMissionIds), ...expansion.extraMissions];
   const achievements = createAchievementCatalog();
   const linkedTopics = linkCatalog(topics, concepts, lessons, problems, simulations);
 
@@ -151,10 +170,26 @@ export function buildMockDataset(scenario: MockScenarioId = "active-learner", le
   const attempts = empty ? [] : createAttemptHistory(user, problemSlice, `${MOCK_DATA_VERSION}:${scenario}`);
   const mastery = empty ? [] : masteryFromAttempts(user, attempts, problems, concepts);
   const dailyActivity = empty ? [] : createDailyActivity(user, attempts, `${MOCK_DATA_VERSION}:${scenario}`);
-  const tutorSessions = empty ? [] : createTutorCatalog(user.id);
-  const notebook = empty ? [] : createNotebookCatalog(user.id);
+  const tutorSessions = empty ? [] : [...createTutorCatalog(user.id), ...expansion.extraTutorSessions];
+  const notebook = empty
+    ? []
+    : [
+        ...createNotebookCatalog(user.id),
+        ...expansion.discoveryCards.slice(0, 12).map((card, index) =>
+          createMockNotebookEntry({
+            id: `note-discover-${card.id}`,
+            title: card.title,
+            type: "reflection",
+            content: `${card.fact} ${card.whyItMatters}`,
+            links: card.relatedConcepts,
+            conceptId: card.relatedConcepts[0],
+            userId: user.id,
+            createdAt: isoDateDaysAgo(index + 2) + "T11:00:00.000Z",
+          }),
+        ),
+      ];
   const notifications = empty ? [] : createNotificationCatalog(user.id, user.streak);
-  const activity = empty ? [] : createActivityFeed({ userId: user.id, attempts, missions, experiments, tutorSessions });
+  const activity = empty ? [] : createActivityFeed({ userId: user.id, attempts, missions, experiments, tutorSessions, extras: createActivityTimeline(user.id) });
   const recommendations = buildRecommendations({ user, concepts, lessons, problems, simulations, missions, mastery });
   const achievementStates = achievements.map((definition) => {
     const earned =
@@ -180,7 +215,7 @@ export function buildMockDataset(scenario: MockScenarioId = "active-learner", le
 
   const reviewQueue = mastery
     .filter((item) => item.recommendedAction === "review" || item.recommendedAction === "practice")
-    .slice(0, 20)
+    .slice(0, 36)
     .map((item, index) => ({
       id: `review-${item.conceptId}`,
       userId: user.id,
@@ -219,7 +254,7 @@ export function buildMockDataset(scenario: MockScenarioId = "active-learner", le
     concepts: linkedConcepts,
     lessons: empty ? [] : lessons,
     equations,
-    problems: empty ? [] : problemSlice,
+    problems: empty ? [] : [...problemSlice, ...expansion.extraProblems],
     attempts,
     mastery,
     achievements,
@@ -247,6 +282,7 @@ export function buildMockDataset(scenario: MockScenarioId = "active-learner", le
     bavQuests: BAV_FALLBACK_QUESTS,
     bavVisualizations: BAV_FALLBACK_VISUALIZATIONS,
     worlds: ["orbit", "quantum", "mars", "ocean", "timelab"],
+    expansion,
   };
 }
 
@@ -258,6 +294,7 @@ export function seedExamPrep(): MockDataset { return buildMockDataset("exam-prep
 export function seedExplorer(): MockDataset { return buildMockDataset("explorer"); }
 export function seedOffline(): MockDataset { return buildMockDataset("offline-user"); }
 export function seedErrors(): MockDataset { return buildMockDataset("error-state"); }
+export function seedShowcase(): MockDataset { return buildMockDataset("showcase"); }
 
 export function packForScenario(scenario: MockScenarioId): SeedPackId {
   return SCENARIO_TO_PACK[scenario];

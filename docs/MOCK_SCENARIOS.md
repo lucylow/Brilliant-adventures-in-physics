@@ -47,3 +47,7 @@ Every important surface should be renderable from:
 - **rich data** — `power-user`
 
 The mock panel (`/dev/mock-data`) switches scenario, learner, latency, network, and injected failures without a rebuild.
+
+## Final report (scenarios)
+
+Default launch scenario is `active-learner` / `user-maya`. Enable with `EXPO_PUBLIC_USE_MOCK_DATA=true`. Reset from the mock panel or `resetMockData()`. Full counts and command results: [MOCK_DATA.md](./MOCK_DATA.md#final-report).

@@ -1,4 +1,5 @@
-import { SchemeColors, type ColorScheme } from "@/constants/theme";
+import { SchemeColors } from "@/constants/theme";
+import type { ColorScheme } from "@/constants/theme";
 
 export const BAV_BRAND = {
   name: "B.A.V.",

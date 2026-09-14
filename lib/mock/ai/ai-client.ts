@@ -4,6 +4,10 @@ import { MockAIError } from "./ai-errors";
 import { createMockAIMeta, wrapMockAI } from "./ai-factories";
 import { waitMockAILatency } from "./ai-latency";
 import { getPreferredExplanationStyle, rememberTurn } from "./ai-memory";
+import { learnerModelByUserId } from "./expansion/learner-model";
+import { personalizeTutorPayload } from "./expansion/personalize";
+import { getAIDemoShowcase, learnerIdForTestUser } from "./expansion/orchestration";
+import type { LearnerModelId } from "./expansion/types";
 import { contentFilter } from "./ai-safety";
 import { parseWith, tutorResponsePayloadSchema } from "./ai-schemas";
 import { beginSend, boundedSessionContext, endSend, appendSessionTurn, getSessionTurns } from "./ai-session";
@@ -38,6 +42,13 @@ function applyFailure(signal?: AbortSignal): void {
   if (config.failureMode === "rateLimit") throw new MockAIError("rateLimited");
   if (config.failureMode === "malformed") throw new MockAIError("malformedResponse");
   if (config.failureMode === "provider" || config.aiMode === "mock-error") throw new MockAIError("providerError");
+}
+
+function expansionLearnerId(request: MockAIRequest): LearnerModelId | null {
+  const byUser = learnerModelByUserId(request.userId);
+  if (byUser) return byUser.id;
+  if (getAIDemoShowcase() === "personalization") return learnerIdForTestUser();
+  return null;
 }
 
 function lastUserConcept(request: MockAIRequest, topic: CatalogTopic): string {
@@ -125,7 +136,9 @@ export function buildTutorPayload(request: MockAIRequest): TutorResponsePayload 
     },
     sourceLabel: MOCK_AI_PROVIDER_LABEL,
   };
-  return parseWith(tutorResponsePayloadSchema, payload, "TutorResponse") as TutorResponsePayload;
+  const learnerId = expansionLearnerId(request);
+  const next = learnerId ? personalizeTutorPayload(payload, learnerId) : payload;
+  return parseWith(tutorResponsePayloadSchema, next, "TutorResponse") as TutorResponsePayload;
 }
 
 export function toTutorAnswer(payload: TutorResponsePayload): TutorAnswer {

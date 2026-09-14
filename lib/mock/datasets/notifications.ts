@@ -13,7 +13,7 @@ export function createNotificationCatalog(userId: string, streak: number): MockN
     createMockNotification({ id: "notif-milestone", userId, kind: "milestone", title: "Progress milestone", body: "You crossed 60% local accuracy in kinematics.", createdAt: isoDaysAgo(4, 6), read: true, route: "/progress" }),
     createMockNotification({ id: "notif-practice", userId, kind: "practice", title: "Practice reminder", body: "One projectile question is a good next step.", createdAt: isoDaysAgo(0, 12), read: false, route: "/practice" }),
   ];
-  const extras = Array.from({ length: 24 }, (_, index) =>
+  const extras = Array.from({ length: 48 }, (_, index) =>
     createMockNotification({
       id: `notif-extra-${index + 1}`,
       userId,

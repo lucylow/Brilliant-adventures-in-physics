@@ -32,7 +32,7 @@ export function entitlementHistory(count = 40): MockHistoryEvent[] {
   }));
 }
 
-export function usageHistory(count = 40): Array<{ id: string; meter: "ai_requests" | "experiments"; used: number; at: string; fictional: true }> {
+export function usageHistory(count = 40): { id: string; meter: "ai_requests" | "experiments"; used: number; at: string; fictional: true }[] {
   return Array.from({ length: count }, (_, index) => ({
     id: `usage-history-${index + 1}`,
     meter: index % 2 === 0 ? "ai_requests" : "experiments",
@@ -42,7 +42,7 @@ export function usageHistory(count = 40): Array<{ id: string; meter: "ai_request
   }));
 }
 
-export function paywallHistory(count = 40): Array<{ id: string; action: "first_view" | "repeat_view" | "closed" | "selected_annual" | "purchased"; at: string; fictional: true }> {
+export function paywallHistory(count = 40): { id: string; action: "first_view" | "repeat_view" | "closed" | "selected_annual" | "purchased"; at: string; fictional: true }[] {
   const actions = ["first_view", "repeat_view", "closed", "selected_annual", "purchased"] as const;
   return Array.from({ length: count }, (_, index) => ({
     id: `paywall-history-${index + 1}`,

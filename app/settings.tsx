@@ -105,6 +105,9 @@ export default function SettingsScreen() {
             <View style={{ marginTop: 12 }}>
               <SecondaryButton label="Open mock data panel" onPress={() => router.push("/dev/mock-data" as never)} />
             </View>
+            <View style={{ marginTop: 8 }}>
+              <SecondaryButton label="Open monetization lab" onPress={() => router.push("/dev/monetization" as never)} />
+            </View>
           </Card>
         ) : null}
         {loadMessage && <Text accessibilityLiveRegion="assertive" style={{ marginTop: 12, color: colors.warning }}>{loadMessage}</Text>}{saveMessage && <Text accessibilityLiveRegion="assertive" style={{ marginTop: 12, color: colors.warning }}>{saveMessage}</Text>}<View style={{ marginTop: 20 }}><SecondaryButton label={tr("common.done")} onPress={() => router.back()} /></View>

@@ -1,5 +1,5 @@
 /** Schema version for persisted mock datasets. Bump when fixture shapes change. */
-export const MOCK_DATA_VERSION = "1.0.0" as const;
+export const MOCK_DATA_VERSION = "1.1.0" as const;
 
 export const MOCK_STORAGE_KEYS = {
   datasetVersion: "physicaai.mock.version.v1",

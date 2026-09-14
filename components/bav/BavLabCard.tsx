@@ -7,7 +7,6 @@ import { BavIcon } from "./BavIcon";
 import { BavButton } from "./BavButton";
 import { BodySmall, Caption, Heading3 } from "./BavText";
 import { BavProgressBar } from "./BavProgress";
-import type { BavIconName } from "@/lib/design-system";
 import { ScientificPreview } from "@/components/scientific/ScientificMotifs";
 
 export type LabCardVariant = "featured" | "standard" | "compact" | "recent" | "locked";

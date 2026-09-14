@@ -55,3 +55,20 @@ export { verifyTopicCalculation, compareNumeric, runVerifiedCalc } from "./ai-ve
 export { classifyIntent, parsePhysicsQuestion, truncateHistory, INTENT_FIXTURES } from "./datasets/intents-edge";
 export { varyProjectile, varyOhms } from "./ai-generators";
 export { inspectMockAI } from "./ai-inspector";
+export { inspectExpansion } from "./expansion/debug";
+export {
+  validateExpansionLayer,
+  getExpansionCounts,
+  getExpansionCatalog,
+} from "./expansion/validators";
+export {
+  setAIDemoShowcase,
+  getAIDemoShowcase,
+  setAITestUserState,
+  SHOWCASES,
+} from "./expansion/orchestration";
+export {
+  resetAIMemory,
+  resetAIUserState,
+} from "./expansion/memory-store";
+export { MOCK_AI_EXPANSION_VERSION } from "./expansion/types";

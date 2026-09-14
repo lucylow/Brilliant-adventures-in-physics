@@ -51,44 +51,41 @@ const PLACEHOLDER = {
   },
 } as const satisfies StoreIdMap;
 
-function readEnv(name: string): string | undefined {
-  if (typeof process === "undefined" || !process.env) return undefined;
-  const value = process.env[name];
+function trimEnv(value: string | undefined): string | undefined {
   return typeof value === "string" && value.trim().length > 0 ? value.trim() : undefined;
 }
 
-function envInt(name: string, fallback: number): number {
-  const raw = readEnv(name);
+function parseEnvInt(value: string | undefined, fallback: number): number {
+  const raw = trimEnv(value);
   if (!raw) return fallback;
   const parsed = Number(raw);
   return Number.isFinite(parsed) && parsed >= 0 ? parsed : fallback;
 }
 
-function envFlag(name: string): boolean | undefined {
-  const value = readEnv(name)?.toLowerCase();
-  if (value === "true" || value === "1") return true;
-  if (value === "false" || value === "0") return false;
+function parseEnvFlag(value: string | undefined): boolean | undefined {
+  const normalized = trimEnv(value)?.toLowerCase();
+  if (normalized === "true" || normalized === "1") return true;
+  if (normalized === "false" || normalized === "0") return false;
   return undefined;
 }
 
 function environment(): MonetizationEnvironment {
   if (isProductionRuntime()) return "production";
-  const nodeEnv = readEnv("NODE_ENV");
-  if (nodeEnv === "test") return "test";
+  if (process.env.NODE_ENV === "test") return "test";
   return "development";
 }
 
 export function loadStoreIds(): StoreIdMap {
   return {
     ios: {
-      monthly: readEnv("EXPO_PUBLIC_IOS_PLUS_MONTHLY") ?? PLACEHOLDER.ios.monthly,
-      annual: readEnv("EXPO_PUBLIC_IOS_PLUS_ANNUAL") ?? PLACEHOLDER.ios.annual,
-      lifetime: readEnv("EXPO_PUBLIC_IOS_LIFETIME") ?? PLACEHOLDER.ios.lifetime,
+      monthly: trimEnv(process.env.EXPO_PUBLIC_IOS_PLUS_MONTHLY) ?? PLACEHOLDER.ios.monthly,
+      annual: trimEnv(process.env.EXPO_PUBLIC_IOS_PLUS_ANNUAL) ?? PLACEHOLDER.ios.annual,
+      lifetime: trimEnv(process.env.EXPO_PUBLIC_IOS_LIFETIME) ?? PLACEHOLDER.ios.lifetime,
     },
     android: {
-      monthly: readEnv("EXPO_PUBLIC_ANDROID_PLUS_MONTHLY") ?? PLACEHOLDER.android.monthly,
-      annual: readEnv("EXPO_PUBLIC_ANDROID_PLUS_ANNUAL") ?? PLACEHOLDER.android.annual,
-      lifetime: readEnv("EXPO_PUBLIC_ANDROID_LIFETIME") ?? PLACEHOLDER.android.lifetime,
+      monthly: trimEnv(process.env.EXPO_PUBLIC_ANDROID_PLUS_MONTHLY) ?? PLACEHOLDER.android.monthly,
+      annual: trimEnv(process.env.EXPO_PUBLIC_ANDROID_PLUS_ANNUAL) ?? PLACEHOLDER.android.annual,
+      lifetime: trimEnv(process.env.EXPO_PUBLIC_ANDROID_LIFETIME) ?? PLACEHOLDER.android.lifetime,
     },
   };
 }
@@ -110,25 +107,25 @@ export function productIdFor(platform: "ios" | "android", period: Exclude<Billin
 
 export function getMonetizationConfig(): MonetizationConfig {
   const env = environment();
-  const explicitMock = envFlag("EXPO_PUBLIC_MOCK_BILLING");
+  const explicitMock = parseEnvFlag(process.env.EXPO_PUBLIC_MOCK_BILLING);
   const allowMockBilling = env === "production" ? false : explicitMock !== false;
   return {
     environment: env,
     storeIds: loadStoreIds(),
     freeLimits: {
-      dailyAiRequests: envInt("EXPO_PUBLIC_FREE_AI_DAILY", 5),
-      dailyExperiments: envInt("EXPO_PUBLIC_FREE_EXPERIMENT_DAILY", 4),
-      dailyPremiumPreviews: envInt("EXPO_PUBLIC_FREE_PREVIEW_DAILY", 3),
-      dailyDownloads: envInt("EXPO_PUBLIC_FREE_DOWNLOAD_DAILY", 0),
+      dailyAiRequests: parseEnvInt(process.env.EXPO_PUBLIC_FREE_AI_DAILY, 5),
+      dailyExperiments: parseEnvInt(process.env.EXPO_PUBLIC_FREE_EXPERIMENT_DAILY, 4),
+      dailyPremiumPreviews: parseEnvInt(process.env.EXPO_PUBLIC_FREE_PREVIEW_DAILY, 3),
+      dailyDownloads: parseEnvInt(process.env.EXPO_PUBLIC_FREE_DOWNLOAD_DAILY, 0),
     },
     trial: {
-      enabled: envFlag("EXPO_PUBLIC_TRIAL_ENABLED") === true,
-      periodDays: envInt("EXPO_PUBLIC_TRIAL_DAYS", 7),
+      enabled: parseEnvFlag(process.env.EXPO_PUBLIC_TRIAL_ENABLED) === true,
+      periodDays: parseEnvInt(process.env.EXPO_PUBLIC_TRIAL_DAYS, 7),
       endingSoonHours: 48,
     },
     grace: {
       enabled: true,
-      periodDays: envInt("EXPO_PUBLIC_GRACE_DAYS", 3),
+      periodDays: parseEnvInt(process.env.EXPO_PUBLIC_GRACE_DAYS, 3),
     },
     cache: {
       freshMs: 15 * 60 * 1000,

@@ -3,9 +3,10 @@ import { useColors } from "@/hooks/use-colors";
 import { radius, spacing } from "@/lib/design-system";
 import { Caption, Heading3 } from "@/components/bav/BavText";
 import { FieldMotif, GridMotif, OrbitMotif, ParticleMotif, VectorMotif, WaveMotif } from "./ScientificMotifs";
-import { placeholderForTopic, type BavPlaceholderKind } from "@/lib/assets";
+import { placeholderForTopic, SCIENTIFIC_DIAGRAM_KINDS, type BavPlaceholderKind } from "@/lib/assets";
 
 export type ScientificDiagramKind = BavPlaceholderKind;
+export { SCIENTIFIC_DIAGRAM_KINDS };
 
 export function ScientificDiagramCanvas({
   kind,
@@ -55,5 +56,3 @@ function DiagramMotif({ kind, color }: { kind: ScientificDiagramKind; color: str
   if (kind === "ray") return <VectorMotif color={color} />;
   return <GridMotif color={color} width={180} height={80} />;
 }
-
-export const SCIENTIFIC_DIAGRAM_KINDS: ScientificDiagramKind[] = ["orbit", "wave", "grid", "vector", "particle", "field", "circuit", "ray"];

@@ -1,6 +1,7 @@
 import type { LearningState } from "@/lib/progress-store";
 import { isMockModeEnabled, getMockConfig } from "@/lib/mock/config";
 import { learnerForScenario } from "@/lib/mock/catalog";
+import { getMockDataset } from "@/lib/mock/registry";
 import { createTopicCatalog } from "@/lib/mock/datasets/topics";
 import type { ScreenStatus } from "@/lib/screen-recovery";
 
@@ -59,8 +60,16 @@ export function buildProgressViewModel(learning: LearningState, status: ScreenSt
         color: TOPIC_COLORS[index % TOPIC_COLORS.length],
       }))
       .sort((left, right) => right.percent - left.percent);
+    const dataset = getMockDataset();
     const strongest = topics[0];
     const weakest = [...topics].sort((left, right) => left.percent - right.percent)[0];
+    const weeklyFromDataset = dataset.dailyActivity.slice(-7).map((day, index) => ({
+      day: ["M", "T", "W", "T", "F", "S", "S"][index] ?? day.date.slice(5),
+      minutes: day.minutes,
+      problems: day.problems,
+      lessons: day.lessons,
+      simulations: index === 5 ? 2 : index % 3 === 0 ? 1 : 0,
+    }));
     return {
       status: "success",
       mastery: average(topics.map((topic) => topic.percent)),
@@ -69,7 +78,7 @@ export function buildProgressViewModel(learning: LearningState, status: ScreenSt
       streak: learner.streak,
       accuracy: learner.totalProblems ? Math.min(0.97, 0.55 + learner.xp / 8000) : 0,
       topics,
-      weekly: mockWeek(learner.streak),
+      weekly: weeklyFromDataset.length === 7 ? weeklyFromDataset : mockWeek(learner.streak),
       strongest: strongest ? strongest.name : "Not enough data yet",
       needsReview: weakest && weakest.percent < 0.5 ? weakest.name : "No urgent review",
       recentImprovement: strongest ? `${strongest.name} is leading your map.` : "Complete a lesson to see change.",

@@ -152,12 +152,7 @@ export function simulationsForCategory(category: string): MockSimulation[] {
   const catalog = createSimulationCatalog();
   const key = category.trim().toLowerCase();
   if (!key || key === "all") return catalog;
-  return catalog.filter((item) =>
-    item.category.toLowerCase() === key ||
-    item.topicId.includes(key.replace(/\s+/g, "-")) ||
-    item.tags.some((tag) => tag.toLowerCase().includes(key)) ||
-    item.title.toLowerCase().includes(key),
-  );
+  return catalog.filter((item) => item.category.toLowerCase() === key);
 }
 
 export function createSimulationSnapshots(simulations: readonly MockSimulation[]): MockSimulationSnapshot[] {

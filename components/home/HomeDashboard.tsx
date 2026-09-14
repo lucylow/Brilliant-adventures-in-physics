@@ -8,7 +8,7 @@ import { BavListItem } from "@/components/bav/BavChrome";
 import { OrbitMotif } from "@/components/scientific/ScientificMotifs";
 import { MotionPressable } from "@/components/motion-primitives";
 import { useColors } from "@/hooks/use-colors";
-import { heroShadow, layout, opacity, quickActionTints, radius, spacing, withAlpha } from "@/lib/design-system";
+import { heroShadow, layout, opacity, quickActionTints, radius, withAlpha } from "@/lib/design-system";
 import type { HomeQuickAction, HomeViewModel } from "@/lib/view-models/home";
 import { triggerHaptic } from "@/lib/haptics";
 

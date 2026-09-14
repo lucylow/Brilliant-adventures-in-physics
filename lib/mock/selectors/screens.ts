@@ -3,23 +3,27 @@ import { getMockDataset } from "../registry";
 import { getMockNow } from "../clock";
 import { getMockDatasetStats } from "../stats";
 import type { MockLearnerProfile } from "../types";
+import { selectDailyChallenge, selectFeaturedSimulation, selectCurrentMission, selectNextBestAction, selectRecentActivity, selectTutorSuggestions, selectWeakConcepts } from "../expansion/selectors";
+import { diagnoseExpansion } from "../expansion/diagnostics";
 
 export function selectHomeDemoState() {
   const dataset = getMockDataset();
   const config = getMockConfig();
   const user = dataset.users.find((item) => item.id === config.learnerId) ?? dataset.users[0];
+  const next = selectNextBestAction(dataset);
   return {
     user,
     greeting: `Hi, ${user.displayName.split(" ")[0]}.`,
     streak: user.streak,
     xp: user.xp,
     continueLearning: dataset.lessons.find((lesson) => dataset.recommendations.lessons.includes(lesson.id)) ?? dataset.lessons[0],
-    dailyChallenge: dataset.problems.find((problem) => dataset.recommendations.problems.includes(problem.id)) ?? dataset.problems[0],
+    dailyChallenge: selectDailyChallenge(dataset) ?? dataset.problems.find((problem) => dataset.recommendations.problems.includes(problem.id)) ?? dataset.problems[0],
     recommendedLesson: dataset.lessons.find((lesson) => dataset.recommendations.lessons[0] === lesson.id) ?? dataset.lessons[0],
-    featuredSimulation: dataset.simulations.find((simulation) => simulation.featured) ?? dataset.simulations[0],
-    mission: dataset.missions.find((item) => item.completionPercent < 1) ?? dataset.missions[0],
-    recentActivity: dataset.activity.slice(0, 6),
+    featuredSimulation: selectFeaturedSimulation(dataset),
+    mission: selectCurrentMission(dataset),
+    recentActivity: selectRecentActivity(dataset, 6),
     achievements: dataset.achievementStates.slice(0, 4),
+    nextAction: next,
   };
 }
 
@@ -29,7 +33,7 @@ export function selectPracticeDemoState() {
     current: dataset.problems[0],
     next: dataset.problems.slice(1, 6),
     recentAttempts: dataset.attempts.slice(-8),
-    weakConcepts: dataset.mastery.filter((item) => item.masteryPercent < 60).slice(0, 5),
+    weakConcepts: selectWeakConcepts(dataset),
     streak: dataset.learningState.streak,
     review: dataset.reviewQueue.slice(0, 5),
   };
@@ -62,7 +66,7 @@ export function selectTutorDemoState() {
   return {
     recent: dataset.tutorSessions.slice(0, 8),
     active: dataset.tutorSessions[0],
-    suggested: dataset.tutorSessions[0]?.suggestedQuestions ?? [],
+    suggested: selectTutorSuggestions(dataset),
   };
 }
 
@@ -74,5 +78,9 @@ export function selectSettingsDemoState(): { user: MockLearnerProfile; now: stri
 }
 
 export function selectInspectorStats() {
-  return getMockDatasetStats(getMockDataset(), getMockConfig().scenario);
+  const dataset = getMockDataset();
+  return {
+    ...getMockDatasetStats(dataset, getMockConfig().scenario),
+    expansion: diagnoseExpansion(dataset),
+  };
 }

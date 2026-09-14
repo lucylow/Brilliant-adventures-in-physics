@@ -4,12 +4,11 @@ import { ScrollScreen } from "@/components/layout/ScreenShell";
 import { BavButton } from "@/components/bav/BavButton";
 import { Body, BodySmall, Heading1, Heading3 } from "@/components/bav/BavText";
 import { SubscriptionCard, EntitlementBanner } from "@/components/monetization";
-import { useEntitlements, useMonetization } from "@/hooks/use-monetization";
+import { useEntitlements } from "@/hooks/use-monetization";
 import { FEATURE_GATES } from "@/lib/monetization/features";
-import { restorePurchases } from "@/lib/monetization/runtime";
+import { restorePurchases, getBillingPort } from "@/lib/monetization/runtime";
 import { spacing } from "@/lib/design-system";
 import type { BillingPort } from "@/lib/monetization/billing-port";
-import { getBillingPort } from "@/lib/monetization/runtime";
 import * as WebBrowser from "expo-web-browser";
 
 async function manage(port: BillingPort | null) {
@@ -20,7 +19,6 @@ async function manage(port: BillingPort | null) {
 
 export default function SubscriptionScreen() {
   const { entitlements, lifetimeOwned, plan, status } = useEntitlements();
-  const store = useMonetization();
   const title = lifetimeOwned ? "Lifetime Unlock" : plan === "plus" ? "BAV+" : "Free";
   const statusLabel =
     status === "trial" ? "Trial" : status === "expired" ? "Ended" : lifetimeOwned ? "Permanent access" : status === "unlimited" ? "Active" : "Free learning";

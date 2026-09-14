@@ -10,6 +10,10 @@ export const MOCK_SCENARIOS = [
   { id: "returning-user", title: "Returning user", description: "Broken streak, leftover mastery, and a gentle restart." },
   { id: "empty-state", title: "Empty state", description: "Catalog exists but the learner has no attempts, notes, or missions." },
   { id: "error-state", title: "Error state", description: "Injects failure-oriented offline/tutor errors for UI recovery testing." },
+  { id: "showcase", title: "Showcase", description: "Screenshot/Figma seed: dense Home, Tutor, Practice, Adventure, Lab, Progress, Notebook, Achievements." },
+  { id: "mechanics-lab", title: "Mechanics lab", description: "Explorer pack focused on mechanics experiments and free-body diagrams." },
+  { id: "space-week", title: "Space week", description: "Orbital missions, spectra, and educational astronomy fixtures." },
+  { id: "exam-sprint", title: "Exam sprint", description: "Timed papers, review queue, and mixed-question banks." },
 ] as const;
 
 export const SCREEN_COVERAGE = {
@@ -24,4 +28,6 @@ export const SCREEN_COVERAGE = {
   Settings: ["users", "subscription"],
   Scan: ["scanResults"],
   Lens: ["lensRecords"],
+  Search: ["concepts", "topics", "lessons", "simulations"],
+  Recommendations: ["recommendations", "mastery", "reviewQueue"],
 } as const;

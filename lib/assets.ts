@@ -26,3 +26,9 @@ export function placeholderForTopic(topic: string): BavPlaceholderKind {
   if (value.includes("optic") || value.includes("lens") || value.includes("ray")) return "ray";
   return "grid";
 }
+
+export const SEARCH_FILTERS = ["topic", "difficulty", "duration", "featured", "completed"] as const;
+export type SearchFilter = (typeof SEARCH_FILTERS)[number];
+
+export const SCIENTIFIC_DIAGRAM_KINDS: BavPlaceholderKind[] = ["orbit", "wave", "grid", "vector", "particle", "field", "circuit", "ray"];
+

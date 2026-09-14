@@ -1,3 +1,6 @@
+import { isMockModeEnabled } from "@/lib/mock/config";
+import { getMockDataset } from "@/lib/mock/registry";
+import { selectTutorSuggestions } from "@/lib/mock/expansion/selectors";
 import type { TutorAnswer } from "@/lib/ai";
 import type { ScreenStatus } from "@/lib/screen-recovery";
 
@@ -60,7 +63,7 @@ export function buildTutorViewModel(input: {
     subtitle: "AI Physics Tutor · Online",
     remaining: input.remaining,
     limit: input.limit,
-    suggested: ["Hint", "Solve step-by-step", "Explain simpler", "Show simulation", "Similar problem"],
+    suggested: isMockModeEnabled() ? selectTutorSuggestions(getMockDataset()) : ["Hint", "Solve step-by-step", "Explain simpler", "Show simulation", "Similar problem"],
     messages: [
       ...input.messages.map((message, index) => ({
         id: `m-${index}`,

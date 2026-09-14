@@ -1,7 +1,7 @@
 import { type ReactNode } from "react";
 import { View } from "react-native";
 import { useColors } from "@/hooks/use-colors";
-import { radius, spacing, withAlpha } from "@/lib/design-system";
+import { spacing } from "@/lib/design-system";
 import { BavBadge } from "../bav/BavChrome";
 import { BavButton } from "../bav/BavButton";
 import { BavCard } from "../bav/BavCard";
@@ -25,9 +25,8 @@ export function BavTutorCard({
   equation?: string;
   actionLabel?: string;
   onAction?: () => void;
-  values?: Array<{ label: string; value: string }>;
+  values?: { label: string; value: string }[];
 }) {
-  const colors = useColors();
   const tone = kind === "verified" ? "verified" : kind === "hint" ? "warning" : kind === "practice" ? "info" : "neutral";
   return (
     <BavCard elevation="soft" accessibilityLabel={title}>
@@ -83,7 +82,7 @@ export function BavRelatedContent({
   onOpen,
 }: {
   title: string;
-  items: Array<{ id: string; title: string; subtitle: string }>;
+  items: { id: string; title: string; subtitle: string }[];
   onOpen: (id: string) => void;
 }) {
   if (items.length === 0) return null;

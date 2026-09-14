@@ -1,4 +1,5 @@
-import { xpFor, type RewardAction } from "@/lib/gamification";
+import { xpFor } from "@/lib/gamification";
+import type { RewardAction } from "@/lib/gamification";
 
 export function mockXpFor(action: RewardAction, perfect = false): number {
   const base = xpFor(action);

@@ -206,15 +206,25 @@ export function getTableAnalyses(): TableAnalysisResponse[] {
 
 export function getSimulationRecommendations(): SimulationRecommendationResponse[] {
   if (simRecCache) return simRecCache;
-  simRecCache = CATALOG.flatMap((topic) =>
-    topic.starters.concat(topic.followUps).slice(0, 7).map((question, index) => ({
+  simRecCache = CATALOG.flatMap((topic) => {
+    const known = topic.example.known[0];
+    const questions = [
+      topic.starters[0] ?? `How does ${topic.title} show up in a lab?`,
+      topic.followUps.find((item) => /simulat/i.test(item)) ?? `Can I see a simulation of ${topic.title}?`,
+      `What happens in ${topic.simulationId} if ${known?.name ?? "the control"} doubles?`,
+      `Match ${topic.simulationId} to “${topic.example.prompt}”.`,
+      `Use ${topic.simulationId} to keep ${topic.equation} dimensionally honest.`,
+      `Which control in ${topic.simulationId} maps onto ${topic.example.unknown}?`,
+      `Compare a gentle and a harsh setting of ${topic.simulationId} for ${topic.title}.`,
+    ];
+    return questions.map((question, index) => ({
       question,
       conceptId: topic.conceptId,
       simulationId: topic.simulationId,
       whyHelpful: `${topic.simulationId} makes ${topic.title} visible: ${topic.intuitionFirst}`,
       suggestedParameters: Object.fromEntries(topic.example.known.map((item, itemIndex) => [item.name, item.value * (1 + 0.1 * ((index + itemIndex) % 3))])),
-    })),
-  );
+    }));
+  });
   return simRecCache;
 }
 

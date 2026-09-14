@@ -5,5 +5,6 @@ export { LoadingState } from "./LoadingState";
 export { OfflineState } from "./OfflineState";
 export { RecoveryBanner } from "./RecoveryBanner";
 export { RetryButton } from "./RetryButton";
-export { ScreenState, screenStatusFromFlags, type ScreenStatus } from "./ScreenState";
+export { ScreenState, screenStatusFromFlags } from "./ScreenState";
+export type { ScreenStatus } from "./ScreenState";
 export { SuccessState } from "./SuccessState";

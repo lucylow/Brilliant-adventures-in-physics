@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
-import { screenStatusFromFlags, type ScreenStatus } from "@/lib/screen-recovery";
+import { screenStatusFromFlags } from "@/lib/screen-recovery";
+import type { ScreenStatus } from "@/lib/screen-recovery";
 import { EmptyState } from "./EmptyState";
 import { ErrorState } from "./ErrorState";
 import { LoadingState } from "./LoadingState";

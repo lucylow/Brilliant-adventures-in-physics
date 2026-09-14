@@ -30,6 +30,7 @@ existing services / adapters  (tutor-service, catalog adapters)
 | `ai-memory.ts` / `ai-session.ts` | Multi-turn context, duplicate-send lock |
 | `ai-screen-adapters.ts` | View-models for screens (no giant arrays in UI) |
 | `ai-inspector.ts` | Dev-only inspector snapshot |
+| `expansion/` | Expansion III: learner model, context, memory, copilots, evaluation (`docs/AI_MOCK_EXPANSION_III.md`) |
 
 ## Provider contract
 

@@ -9,6 +9,7 @@ export {
   readParam,
   requireId,
   safeHref,
-  type RouteName,
 } from "./route-params";
-export { backSafely, navigateSafely, replaceSafely, type SafeRouter } from "./safe-navigation";
+export type { RouteName } from "./route-params";
+export { backSafely, navigateSafely, replaceSafely } from "./safe-navigation";
+export type { SafeRouter } from "./safe-navigation";

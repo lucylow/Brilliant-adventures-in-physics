@@ -1,5 +1,8 @@
-import { ADVENTURE_WORLDS, generateAdventureMissions, isWorldUnlocked, type AdventureMission, type AdventureState, type AdventureWorld } from "@/lib/adventure";
+import { ADVENTURE_WORLDS, generateAdventureMissions, isWorldUnlocked } from "@/lib/adventure";
+import type { AdventureMission, AdventureState, AdventureWorld } from "@/lib/adventure";
 import type { ScreenStatus } from "@/lib/screen-recovery";
+import { isMockModeEnabled } from "@/lib/mock/config";
+import { getActiveMissions } from "@/lib/mock/adapters/catalog";
 
 export type AdventureChapterCard = {
   id: string;
@@ -59,7 +62,8 @@ export function buildAdventureViewModel(input: {
     return { status: input.status, worldTitle: "Adventure", chapters: [], activeMission: null };
   }
   const chapters: AdventureChapterCard[] = ADVENTURE_WORLDS.map((world: AdventureWorld) => {
-    const missions = generateAdventureMissions(world.id).map((mission) => toMissionCard(mission, input.adventure.completedMissionIds, input.level));
+    const source = isMockModeEnabled() ? getActiveMissions(world.id) : generateAdventureMissions(world.id);
+    const missions = source.map((mission) => toMissionCard(mission, input.adventure.completedMissionIds, input.level));
     return {
       id: world.id,
       title: world.title,

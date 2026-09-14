@@ -8,7 +8,11 @@ import { MOCK_SCENARIOS } from "@/lib/mock/scenarios/definitions";
 import { useMockDataControls } from "@/hooks/use-mock-data";
 import { getMockDataset } from "@/lib/mock/registry";
 import { inspectMockAI } from "@/lib/mock/ai/ai-inspector";
-import { setMockAIScenario, setAIFailureMode, getMockAIConfig } from "@/lib/mock/ai/config";
+import { setMockAIScenario, setAIFailureMode, getMockAIConfig, setMockAIConfig } from "@/lib/mock/ai/config";
+import type { MockAIMode } from "@/lib/mock/ai/ai-types";
+import { SHOWCASES, setAIDemoShowcase, getAIDemoShowcase, setAITestUserState, getAITestUserState } from "@/lib/mock/ai/expansion/orchestration";
+import type { TestUserState } from "@/lib/mock/ai/expansion/types";
+import { inspectExpansion } from "@/lib/mock/ai/expansion/debug";
 import type { MockLatencyProfile, MockNetworkState, MockScenarioId } from "@/lib/mock/types";
 
 const LATENCIES: MockLatencyProfile[] = ["instant", "fast", "realistic", "slow"];
@@ -20,6 +24,8 @@ const LEARNERS = [
   { id: "user-jordan", label: "Power User" },
   { id: "user-taylor", label: "Exam Prep" },
 ];
+const AI_MODES: MockAIMode[] = ["mock-basic", "mock-rich", "mock-streaming", "mock-error", "mock-offline", "mock-slow"];
+const TEST_USERS: TestUserState[] = ["fresh", "active", "struggling", "mastery", "exam", "offline", "error", "returning"];
 
 export default function MockDataPanelScreen() {
   const colors = useColors();
@@ -33,6 +39,7 @@ export default function MockDataPanelScreen() {
     );
   }
   const counts: Record<string, number> = controls.stats?.entityCounts ?? {};
+  const expansion = getMockDataset().expansion;
   const chip = (active: boolean) => ({
     borderWidth: 1,
     borderColor: active ? colors.primary : colors.border,
@@ -94,6 +101,8 @@ export default function MockDataPanelScreen() {
             <Text key={key} style={{ color: colors.muted, marginTop: 4 }}>{key}: {value}</Text>
           ))}
           <Text style={{ color: colors.muted, marginTop: 8 }}>Users in catalog: {getMockDataset().users.length}</Text>
+          <Text style={{ color: colors.muted, marginTop: 4 }}>Expansion v{expansion.version} · packs {expansion.packsLoaded.join(", ")}</Text>
+          <Text style={{ color: colors.muted, marginTop: 4 }}>labs {expansion.labExperiments.length} · discovery {expansion.discoveryCards.length} · QOTD {expansion.questionsOfTheDay.length}</Text>
         </Card>
         <Card>
           <Text style={{ color: colors.foreground, fontWeight: "800", fontSize: 18 }}>Demo AI inspector</Text>
@@ -113,6 +122,40 @@ export default function MockDataPanelScreen() {
                 <SecondaryButton label="Failure: timeout" onPress={() => setAIFailureMode("timeout")} />
                 <SecondaryButton label="Failure: none" onPress={() => setAIFailureMode("none")} />
                 <Text style={{ color: colors.muted }}>active config {config.aiMode} / {config.failureMode}</Text>
+                <Text style={{ color: colors.foreground, fontWeight: "700", marginTop: 10 }}>Demo AI provider</Text>
+                <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 8, marginTop: 8 }}>
+                  {AI_MODES.map((mode) => (
+                    <Pressable key={mode} onPress={() => setMockAIConfig({ aiMode: mode })} style={chip(config.aiMode === mode)}>
+                      <Text style={{ color: colors.foreground, fontWeight: "700" }}>{mode.replace("mock-", "")}</Text>
+                    </Pressable>
+                  ))}
+                </View>
+                <Text style={{ color: colors.foreground, fontWeight: "700", marginTop: 10 }}>AI showcase</Text>
+                <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 8, marginTop: 8 }}>
+                  {SHOWCASES.map((item) => (
+                    <Pressable key={item.id} onPress={() => setAIDemoShowcase(item.id)} style={chip(getAIDemoShowcase() === item.id)}>
+                      <Text style={{ color: colors.foreground, fontWeight: "700" }}>{item.title}</Text>
+                    </Pressable>
+                  ))}
+                </View>
+                <Text style={{ color: colors.foreground, fontWeight: "700", marginTop: 10 }}>AI test user</Text>
+                <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 8, marginTop: 8 }}>
+                  {TEST_USERS.map((state) => (
+                    <Pressable key={state} onPress={() => setAITestUserState(state)} style={chip(getAITestUserState() === state)}>
+                      <Text style={{ color: colors.foreground, fontWeight: "700" }}>{state}</Text>
+                    </Pressable>
+                  ))}
+                </View>
+                {(() => {
+                  const expansion = inspectExpansion();
+                  if (!expansion || expansion.enabled !== true) return null;
+                  return (
+                    <View style={{ marginTop: 8, gap: 4 }}>
+                      <Text style={{ color: colors.muted }}>expansion v{expansion.version} · {expansion.showcase} · {expansion.learner.displayLabel}</Text>
+                      <Text style={{ color: colors.muted }}>style {expansion.learner.style} · hint dependence {expansion.learner.hintDependence.toFixed(2)}</Text>
+                    </View>
+                  );
+                })()}
               </View>
             );
           })()}

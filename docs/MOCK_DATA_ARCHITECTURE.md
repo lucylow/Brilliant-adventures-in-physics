@@ -73,3 +73,9 @@ Dependent fixture values call `lib/physics` (`projectile`, `ohmsLaw`, `hydrostat
 3. Link IDs in `seed.ts` (`linkCatalog`).
 4. Extend `validateMockReferences`.
 5. Add a count assertion in `tests/mock-dataset.test.ts`.
+
+## Final report (architecture)
+
+See [MOCK_DATA.md](./MOCK_DATA.md#final-report) for entity counts, commands, and limitations.
+
+Mock repositories map onto catalog adapters, not a second UI. Screens keep using view-models and `getActive*` helpers. `vitest.config.ts` aliases `@/` and `@shared/` and stubs `react-native` so the dataset can be tested in Node.

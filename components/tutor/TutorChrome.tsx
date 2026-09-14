@@ -130,7 +130,7 @@ export function TutorPromptRow({
 export function TutorSessionList({
   sessions,
 }: {
-  sessions: Array<{ id: string; title: string; subtitle: string }>;
+  sessions: { id: string; title: string; subtitle: string }[];
 }) {
   const colors = useColors();
   if (sessions.length === 0) {

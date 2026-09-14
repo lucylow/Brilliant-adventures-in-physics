@@ -16,5 +16,6 @@ export {
   validVoltage,
   validWavelength,
 } from "./domain";
-export { DIMENSIONS, assertDimension, convertQuantity, quantity, sameDimension, type Dimension, type Quantity } from "./units";
+export { DIMENSIONS, assertDimension, convertQuantity, quantity, sameDimension } from "./units";
+export type { Dimension, Quantity } from "./units";
 export { safeKinematics, safeNewtonAcceleration, safeOhmsLaw, safeProjectile, safeWave } from "./safe-calculations";

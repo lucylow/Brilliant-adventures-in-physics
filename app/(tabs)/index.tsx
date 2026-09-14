@@ -130,7 +130,7 @@ export default function HomeScreen() {
         <HomePremiumCta onPress={() => router.push({ pathname: "/paywall", params: { from: "/", variant: "home_discovery" } } as never)} />
       </RevealBlock>
       <RevealBlock index={8} preferences={preferences}>
-        <BAVDiscoveryPanel>
+        <BAVDiscoveryPanel
           reducedMotion={preferences.reducedMotion}
           learning={learning}
           onPillarPress={(route) => router.push(route as never)}

@@ -1,8 +1,10 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { router } from "expo-router";
-import { Keyboard, Pressable, ScrollView, Text, TextInput, View } from "react-native";
-import { ScreenContainer } from "@/components/screen-container";
-import { Card, EquationCard, HintPanel, Pill, PrimaryButton, SectionHeader, SolutionStep } from "@/components/physica-ui";
+import { Keyboard, Pressable, ScrollView, Text, View } from "react-native";
+import { ChatScreenShell } from "@/components/layout";
+import { Card, HintPanel, SolutionStep } from "@/components/physica-ui";
+import { BavButton, BavEquationCard } from "@/components/bav";
+import { TutorHeader, TutorInputBar, TutorPromptRow, TutorThread } from "@/components/tutor/TutorChrome";
 import { createAppTutorService, requestTutorAnswerWithFallback } from "@/lib/tutor-service";
 import { getActiveTutorSessions } from "@/lib/mock/adapters/catalog";
 import { isMockModeEnabled } from "@/lib/mock/config";
@@ -18,6 +20,9 @@ import { deleteDraft } from "@/lib/progress-store";
 import { normalizeServiceError, type ServiceError } from "@/lib/service-result";
 import { recoveryMessage } from "@/lib/network";
 import { useAppTranslations } from "@/hooks/use-app-translations";
+import { buildTutorViewModel } from "@/lib/view-models/tutor";
+import type { TutorAnswer } from "@/lib/ai";
+import { layout, spacing } from "@/lib/design-system";
 
 type Message = { role: "assistant" | "user"; text: string };
 
@@ -36,14 +41,33 @@ export default function TutorScreen() {
   const [submitting, setSubmitting] = useState(false);
   const [serviceError, setServiceError] = useState<ServiceError | null>(null);
   const [lastQuestion, setLastQuestion] = useState("");
+  const [lastAnswer, setLastAnswer] = useState<TutorAnswer | null>(null);
   const tutorService = createAppTutorService();
   const demoTutor = tutorScreenModel();
   const [usage, setUsage] = useState<UsageState>({ date: "", tutorUsed: 0, tutorLimit: 5 });
   const [usageMessageKey, setUsageMessageKey] = useState<"tutor.usageRecovered" | "tutor.usageUnavailable" | null>(null);
   const [usedLocalFallback, setUsedLocalFallback] = useState(false);
   const mountedRef = useRef(true);
-  useEffect(() => { return () => { mountedRef.current = false; }; }, []);
-  useEffect(() => { let active = true; void loadUsageWithStatus().then((result) => { if (!active) return; setUsage(result.usage); setUsageMessageKey(result.recovered ? "tutor.usageRecovered" : null); }).catch(() => { if (active) setUsageMessageKey("tutor.usageUnavailable"); }); return () => { active = false; }; }, [locale]);
+  useEffect(() => {
+    return () => {
+      mountedRef.current = false;
+    };
+  }, []);
+  useEffect(() => {
+    let active = true;
+    void loadUsageWithStatus()
+      .then((result) => {
+        if (!active) return;
+        setUsage(result.usage);
+        setUsageMessageKey(result.recovered ? "tutor.usageRecovered" : null);
+      })
+      .catch(() => {
+        if (active) setUsageMessageKey("tutor.usageUnavailable");
+      });
+    return () => {
+      active = false;
+    };
+  }, [locale]);
   const remaining = remainingTutorUses(usage);
   const usageLimits = useUsageLimits();
   const aiOpen = usageLimits.ai.isUnlimited || remaining > 0;
@@ -54,23 +78,29 @@ export default function TutorScreen() {
   const send = async (text = draft) => {
     const clean = text.trim();
     Keyboard.dismiss();
-    if (!clean || !aiOpen || submitting) return;
+    if (!clean || remaining <= 0 || submitting) return;
     setSubmitting(true);
     setServiceError(null);
     setUsedLocalFallback(false);
     setLastQuestion(clean);
+    setLastAnswer(null);
     try {
       const response = await requestTutorAnswerWithFallback(tutorService, { question: clean });
       if (!mountedRef.current) return;
-      if (!response.ok) { setServiceError(response.error); setUsedLocalFallback(false); return; }
+      if (!response.ok) {
+        setServiceError(response.error);
+        setUsedLocalFallback(false);
+        return;
+      }
       if (response.usedFallback) {
         setUsageMessageKey(null);
         setUsedLocalFallback(true);
-      } else if (!usageLimits.ai.isUnlimited) {
+      } else {
         const nextUsage = await consumeTutorUse();
         if (!mountedRef.current) return;
         setUsage(nextUsage);
       }
+      setLastAnswer(response.data.verifiedValues.length ? response.data : null);
       setMessages((current) => [...current, { role: "user", text: clean }, { role: "assistant", text: response.data.summary }]);
       setDraft("");
       setHint(0);
@@ -82,18 +112,27 @@ export default function TutorScreen() {
     }
   };
   const showVerifiedExample = async () => {
-    if (submitting) return;
+    if (remaining <= 0 || submitting) return;
     setSubmitting(true);
     setServiceError(null);
     setUsedLocalFallback(false);
     try {
-      if (aiOpen && !usageLimits.ai.isUnlimited) {
-        const nextUsage = await consumeTutorUse();
-        if (!mountedRef.current) return;
-        setUsage(nextUsage);
-      }
+      const nextUsage = await consumeTutorUse();
+      if (!mountedRef.current) return;
+      setUsage(nextUsage);
       const result = projectile({ speed: 18, angleDeg: 42, height: 0 });
-      setMessages((current) => [...current, { role: "user", text: "Show me a verified projectile example" }, { role: "assistant", text: `For a launch at 18 m/s and 42°, the deterministic engine verifies a range of ${result.range.toFixed(2)} m.` }]);
+      const verified: TutorAnswer = {
+        summary: `For a launch at 18 m/s and 42°, the deterministic engine verifies a range of ${result.range.toFixed(2)} m.`,
+        concept: "projectile-motion",
+        steps: [{ label: "Resolve velocity", detail: "Split into independent axes." }],
+        equations: ["R = v² sin(2θ) / g"],
+        verifiedValues: [{ name: "range", value: Number(result.range.toFixed(2)), unit: "m" }],
+        hint: "Keep g = 9.81 m/s² and θ in degrees converted to radians only inside the trig function.",
+        nextAction: "Try a matching practice item.",
+        confidence: 1,
+      };
+      setLastAnswer(verified);
+      setMessages((current) => [...current, { role: "user", text: "Show me a verified projectile example" }, { role: "assistant", text: verified.summary }]);
       void deleteDraft("tutor").catch(() => undefined);
     } catch (error) {
       if (mountedRef.current) setServiceError(normalizeServiceError(error));
@@ -101,5 +140,97 @@ export default function TutorScreen() {
       if (mountedRef.current) setSubmitting(false);
     }
   };
-  return <ScreenContainer className="p-5"><View style={{ flex: 1 }}><SectionHeader title="Ask Bavi" subtitle={tr("tutor.subtitle")} /><DraftRecovery id="tutor" onResume={(saved) => { const value = typeof saved.data.question === "string" ? saved.data.question : ""; setDraft(value); }} /><DraftStatus status={draftStatus} />      <Card style={{ marginBottom: 12, padding: 12 }}>{demoTutor && <Text accessibilityLiveRegion="polite" style={{ color: colors.primary, marginBottom: 8, lineHeight: 20 }}>{tr("tutor.demoAi")}</Text>}{usedLocalFallback && <Text accessibilityLiveRegion="polite" style={{ color: colors.primary, marginBottom: 8, lineHeight: 20 }}>{tr("tutor.localFallback")}</Text>}{usageAnnouncement && <Text accessibilityLiveRegion={usageAnnouncement.accessibilityLiveRegion} style={{ color: colors.warning, marginBottom: 8 }}>{usageAnnouncement.message}</Text>}<Text style={{ color: colors.muted, lineHeight: 18, marginBottom: 8 }}>{tr("tutor.freeTierBody")}</Text><View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}><Text style={{ color: colors.muted }}>{tr("tutor.remaining") }</Text><Text style={{ color: aiOpen ? colors.primary : colors.warning, fontWeight: "800" }}>{usageLimits.ai.isUnlimited ? "Unlimited" : `${remaining}/${usage.tutorLimit}`}</Text></View>{!aiOpen && <Pressable accessibilityRole="button" onPress={() => router.push({ pathname: "/paywall", params: { from: "/tutor", variant: "tutor_limit" } } as never)}><Text style={{ color: colors.primary, fontWeight: "800", marginTop: 8 }}>{tr("tutor.plusPrompt") }</Text></Pressable>}{submitting && <Text accessibilityLiveRegion={checkingAnnouncement.accessibilityLiveRegion} style={{ color: colors.primary, marginTop: 8 }}>{checkingAnnouncement.message}</Text>}</Card>{serviceError && <Card style={{ marginBottom: 12, padding: 12 }}><Text accessibilityLiveRegion="assertive" style={{ color: colors.error, fontWeight: "800" }}>{recoveryMessage(serviceError)}</Text>{serviceError.retryable && lastQuestion && <Pressable accessibilityRole="button" onPress={() => void send(lastQuestion)}><Text style={{ color: colors.primary, fontWeight: "800", marginTop: 8 }}>{tr("common.tryAgain")}</Text></Pressable>}</Card>}<ScrollView keyboardShouldPersistTaps="handled" contentContainerStyle={{ gap: 12, paddingBottom: 16 }} showsVerticalScrollIndicator={false}>{messages.map((message, index) => <View key={`${message.role}-${index}`} style={{ alignSelf: message.role === "user" ? "flex-end" : "flex-start", maxWidth: "90%" }}><View style={{ padding: 14, borderRadius: 18, backgroundColor: message.role === "user" ? colors.primary : colors.surface, borderWidth: message.role === "user" ? 0 : 1, borderColor: colors.border }}><Text accessibilityRole="text" style={{ color: message.role === "user" ? "#FFFFFF" : colors.foreground, lineHeight: 22 }}>{message.text}</Text></View></View>)}{messages.length > 1 && <><EquationCard formula="knowns → principle → verified result" caption="Keep the calculation traceable." /><SolutionStep number={1} title="Identify the knowns" body="Write every value with a unit before choosing a formula." /><SolutionStep number={2} title="Choose the principle" body="Match the target quantity to a supported physics relationship." /></>}</ScrollView><Card><Text style={{ color: colors.muted, fontSize: 12 }}>{tr("tutor.focusedPrompt")}</Text><View style={{ flexDirection: "row", gap: 8, marginTop: 10, flexWrap: "wrap" }}>{demoTutor?.starters.slice(0, 2).map((prompt) => <Pressable key={prompt} onPress={() => void send(prompt)}><Pill label={prompt.slice(0, 28)} /></Pressable>)}<Pressable onPress={() => void send("Why does mass not change acceleration due to gravity?")}><Pill label={tr("tutor.conceptChip")} /></Pressable><Pressable onPress={() => void showVerifiedExample()}><Pill label={tr("tutor.verifiedChip")} active /></Pressable><Pressable onPress={() => setHint((value) => Math.min(3, value + 1))}><Pill label={hint ? `${tr("tutor.hintChip")} ${hint}` : tr("tutor.hintLadder")} /></Pressable></View><View style={{ flexDirection: "row", gap: 8, marginTop: 12, alignItems: "flex-end" }}><TextInput accessibilityLabel={tr("tutor.questionLabel")} editable={aiOpen && !submitting} value={draft} onChangeText={setDraft} onSubmitEditing={() => void send()} returnKeyType="done" multiline placeholder={aiOpen ? tr("tutor.questionPlaceholder") : tr("tutor.limitReached")} placeholderTextColor={colors.muted} style={{ flex: 1, minHeight: 46, maxHeight: 110, borderWidth: 1, borderColor: colors.border, borderRadius: 16, padding: 12, color: colors.foreground }} /><View style={{ width: 86 }}><PrimaryButton label={submitting ? tr("tutor.checkingShort") : tr("common.send")} disabled={!aiOpen || submitting} onPress={() => void send()} /></View></View><HintPanel visible={hint > 0} label={hint === 1 ? tr("tutor.hintTarget") : hint === 2 ? tr("tutor.hintEquation") : tr("tutor.hintUnits")} /></Card></View></ScreenContainer>;
+  const model = useMemo(
+    () =>
+      buildTutorViewModel({
+        remaining,
+        limit: usage.tutorLimit,
+        draft,
+        submitting,
+        error: serviceError ? recoveryMessage(serviceError) : null,
+        messages,
+        lastAnswer,
+      }),
+    [draft, lastAnswer, messages, remaining, serviceError, submitting, usage.tutorLimit],
+  );
+  const prompts = [
+    ...(demoTutor?.starters.slice(0, 2) ?? []),
+    tr("tutor.conceptChip"),
+    tr("tutor.verifiedChip"),
+  ];
+  return (
+    <ChatScreenShell
+      header={
+        <View>
+          <TutorHeader subtitle={tr("tutor.subtitle")} remaining={remaining} limit={usage.tutorLimit} />
+          <View style={{ paddingHorizontal: layout.screenPadding }}>
+            <DraftRecovery id="tutor" onResume={(saved) => { const value = typeof saved.data.question === "string" ? saved.data.question : ""; setDraft(value); }} />
+            <DraftStatus status={draftStatus} />
+            {demoTutor ? <Text accessibilityLiveRegion="polite" style={{ color: colors.primary, marginBottom: 8, lineHeight: 20 }}>{tr("tutor.demoAi")}</Text> : null}
+            {usedLocalFallback ? <Text accessibilityLiveRegion="polite" style={{ color: colors.primary, marginBottom: 8, lineHeight: 20 }}>{tr("tutor.localFallback")}</Text> : null}
+            {usageAnnouncement ? <Text accessibilityLiveRegion={usageAnnouncement.accessibilityLiveRegion} style={{ color: colors.warning, marginBottom: 8 }}>{usageAnnouncement.message}</Text> : null}
+            {!aiOpen ? (
+              <Pressable accessibilityRole="button" onPress={() => router.push("/upgrade" as never)}>
+                <Text style={{ color: colors.primary, fontWeight: "800", marginBottom: 8 }}>{tr("tutor.plusPrompt")}</Text>
+              </Pressable>
+            ) : null}
+            {submitting ? <Text accessibilityLiveRegion={checkingAnnouncement.accessibilityLiveRegion} style={{ color: colors.primary, marginBottom: 8 }}>{checkingAnnouncement.message}</Text> : null}
+            {serviceError ? (
+              <Card style={{ marginBottom: 12, padding: 12 }}>
+                <Text accessibilityLiveRegion="assertive" style={{ color: colors.error, fontWeight: "800" }}>{recoveryMessage(serviceError)}</Text>
+                {serviceError.retryable && lastQuestion ? <BavButton label={tr("common.tryAgain")} variant="secondary" onPress={() => void send(lastQuestion)} /> : null}
+              </Card>
+            ) : null}
+          </View>
+        </View>
+      }
+      footer={
+        <View style={{ paddingTop: spacing.sm }}>
+          <TutorPromptRow
+            prompts={prompts}
+            disabled={!aiOpen || submitting}
+            onPrompt={(prompt) => {
+              if (prompt === tr("tutor.verifiedChip")) {
+                void showVerifiedExample();
+                return;
+              }
+              if (prompt === tr("tutor.conceptChip")) {
+                void send("Why does mass not change acceleration due to gravity?");
+                return;
+              }
+              void send(prompt);
+            }}
+          />
+          <TutorInputBar
+            draft={draft}
+            onChange={setDraft}
+            onSend={() => void send()}
+            inputState={aiOpen ? model.inputState : "disabled"}
+            placeholder={remaining ? tr("tutor.questionPlaceholder") : tr("tutor.limitReached")}
+            sendLabel={submitting ? tr("tutor.checkingShort") : tr("common.send")}
+            questionLabel={tr("tutor.questionLabel")}
+          />
+          <View style={{ paddingHorizontal: layout.screenPadding }}>
+            <HintPanel visible={hint > 0} label={hint === 1 ? tr("tutor.hintTarget") : hint === 2 ? tr("tutor.hintEquation") : tr("tutor.hintUnits")} />
+          </View>
+        </View>
+      }
+    >
+      <ScrollView keyboardShouldPersistTaps="handled" contentContainerStyle={{ gap: 12, paddingBottom: 16 }} showsVerticalScrollIndicator={false}>
+        <TutorThread
+          messages={model.messages}
+          onOpenSimulation={() => router.push("/play" as never)}
+          onOpenPractice={() => router.push("/practice" as never)}
+        />
+        {messages.length > 1 ? (
+          <View style={{ paddingHorizontal: layout.screenPadding, gap: 12 }}>
+            <BavEquationCard formula="knowns → principle → verified result" description="Keep the calculation traceable." expandable={false} />
+            <SolutionStep number={1} title="Identify the knowns" body="Write every value with a unit before choosing a formula." />
+            <SolutionStep number={2} title="Choose the principle" body="Match the target quantity to a supported physics relationship." />
+            <BavButton label={hint ? `${tr("tutor.hintChip")} ${hint}` : tr("tutor.hintLadder")} variant="ghost" onPress={() => setHint((value) => Math.min(3, value + 1))} />
+          </View>
+        ) : null}
+      </ScrollView>
+    </ChatScreenShell>
+  );
 }

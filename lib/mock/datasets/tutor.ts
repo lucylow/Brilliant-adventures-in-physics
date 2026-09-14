@@ -66,6 +66,7 @@ const FOLLOW_UPS = [
   "What is the difference between emf and voltage drop?",
   "Why does a rolling object have two kinetic terms?",
   "How do I choose the system for energy?",
+  "What does a negative charge mean for field direction?",
 ];
 
 export function createTutorCatalog(userId: string): MockTutorSession[] {

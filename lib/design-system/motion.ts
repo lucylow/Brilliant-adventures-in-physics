@@ -1,6 +1,8 @@
-import { Easing, type EasingFunction } from "react-native";
+import { Easing } from "react-native";
+import type { EasingFunction } from "react-native";
 import { duration } from "./tokens";
-import { motionDuration, pressScale, type MotionPrefs } from "@/lib/motion";
+import { motionDuration, pressScale } from "@/lib/motion";
+import type { MotionPrefs } from "@/lib/motion";
 
 export type MotionKind = "fade" | "scale" | "slide" | "press" | "expand" | "collapse" | "progress" | "pulse" | "entrance";
 

@@ -1,3 +1,4 @@
+import { rankRecommendations } from "@/lib/monetization/content-map";
 import type { MockConcept, MockLearnerProfile, MockLesson, MockMastery, MockMission, MockProblem, MockRecommendationSet, MockSimulation } from "./types";
 
 export function buildRecommendations(input: {
@@ -31,9 +32,13 @@ export function buildRecommendations(input: {
     .map((problem) => problem.id)
     .slice(0, 8);
 
-  const simulationIds = input.simulations
-    .filter((simulation) => simulation.featured || simulation.conceptIds.some((id) => nextOpen.some((concept) => concept.id === id)))
-    .map((simulation) => simulation.id)
+  const simulationIds = rankRecommendations(
+    input.simulations
+      .filter((simulation) => simulation.featured || simulation.conceptIds.some((id) => nextOpen.some((concept) => concept.id === id)))
+      .map((simulation) => ({ id: simulation.id })),
+    () => false,
+  )
+    .map((item) => item.id)
     .slice(0, 6);
 
   const missionIds = input.missions

@@ -11,7 +11,6 @@ import type { CatalogProduct, CustomerEntitlements, Entitlements, PaywallVariant
 import type { MockBillingScenarioId } from "./scenarios";
 import { MockBillingAdapter } from "./mock-adapter";
 import { assignPaywallVariant } from "./variants";
-import { defaultClock } from "./clock";
 
 export type MonetizationStore = {
   ready: boolean;

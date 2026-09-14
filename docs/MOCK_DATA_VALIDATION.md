@@ -44,3 +44,9 @@ Mock mode stays **off** during the default test run so existing catalog tests (`
 - Dates from `getMockNow()` / `isoDaysAgo()`, never `Date.now()` inside generators
 - Dependent physics from `lib/physics`
 - Clone on the way out of repositories
+
+## Final report (validation)
+
+`pnpm check`, `pnpm lint`, `pnpm test`, and `pnpm build` were run after wiring. **445 tests passed**, 1 skipped (`auth.logout`). Lint reported 0 errors and 3 existing monetization warnings. Snapshot floors in `tests/mock-dataset.test.ts` now require the demo pack to meet the catalog minima (150 concepts, 80 lessons, 250 problems, 50 simulations, 50 tutor sessions, 500 attempts, 100 activity records).
+
+Malformed fixtures stay in `lib/mock/fixtures/empty.ts` only. Production runtime cannot enable mock data.

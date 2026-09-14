@@ -11,7 +11,7 @@ import { GridMotif } from "@/components/scientific/ScientificMotifs";
 import { useColors } from "@/hooks/use-colors";
 import { projectile } from "@/lib/physics";
 import { buildSimulationViewModel } from "@/lib/view-models/lab";
-import { layout, radius, spacing } from "@/lib/design-system";
+import { layout, radius } from "@/lib/design-system";
 import { loadPreferences } from "@/lib/preferences";
 import { triggerHaptic } from "@/lib/haptics";
 
@@ -55,7 +55,6 @@ export default function SimulationScreen() {
   const t = time % Math.max(result.flightTime, 0.2);
   const vx = speed * Math.cos((angle * Math.PI) / 180);
   const vy = speed * Math.sin((angle * Math.PI) / 180) - 9.81 * t;
-  const x = vx * t;
   const y = Math.max(0, speed * Math.sin((angle * Math.PI) / 180) * t - 0.5 * 9.81 * t * t);
   const progress = Math.min(1, t / Math.max(result.flightTime, 0.01));
   return (

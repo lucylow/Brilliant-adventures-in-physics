@@ -7,9 +7,10 @@ export function createActivityFeed(input: {
   missions: readonly MockMission[];
   experiments: readonly MockExperiment[];
   tutorSessions: readonly MockTutorSession[];
+  extras?: readonly MockActivity[];
 }): MockActivity[] {
   const items: MockActivity[] = [];
-  for (const attempt of input.attempts.slice(-40)) {
+  for (const attempt of input.attempts.slice(-80)) {
     items.push({
       id: `activity-attempt-${attempt.id}`,
       userId: input.userId,
@@ -24,10 +25,10 @@ export function createActivityFeed(input: {
   input.missions.filter((mission) => mission.completionPercent >= 1).forEach((mission) => {
     items.push({ id: `activity-mission-${mission.id}`, userId: input.userId, kind: "mission-completed", title: `Completed “${mission.title}”`, detail: mission.hook, occurredAt: isoDaysAgo(3, 4), xp: mission.rewardXp, referenceId: mission.id });
   });
-  input.experiments.slice(0, 12).forEach((experiment) => {
+  input.experiments.slice(0, 20).forEach((experiment) => {
     items.push({ id: `activity-exp-${experiment.id}`, userId: input.userId, kind: "experiment-saved", title: `Lab: ${experiment.title}`, detail: experiment.summary, occurredAt: experiment.createdAt, referenceId: experiment.id });
   });
-  input.tutorSessions.slice(0, 12).forEach((session) => {
+  input.tutorSessions.slice(0, 20).forEach((session) => {
     items.push({ id: `activity-tutor-${session.id}`, userId: input.userId, kind: "tutor-asked", title: `Asked Tutor: ${session.title}`, detail: session.messages[0]?.text ?? session.title, occurredAt: session.startedAt, referenceId: session.id });
   });
   const extras: Array<[ActivityKind, string]> = [
@@ -42,5 +43,6 @@ export function createActivityFeed(input: {
   extras.forEach(([kind, title], index) => {
     items.push({ id: `activity-extra-${index}`, userId: input.userId, kind, title, detail: "Local mock activity for the home and progress feeds.", occurredAt: isoDaysAgo(index + 1, 6), xp: kind === "achievement-unlocked" ? 15 : 8 });
   });
-  return items.sort((a, b) => b.occurredAt.localeCompare(a.occurredAt)).slice(0, 140);
+  for (const extra of input.extras ?? []) items.push(extra);
+  return items.sort((a, b) => b.occurredAt.localeCompare(a.occurredAt)).slice(0, 180);
 }

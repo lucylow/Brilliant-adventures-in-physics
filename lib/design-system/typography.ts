@@ -1,4 +1,5 @@
-import { Platform, type TextStyle } from "react-native";
+import { Platform } from "react-native";
+import type { TextStyle } from "react-native";
 import { Fonts } from "@/constants/theme";
 
 export const fontFamily = {

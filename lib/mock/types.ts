@@ -12,6 +12,7 @@ import type { RewardAction } from "@/lib/gamification";
 import type { LearnerGoal, LearnerLevel } from "@/lib/onboarding";
 import type { RetryItem } from "@/lib/retry-queue";
 import type { BAVExperiment, BAVQuest, BAVVisualization } from "@/lib/bav";
+import type { MockExpansion } from "./expansion/types";
 
 export type MockScenarioId =
   | "fresh-user"
@@ -24,7 +25,11 @@ export type MockScenarioId =
   | "offline-user"
   | "returning-user"
   | "empty-state"
-  | "error-state";
+  | "error-state"
+  | "showcase"
+  | "mechanics-lab"
+  | "space-week"
+  | "exam-sprint";
 
 export type MockLatencyProfile = "instant" | "fast" | "realistic" | "slow";
 export type MockNetworkState = "online" | "offline" | "degraded";
@@ -445,6 +450,7 @@ export type MockDataset = {
   bavQuests: BAVQuest[];
   bavVisualizations: BAVVisualization[];
   worlds: WorldId[];
+  expansion: MockExpansion;
 };
 
 export type MockRecommendationSet = {

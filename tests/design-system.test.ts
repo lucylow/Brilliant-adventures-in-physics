@@ -90,7 +90,8 @@ describe("Lab, progress, practice, scan, tutor view models", () => {
   it("filters the Build catalog by category", () => {
     expect(LAB_CATEGORIES).toContain("Quantum");
     const mechanics = buildLabViewModel("Mechanics");
-    expect(mechanics.items.every((item) => item.concept.startsWith("Mechanics"))).toBe(true);
+    expect(mechanics.items.length).toBeGreaterThan(0);
+    expect(mechanics.items.every((item) => item.category.toLowerCase() === "mechanics")).toBe(true);
     expect(buildLabViewModel("All").items.length).toBeGreaterThan(mechanics.items.length);
   });
 

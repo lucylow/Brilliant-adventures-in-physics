@@ -1,4 +1,5 @@
-import { Platform, type ViewStyle } from "react-native";
+import { Platform } from "react-native";
+import type { ViewStyle } from "react-native";
 import { withAlpha } from "./tokens";
 
 export type CardElevation = "flat" | "border" | "soft" | "featured" | "scientific";

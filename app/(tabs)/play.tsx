@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { View } from "react-native";
 import { router } from "expo-router";
 import { ScrollScreen } from "@/components/layout";
@@ -6,7 +6,6 @@ import { BavChip, BavLabCard, BavSectionHeader, Body, Heading1 } from "@/compone
 import { EmptyState } from "@/components/states";
 import { buildLabViewModel, LAB_CATEGORIES, type LabCategory } from "@/lib/view-models/lab";
 import { loadPreferences } from "@/lib/preferences";
-import { useEffect } from "react";
 
 export default function PlayScreen() {
   const [category, setCategory] = useState<LabCategory>("All");

@@ -6,11 +6,10 @@ import { BavChip } from "@/components/bav/BavChrome";
 import { isProductionRuntime } from "@/lib/mock/config";
 import { MOCK_SCENARIO_LIST, type MockBillingScenarioId } from "@/lib/monetization/scenarios";
 import { PAYWALL_VARIANTS } from "@/lib/monetization/variants";
-import { setMockScenario, getMonetizationStore, setConnected } from "@/lib/monetization/runtime";
+import { setMockScenario, getMonetizationStore, setConnected, getBillingPort } from "@/lib/monetization/runtime";
 import { demoRevenueDashboard } from "@/lib/monetization/analytics";
 import { useMonetization } from "@/hooks/use-monetization";
 import { MockBillingAdapter } from "@/lib/monetization/mock-adapter";
-import { getBillingPort } from "@/lib/monetization/runtime";
 import { spacing } from "@/lib/design-system";
 
 const SWITCHER: MockBillingScenarioId[] = [

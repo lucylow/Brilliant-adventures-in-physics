@@ -58,6 +58,7 @@ export {
   seedExplorer,
   seedOffline,
   seedErrors,
+  seedShowcase,
 } from "./seed";
 export { validateMockDataset, validateMockReferences, assertValidMockDataset } from "./validation/dataset";
 export { getMockDatasetStats } from "./stats";
@@ -79,6 +80,9 @@ export {
   getRecommendedProblems,
   getRecommendedSimulations,
   getRecommendedMissions,
+  getActiveLabExperiments,
+  getActiveDiscoveryCards,
+  searchActiveContent,
 } from "./adapters/catalog";
 export { MOCK_SCENARIOS, SCREEN_COVERAGE } from "./scenarios/definitions";
 export { selectHomeDemoState, selectPracticeDemoState, selectProgressDemoState, selectLabDemoState, selectTutorDemoState, selectSettingsDemoState, selectInspectorStats } from "./selectors/screens";
@@ -86,6 +90,21 @@ export { evaluateMockAchievements } from "./achievements-engine";
 export { missionCompletionFromSteps } from "./mission-engine";
 export { recordMockAnalytics, getMockAnalyticsEvents, clearMockAnalytics } from "./analytics";
 export { inspectMockAI } from "./ai/ai-inspector";
+export { inspectExpansion } from "./ai/expansion/debug";
+export {
+  buildMockExpansion,
+  composeMockDataset,
+  selectDailyChallenge,
+  selectFeaturedSimulation,
+  selectCurrentMission,
+  selectNextBestAction,
+  generateMockDataReport,
+  diagnoseExpansion,
+  toCsv,
+  fromCsv,
+  gammaFromBeta,
+} from "./expansion";
 export { isMockAIEnabled, getMockAIConfig, setMockAIScenario } from "./ai/config";
 export { getMockAIProvider } from "./ai/ai-client";
 export { validateAIDataset, getAIDatasetCounts } from "./ai/ai-validators";
+export { validateExpansionLayer, getExpansionCounts } from "./ai/expansion/validators";

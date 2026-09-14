@@ -78,7 +78,7 @@ export function BavNumberInput({
         <View style={{ flex: 1 }}>
           <BavTextField value={value} onChangeText={onChangeText} accessibilityLabel={accessibilityLabel} keyboardType="decimal-pad" error={undefined} />
         </View>
-        <Caption tone="muted">{unit}</Caption>
+        <Caption tone="muted" style={{ color: colors.muted }}>{unit}</Caption>
       </View>
       {error ? <Caption tone="danger" style={{ marginTop: 6 }}>{error}</Caption> : null}
       {!error ? <View /> : null}

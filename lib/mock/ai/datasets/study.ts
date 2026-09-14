@@ -99,7 +99,15 @@ export function getFlashcards(): FlashcardRecord[] {
       lessonId: topic.lessonId,
     })),
   );
-  flashCache = [...flashCache, ...extras];
+  const examCards = CATALOG.map((topic) => ({
+    id: stableId("card", `${topic.id}-exam`),
+    conceptId: topic.conceptId,
+    type: "application" as const,
+    front: `Exam check: which assumption sits behind ${topic.equation}?`,
+    back: topic.examReview,
+    lessonId: topic.lessonId,
+  }));
+  flashCache = [...flashCache, ...extras, ...examCards];
   return flashCache;
 }
 
@@ -222,7 +230,7 @@ export function getRecommendationReasons(): string[] {
     `Your recent attempts on ${topic.title} show unit slips, so a targeted review of ${topic.equation} is next.`,
     `Mastery on ${topic.title} is strong enough to try the related simulation ${topic.simulationId}.`,
     `You have not yet completed ${topic.lessonId}, which is the local lesson for ${topic.title}.`,
-    `A recurring mistake matches “${topic.misconception}”, so a misconception-correction Tutor turn is ranked higher than a random popular item.`,
+    `A recurring mistake matches “${topic.misconception}”, so a misconception-correction Tutor turn is ranked higher than a randomly chosen item.`,
     `Your stated goal needs ${topic.title} as a prerequisite before the next concept in the orbit.`,
     `Streak-friendly: a 6-minute flash explanation of ${topic.oneSentence} without adding guilt if you skip.`,
     `Exam preference: ${topic.examReview}`,
@@ -246,7 +254,7 @@ export function rankRecommendations(input: {
     const recent = input.recentTopics.includes(topic.conceptId) ? -0.08 : 0.05;
     const score = Math.max(0, Math.min(1, (1 - mastery) * 0.5 + mistakeHit + unseen + recent));
     const reason = mistakeHit
-      ? `Recent mistakes point at ${topic.title}, not at popularity.`
+      ? `Recent mistakes point at ${topic.title}, so this review is ranked from your attempts rather than from a global list.`
       : mastery < 0.4
         ? `Low local mastery on ${topic.conceptId} makes ${topic.lessonId} the next secure step.`
         : `You have room to transfer ${topic.title} into ${topic.simulationId}.`;
@@ -262,7 +270,7 @@ export function rankRecommendations(input: {
   }).sort((a, b) => b.score - a.score || a.conceptId.localeCompare(b.conceptId));
   return {
     items: items.slice(0, 8),
-    learnerSummary: `Goal “${input.goal}” with ${input.timeAvailableMin} minutes and ${input.difficultyPreference} preference. Rankings use mastery, mistakes, and incomplete lessons — not popularity.`,
+    learnerSummary: `Goal “${input.goal}” with ${input.timeAvailableMin} minutes and ${input.difficultyPreference} preference. Rankings use mastery, mistakes, and incomplete lessons.`,
   };
 }
 

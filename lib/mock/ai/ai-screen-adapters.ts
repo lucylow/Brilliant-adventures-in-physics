@@ -4,13 +4,19 @@ import { selectPracticeFeedback, selectRankedRecommendations, selectReviewCoachM
 import { getNotebookAssists } from "./datasets/assist";
 import { getProgressNarratives } from "./datasets/study";
 import { getScanAnalyses } from "./datasets/scans-graphs";
+import { getProgressNarrativesV3, rankWhatNext } from "./expansion/study";
+import { learnerIdForTestUser } from "./expansion/orchestration";
+import { getSimulationCopilotTurns, getExperimentCopilotStages } from "./expansion/copilots";
+import { personalizeRecommendation, personalizeSimulation } from "./expansion/personalize";
 
 export function tutorScreenModel() {
   if (!isMockAIEnabled()) return null;
+  const learnerId = learnerIdForTestUser();
   return {
     demoLabel: "Demo AI — development mock responses, not a live provider.",
     starters: selectTutorStarterPrompts("tutor-screen", 4),
     inspector: inspectMockAI(),
+    nextActions: rankWhatNext(learnerId),
   };
 }
 
@@ -33,18 +39,22 @@ export function practiceScreenModel(conceptId: string) {
 
 export function homeRecommendationModel() {
   if (!isMockAIEnabled()) return null;
+  const learnerId = learnerIdForTestUser();
   return {
-    demoLabel: "Demo AI ranking (uses local mastery and mistakes, not popularity).",
+    demoLabel: "Demo AI ranking uses local mastery and recent mistakes.",
     ranked: selectRankedRecommendations(),
+    personalized: personalizeRecommendation(learnerId),
   };
 }
 
 export function progressScreenModel() {
   if (!isMockAIEnabled()) return null;
+  const learnerId = learnerIdForTestUser();
   return {
     demoLabel: "Demo AI progress interpretation",
     narrative: getProgressNarratives()[0],
     coach: selectReviewCoachMessage(14),
+    expansionNarrative: getProgressNarrativesV3().find((item) => item.learnerId === learnerId),
   };
 }
 
@@ -59,8 +69,21 @@ export function notebookScreenModel(conceptId: string) {
 
 export function simulationScreenModel(conceptId: string) {
   if (!isMockAIEnabled()) return null;
+  const learnerId = learnerIdForTestUser();
+  const copilot = getSimulationCopilotTurns().find((item) => item.conceptId === conceptId) ?? getSimulationCopilotTurns()[0];
   return {
     demoLabel: "Demo AI simulation recommendation",
     recommendation: selectSimulationRecommendation(conceptId),
+    personalized: personalizeSimulation(conceptId, learnerId),
+    copilot,
+  };
+}
+
+export function experimentScreenModel(conceptId: string) {
+  if (!isMockAIEnabled()) return null;
+  const stage = getExperimentCopilotStages().find((item) => item.conceptId === conceptId) ?? getExperimentCopilotStages()[0];
+  return {
+    demoLabel: "Demo AI experiment assistance — mock analysis, not fabricated lab data.",
+    stage,
   };
 }

@@ -1,8 +1,13 @@
-import { conceptRegistry, searchConcepts, type PhysicsConcept } from "@/lib/concepts";
-import { practiceQuestions, type PracticeQuestion } from "@/lib/practice";
-import { projectileLesson, type Lesson } from "@/lib/education";
-import { evaluateAchievements, type Achievement } from "@/lib/achievements";
-import { generateAdventureMissions, type AdventureMission, type WorldId } from "@/lib/adventure";
+import { conceptRegistry, searchConcepts } from "@/lib/concepts";
+import type { PhysicsConcept } from "@/lib/concepts";
+import { practiceQuestions } from "@/lib/practice";
+import type { PracticeQuestion } from "@/lib/practice";
+import { projectileLesson } from "@/lib/education";
+import type { Lesson } from "@/lib/education";
+import { evaluateAchievements } from "@/lib/achievements";
+import type { Achievement } from "@/lib/achievements";
+import { generateAdventureMissions } from "@/lib/adventure";
+import type { AdventureMission, WorldId } from "@/lib/adventure";
 import type { LearningState } from "@/lib/progress-store";
 import { isMockModeEnabled } from "../config";
 import { getMockDataset } from "../registry";
@@ -81,4 +86,28 @@ export function getRecommendedSimulations() {
 
 export function getRecommendedMissions() {
   return getMockDataset().recommendations.missions;
+}
+
+export function getActiveLabExperiments() {
+  if (!isMockModeEnabled()) return [];
+  return clone(getMockDataset().expansion.labExperiments);
+}
+
+export function getActiveDiscoveryCards() {
+  if (!isMockModeEnabled()) return [];
+  return clone(getMockDataset().expansion.discoveryCards);
+}
+
+export function searchActiveContent(query: string) {
+  if (!isMockModeEnabled()) {
+    return { concepts: searchConcepts(query), lessons: [], simulations: [], discovery: [], problems: [] };
+  }
+  const dataset = getMockDataset();
+  return {
+    concepts: searchActiveConcepts(query),
+    lessons: searchItems(dataset.lessons, query).slice(0, 8),
+    simulations: searchItems(dataset.simulations, query).slice(0, 8),
+    discovery: searchItems(dataset.expansion.discoveryCards, query).slice(0, 8),
+    problems: searchItems(dataset.problems, query).slice(0, 8),
+  };
 }

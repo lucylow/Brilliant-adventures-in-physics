@@ -9,12 +9,16 @@ import { formatScientific, formatNumber } from "@/lib/locale";
 import { FALLBACK_QUANTUM_CATALOG, loadQuantumCatalog, photonEnergy, photonFrequency, matterWave, minimumMomentumUncertainty, qubitProbabilities, blochCoordinates, tunnelingProbability, hydrogenTransitionEnergyEV, transitionWavelengthNm, type QuantumCatalog } from "@/lib/quantum";
 import { FALLBACK_ADVANCED_PHYSICS_CATALOG, hydrogenicTransitionEnergyEV, spectralWavelengthNm, vibrationalEnergyJ, radioactiveRemaining, braggAngleRad } from "@/lib/advanced-physics";
 import { FALLBACK_DOMAIN_CATALOG, STANDARD_MODEL_PARTICLES, diffusionRmsDistanceM, ohmsLawCurrentA, photonMomentumKgMps, restEnergyJ, thinLensImageDistanceM } from "@/lib/physics-domains";
+import { PremiumQuantumCard } from "@/components/monetization";
+import { useEntitlements } from "@/hooks/use-monetization";
+import { router } from "expo-router";
 
 const FALLBACK_WAVELENGTH_M = 500e-9;
 
 export default function QuantumScreen() {
   const colors = useColors();
   const { locale, tr } = useAppTranslations();
+  const { has } = useEntitlements();
   const [catalog, setCatalog] = useState<QuantumCatalog>(FALLBACK_QUANTUM_CATALOG);
   const [usedFallback, setUsedFallback] = useState(true);
     const [loadFailed, setLoadFailed] = useState(false);
@@ -81,6 +85,9 @@ export default function QuantumScreen() {
     <ScreenContainer className="p-5">
       <ScrollView contentContainerStyle={{ paddingBottom: 32 }} showsVerticalScrollIndicator={false}>
         <SectionHeader title={tr("quantum.title")} subtitle={tr("quantum.subtitle")} />
+        <View style={{ marginBottom: 14 }}>
+          <PremiumQuantumCard locked={!has("quantum_labs")} onPress={() => router.push({ pathname: "/paywall", params: { from: "/quantum", variant: "labs_focused", feature: "quantum_labs" } } as never)} />
+        </View>
         {catalogStatusMessage && <Card accessibilityLabel={catalogStatusMessage} style={{ marginBottom: 14, backgroundColor: loadFailed ? colors.warning + "12" : colors.primary + "0D" }}><Text accessibilityLiveRegion={loadFailed ? "assertive" : "polite"} style={{ color: loadFailed ? colors.warning : colors.primary, lineHeight: 21 }}>{catalogStatusMessage}</Text>{loadFailed && <View style={{ marginTop: 10 }}><Pressable accessibilityRole="button" accessibilityLabel={tr("common.tryAgain")} onPress={() => void loadCatalog()} disabled={loading} accessibilityState={{ disabled: loading }} style={({ pressed }) => [{ alignSelf: "flex-start", paddingVertical: 8, paddingHorizontal: 12, borderRadius: 10, backgroundColor: colors.surface, opacity: loading ? 0.55 : 1 }, pressed && !loading && { opacity: 0.7 }]}><Text style={{ color: colors.primary, fontWeight: "800" }}>{tr("common.tryAgain")}</Text></Pressable></View>}</Card>}
         <Card accessibilityLabel={tr("quantum.title")}>
           <Pill label={conceptLabel(selectedConcept)} active />

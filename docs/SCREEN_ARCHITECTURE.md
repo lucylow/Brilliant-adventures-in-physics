@@ -18,6 +18,7 @@
 | TutorViewModel | `lib/view-models/tutor.ts` | input idle/typing/sending/disabled/error |
 | PracticeViewModel | `lib/view-models/practice.ts` | idle/correct/incorrect |
 | ScanViewModel | `lib/view-models/practice.ts` | capture/review/solve + confidence |
+| AdventureViewModel | `lib/view-models/adventure.ts` | chapters, missions, unlocks |
 
 Adapters in `lib/adapters/index.ts` re-export those builders so UI does not import mock factories directly.
 

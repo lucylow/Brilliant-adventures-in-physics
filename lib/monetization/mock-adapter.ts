@@ -105,7 +105,6 @@ export class MockBillingAdapter implements BillingPort {
         return { status: "pending", productId, transaction: syntheticTransaction(product.storeProductId, "pending") };
       }
       if (outcome === "already_owned") {
-        const entitlements = entitlementsFromScenario(this.scenario);
         return { status: "failed", productId, entitlements: undefined, error: errorFromCode("already_owned").toShape(), transaction: syntheticTransaction(product.storeProductId, "purchased") };
       }
 

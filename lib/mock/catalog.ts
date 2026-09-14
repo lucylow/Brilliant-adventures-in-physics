@@ -44,8 +44,11 @@ export function learnerForScenario(scenario: MockScenarioId, learnerId?: string)
   }
   if (scenario === "beginner") return users.find((user) => user.id === "user-alex") ?? users[0];
   if (scenario === "advanced-learner" || scenario === "power-user") return users.find((user) => user.id === "user-jordan") ?? users[0];
-  if (scenario === "exam-prep") return users.find((user) => user.id === "user-taylor") ?? users[0];
+  if (scenario === "exam-prep" || scenario === "exam-sprint") return users.find((user) => user.id === "user-taylor") ?? users[0];
   if (scenario === "explorer") return users.find((user) => user.id === "user-morgan") ?? users[0];
+  if (scenario === "mechanics-lab") return users.find((user) => user.id === "user-noah") ?? users[0];
+  if (scenario === "space-week") return users.find((user) => user.id === "user-priya") ?? users[0];
+  if (scenario === "showcase") return users.find((user) => user.id === "user-jordan") ?? users[0];
   if (scenario === "returning-user") return users.find((user) => user.id === "user-sam") ?? users[0];
   return requested ?? users.find((user) => user.id === "user-maya") ?? users[0];
 }

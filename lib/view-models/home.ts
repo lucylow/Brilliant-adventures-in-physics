@@ -1,12 +1,14 @@
 import { ADVENTURE_WORLDS, generateAdventureMissions, worldForLevel } from "@/lib/adventure";
 import { levelFromXp, levelProgress } from "@/lib/gamification";
-import { recommendationForGoal, type OnboardingProfile } from "@/lib/onboarding";
+import { recommendationForGoal } from "@/lib/onboarding";
+import type { OnboardingProfile } from "@/lib/onboarding";
 import { practiceQuestions } from "@/lib/practice";
 import type { LearningState } from "@/lib/progress-store";
 import { isMockModeEnabled, getMockConfig } from "@/lib/mock/config";
 import { getMockNow } from "@/lib/mock/clock";
 import { FIGMA_HOME_FIXTURE, learnerForScenario } from "@/lib/mock/catalog";
-import { getActivePracticeQuestions } from "@/lib/mock/adapters/catalog";
+import { getMockDataset } from "@/lib/mock/registry";
+import { selectCurrentMission, selectDailyChallenge, selectFeaturedSimulation, selectNextBestAction, selectRecentActivity } from "@/lib/mock/expansion/selectors";
 import { createSimulationCatalog } from "@/lib/mock/datasets/simulations";
 import type { ScreenStatus } from "@/lib/screen-recovery";
 
@@ -182,15 +184,20 @@ function homeFromFixture(now: Date, locale: string, streakEnabled: boolean): Hom
 
 function homeFromMock(input: HomeAdapterInput, now: Date, locale: string): HomeViewModel {
   const config = getMockConfig();
+  const dataset = getMockDataset(config.scenario, config.learnerId);
   const learner = learnerForScenario(config.scenario, config.learnerId);
   const masteryValues = Object.values(learner.masterySummary);
   const mastery = masteryValues.length ? masteryValues.reduce((sum, value) => sum + value, 0) / masteryValues.length : 0;
-  const featured = createSimulationCatalog().find((item) => item.featured) ?? createSimulationCatalog()[0];
-  const world = worldForLevel(learner.level);
-  const mission = generateAdventureMissions(world.id)[0];
-  const catalog = getActivePracticeQuestions();
-  const challenge = catalog[now.getUTCDate() % Math.max(1, catalog.length)] ?? practiceQuestions[0];
-  const recommendation = recommendationForGoal(input.onboarding.goal);
+  const featured = selectFeaturedSimulation(dataset) ?? createSimulationCatalog()[0];
+  const mission = selectCurrentMission(dataset);
+  const challenge = selectDailyChallenge(dataset, now);
+  const next = selectNextBestAction(dataset);
+  const recent = selectRecentActivity(dataset, 4).map((item) => ({
+    id: item.id,
+    title: item.title,
+    subtitle: item.detail,
+    route: item.kind.includes("simulation") || item.kind.includes("experiment") ? "/lab" : item.kind.includes("tutor") ? "/tutor" : "/practice",
+  }));
   return {
     status: "success",
     dateLabel: formatHomeDate(now, locale),
@@ -205,23 +212,23 @@ function homeFromMock(input: HomeAdapterInput, now: Date, locale: string): HomeV
     continueAdventure: featured
       ? {
           title: featured.title,
-          chapter: `${world.title} · ${mission.title}`,
+          chapter: mission ? `${mission.title} · ${mission.objective}` : featured.description,
           progress: Math.max(0.12, Math.min(0.92, mastery)),
           route: "/lab",
         }
       : null,
     quickActions: HOME_QUICK_ACTIONS,
     dailyChallenge: {
-      prompt: challenge.prompt,
-      topic: challenge.concept,
-      xp: 150,
+      prompt: challenge?.prompt ?? next.title,
+      topic: challenge?.conceptId.replace(/-/g, " ") ?? next.reason,
+      xp: challenge?.xp ?? 150,
       minutes: 3,
       route: "/practice",
     },
-    recentActivity: recentFromLearning(input.learning),
+    recentActivity: recent.length ? recent : recentFromLearning(input.learning),
     recommendations: [
-      { id: "goal", title: recommendation.title, subtitle: recommendation.body, route: recommendation.path },
-      { id: "mission", title: mission.title, subtitle: mission.objective, route: "/practice" },
+      { id: "next", title: next.title, subtitle: next.reason, route: next.route },
+      { id: "mission", title: mission?.title ?? "Continue adventure", subtitle: mission?.objective ?? next.reason, route: "/practice" },
     ],
   };
 }

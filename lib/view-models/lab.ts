@@ -1,9 +1,12 @@
-import { createSimulationCatalog, simulationsForCategory } from "@/lib/mock/datasets/simulations";
+import { createSimulationCatalog } from "@/lib/mock/datasets/simulations";
+import { isMockModeEnabled } from "@/lib/mock/config";
+import { getActiveSimulations } from "@/lib/mock/adapters/catalog";
 import type { MockSimulation } from "@/lib/mock/types";
 import type { ScreenStatus } from "@/lib/screen-recovery";
 
 export const LAB_CATEGORIES = ["All", "Mechanics", "Waves", "Electricity", "Optics", "Quantum", "Astronomy"] as const;
-export type LabCategory = (typeof LAB_CATEGORIES)[number];
+type LabCategoryList = typeof LAB_CATEGORIES;
+export type LabCategory = LabCategoryList[number];
 
 export type LabViewModel = {
   status: ScreenStatus;
@@ -13,6 +16,7 @@ export type LabViewModel = {
     id: string;
     title: string;
     concept: string;
+    category: string;
     difficulty: string;
     duration: number;
     motif: string;
@@ -35,10 +39,13 @@ function routeFor(simulation: MockSimulation): "/lab" | "/quantum" | "/astronomy
 }
 
 export function buildLabViewModel(category: LabCategory = "All", status: ScreenStatus = "success"): LabViewModel {
-  const items = (category === "All" ? createSimulationCatalog() : simulationsForCategory(category)).map((simulation) => ({
+  const catalog = isMockModeEnabled() ? getActiveSimulations() : createSimulationCatalog();
+  const filtered = category === "All" ? catalog : catalog.filter((item) => item.category.toLowerCase() === category.toLowerCase());
+  const items = filtered.map((simulation) => ({
     id: simulation.id,
     title: simulation.title,
     concept: `${simulation.category} · ${simulation.topicId.replace(/-/g, " ")}`,
+    category: simulation.category,
     difficulty: difficultyLabel(simulation.difficulty),
     duration: simulation.duration,
     motif: simulation.thumbnail.motif,
@@ -64,7 +71,8 @@ export type SimulationViewModel = {
 };
 
 export function buildSimulationViewModel(id = "sim-projectile"): SimulationViewModel {
-  const simulation = createSimulationCatalog().find((item) => item.id === id) ?? createSimulationCatalog()[0];
+  const catalog = isMockModeEnabled() ? getActiveSimulations() : createSimulationCatalog();
+  const simulation = catalog.find((item) => item.id === id) ?? catalog[0] ?? createSimulationCatalog()[0];
   return {
     id: simulation.id,
     title: simulation.title,

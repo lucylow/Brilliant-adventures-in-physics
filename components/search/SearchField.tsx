@@ -3,9 +3,9 @@ import { BavTextField } from "@/components/bav/BavInputs";
 import { Caption } from "@/components/bav/BavText";
 import { BavChip } from "@/components/bav/BavChrome";
 import { useColors } from "@/hooks/use-colors";
+import { SEARCH_FILTERS, type SearchFilter } from "@/lib/assets";
 
-export const SEARCH_FILTERS = ["topic", "difficulty", "duration", "featured", "completed"] as const;
-export type SearchFilter = (typeof SEARCH_FILTERS)[number];
+export type { SearchFilter };
 
 export function SearchField({
   value,

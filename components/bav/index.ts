@@ -24,6 +24,7 @@ import {
   BavText,
 } from "./BavText";
 import { BavRelatedContent, BavTutorCard, BavTutorMessage } from "./BavTutor";
+import { BavEmptyState, BavErrorState, BavOfflineState } from "./BavStates";
 import { clampUnit } from "@/lib/design-system";
 
 export {
@@ -34,7 +35,9 @@ export {
   BavCard,
   BavChip,
   BavDivider,
+  BavEmptyState,
   BavEquationCard,
+  BavErrorState,
   BavIcon,
   BavIconButton,
   BavLabCard,
@@ -43,6 +46,7 @@ export {
   BavMetricCard,
   BavModal,
   BavNumberInput,
+  BavOfflineState,
   BavProgressBar,
   BavProgressRing,
   BavRelatedContent,
