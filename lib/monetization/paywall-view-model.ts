@@ -1,6 +1,6 @@
-import { annualSavingsFromCatalog, catalogProducts, type ProductCatalog } from "./catalog";
+import { annualSavingsFromCatalog, catalogProducts } from "./catalog";
 import { ctaLabel, HERO_COPY, PAYWALL_BENEFITS, PLAN_COPY, TRIAL_COPY } from "./copy";
-import type { BillingPeriod, CatalogProduct, Entitlements, FeatureId, PaywallVariant, PurchaseCtaKind, PurchaseFlowState } from "./types";
+import type { BillingPeriod, CatalogProduct, Entitlements, FeatureId, PaywallVariant, ProductCatalog, PurchaseCtaKind, PurchaseFlowState } from "./types";
 import { formatPriceWithPeriod } from "./pricing";
 import { hasEntitlement } from "./entitlements";
 

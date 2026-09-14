@@ -1,6 +1,6 @@
-import type { Entitlements, FeatureId, TutorCapability, UsageSnapshot } from "./types";
+import type { Entitlements, FeatureId, TutorCapability } from "./types";
 import { canAccessFeature, hasEntitlement } from "./entitlements";
-import { canConsumeUsage } from "./usage";
+import { canConsumeUsage, type UsageSnapshot } from "./usage";
 import { FEATURES } from "./features";
 import { contentFeature, isPremiumContent } from "./content-map";
 

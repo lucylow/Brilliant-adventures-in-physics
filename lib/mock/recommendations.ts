@@ -38,7 +38,12 @@ export function buildRecommendations(input: {
 
   const missionIds = input.missions
     .filter((mission) => mission.completionPercent < 1 && mission.requiredLevel <= input.user.level)
-    .filter((mission) => mission.conceptIds.every((id) => !locked(input.concepts.find((concept) => concept.id === id) ?? { prerequisites: [], id } as MockConcept)))
+    .filter((mission) =>
+      mission.conceptIds.every((id) => {
+        const concept = input.concepts.find((item) => item.id === id);
+        return concept ? !locked(concept) : false;
+      }),
+    )
     .map((mission) => mission.id)
     .slice(0, 5);
 

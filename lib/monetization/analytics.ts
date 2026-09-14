@@ -134,9 +134,11 @@ export function selectOffer(input: {
       ? "trial"
       : input.returning
         ? "returning_user"
-        : input.plan === "plus"
-          ? "annual_spotlight"
-          : "standard";
+        : input.plan === "lifetime"
+          ? "lifetime"
+          : input.plan === "plus"
+            ? "annual_spotlight"
+            : "standard";
   return {
     id: `offer-${kind}`,
     kind,
