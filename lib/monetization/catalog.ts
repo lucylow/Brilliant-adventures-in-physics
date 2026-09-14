@@ -1,4 +1,6 @@
 import type { BillingPeriod, CatalogProduct, FeatureId, Plan, PlanCode, PricingOption, ProductCatalog } from "./types";
+
+export type { ProductCatalog };
 import { PLUS_FEATURES } from "./features";
 import { DEMO_PRICE_MICROS, getMonetizationConfig, isPlaceholderStoreId } from "./config";
 import { formatStorePrice } from "./pricing";
