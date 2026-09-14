@@ -64,8 +64,10 @@ describe("mock factories", () => {
   });
 
   it("clones learner overrides", () => {
-    const user = createMockUser({ displayName: "Alex Rivera", id: "user-alex" });
-    expect(user.displayName).toBe("Alex Rivera");
-    expect(createMockUser().id).not.toBe("user-alex");
+    const alex = createMockUser({ displayName: "Alex Rivera", id: "user-alex" });
+    const maya = createMockUser({ displayName: "Maya Chen", id: "user-maya" });
+    expect(alex.displayName).toBe("Alex Rivera");
+    expect(maya.id).toBe("user-maya");
+    expect(alex.id).not.toBe(maya.id);
   });
 });
