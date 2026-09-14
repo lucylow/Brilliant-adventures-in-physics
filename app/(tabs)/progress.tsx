@@ -17,6 +17,8 @@ import { AnimatedProgress, RevealBlock } from "@/components/motion-primitives";
 import { bavMilestoneProgress, evaluateBAVMilestones } from "@/lib/bav-milestones";
 import { useAppTranslations } from "@/hooks/use-app-translations";
 import { BAVPillarMark } from "@/components/bav-discovery-panel";
+import { SubscriptionCard, PremiumFeatureLock } from "@/components/monetization";
+import { useEntitlements } from "@/hooks/use-monetization";
 import { adventureProgress, completeAdventureMission, emptyAdventureState, generateAdventureMissions, loadAdventureState, missionEvidenceCount, missionIsComplete, saveAdventureState, worldForLevel, type AdventureState } from "@/lib/adventure";
 import { buildProgressViewModel, GUIDANCE_TOPICS } from "@/lib/view-models/progress";
 import { ProgressInsights } from "@/components/progress/ProgressInsights";
@@ -25,6 +27,7 @@ import { loadPuzzleEvidenceWithStatus, loadResolvedPuzzleIdsWithStatus, loadRevi
 export default function ProgressScreen() {
   const colors = useColors();
   const { tr, announce } = useAppTranslations();
+  const { lifetimeOwned, plan, status, has } = useEntitlements();
   const [learning, setLearning] = useState<LearningState>({ attempts: 0, correct: 0, savedQuestions: [], topics: {}, streak: 0, lessonsCompleted: 0, labsCompleted: 0 });
   const [preferences, setPreferences] = useState<Preferences>({ streakEnabled: true, reducedMotion: false, hapticsEnabled: true, locale: "en" });
   const [loadFailed, setLoadFailed] = useState(false);
@@ -83,6 +86,25 @@ export default function ProgressScreen() {
             </View>
           </View>
         </Card>
+        <View style={{ marginTop: 14 }}>
+          <SubscriptionCard
+            title={lifetimeOwned ? "Lifetime Unlock" : plan === "plus" ? "BAV+" : "Free"}
+            status={status === "trial" ? "Trial" : lifetimeOwned ? "Permanent access" : status === "unlimited" ? "Active" : "Free learning"}
+            onManage={() => router.push("/subscription" as never)}
+            onRestore={() => router.push("/restore" as never)}
+          />
+        </View>
+        {!has("advanced_personalization") ? (
+          <View style={{ marginTop: 14 }}>
+            <PremiumFeatureLock
+              variant="card"
+              title="Unlock Advanced Insights"
+              body="Optional deeper review analytics. This does not mean your free progress is incomplete."
+              ctaLabel="See BAV+"
+              onPress={() => router.push({ pathname: "/paywall", params: { from: "/progress", variant: "feature_unlock" } } as never)}
+            />
+          </View>
+        ) : null}
         <View style={{ marginTop: 16 }}>
           <ProgressInsights model={buildProgressViewModel(learning)} reducedMotion={preferences.reducedMotion} />
         </View>
