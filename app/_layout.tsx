@@ -22,6 +22,7 @@ import { AutosaveReconciler } from "@/components/autosave-reconciler";
 import { AutosaveSyncToast } from "@/components/autosave-sync-toast";
 import { NetworkStatusBanner } from "@/components/network-status-banner";
 import { AppErrorBoundary } from "@/components/app-error-boundary";
+import { initializeMonetization } from "@/lib/monetization/runtime";
 import { MockDataProvider } from "@/components/mock-data-provider";
 
 const DEFAULT_WEB_INSETS: EdgeInsets = { top: 0, right: 0, bottom: 0, left: 0 };
@@ -41,6 +42,7 @@ export default function RootLayout() {
   // Initialize Manus runtime for cookie injection from parent container
   useEffect(() => {
     initManusRuntime();
+    void initializeMonetization();
   }, []);
 
   const handleSafeAreaUpdate = useCallback((metrics: Metrics) => {

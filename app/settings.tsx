@@ -14,6 +14,9 @@ import { clearRetryQueue, formatLastSave, formatRetryItemAge, formatRetryItemRes
 import { saveDraft } from "@/lib/progress-store";
 import { LOCALES, type SupportedLocale } from "@/lib/locale";
 import { useAppTranslations } from "@/hooks/use-app-translations";
+import { SubscriptionCard } from "@/components/monetization";
+import { useEntitlements } from "@/hooks/use-monetization";
+import { restorePurchases } from "@/lib/monetization/runtime";
 import { publishAutosaveSync, subscribeAutosaveSync } from "@/lib/autosave-sync";
 import { loadSyncHistoryWithStatus, recordSyncHistory, type SyncHistoryEntry } from "@/lib/sync-history";
 import { loadBAVMilestoneAcknowledgementsWithStatus, resetBAVMilestoneAcknowledgements, type BAVMilestoneAcknowledgement } from "@/lib/bav-milestone-acknowledgements";
@@ -74,6 +77,14 @@ export default function SettingsScreen() {
             <Switch value={preferences.hapticsEnabled} onValueChange={(value) => update("hapticsEnabled", value)} accessibilityLabel={tr("settings.hapticsTitle")} />
           </View>
         </Card>
+        <View style={{ marginTop: 12 }}>
+          <SubscriptionCard
+            title={subscriptionTitle}
+            status={subscriptionStatus}
+            onManage={() => router.push("/subscription" as never)}
+            onRestore={() => void restorePurchases().then(() => router.push("/restore" as never))}
+          />
+        </View>
         <Card style={{ marginTop: 12 }}>
           <Text style={{ color: colors.foreground, fontSize: 18, fontWeight: "800" }}>{tr("settings.languageTitle")}</Text>
           <Text style={{ color: colors.muted, marginTop: 5, lineHeight: 20 }}>{tr("settings.languageBody")}</Text>
