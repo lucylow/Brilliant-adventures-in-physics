@@ -6,6 +6,7 @@ import { BavButton, BavLoadingState, Body, Heading2 } from "@/components/bav";
 import { BavCard } from "@/components/bav/BavCard";
 import { ContinueAdventureCard, DailyChallengeCard, HomeHeader, HomeLists, HomeMetrics, QuickActionGrid } from "@/components/home/HomeDashboard";
 import { BAVDiscoveryPanel } from "@/components/bav-discovery-panel";
+import { HomePremiumCta } from "@/components/monetization";
 import { RevealBlock } from "@/components/motion-primitives";
 import { EmptyState, ErrorState, OfflineState } from "@/components/states";
 import { useAppTranslations } from "@/hooks/use-app-translations";
@@ -126,7 +127,10 @@ export default function HomeScreen() {
         <HomeLists model={model} />
       </RevealBlock>
       <RevealBlock index={7} preferences={preferences}>
-        <BAVDiscoveryPanel
+        <HomePremiumCta onPress={() => router.push({ pathname: "/paywall", params: { from: "/", variant: "home_discovery" } } as never)} />
+      </RevealBlock>
+      <RevealBlock index={8} preferences={preferences}>
+        <BAVDiscoveryPanel>
           reducedMotion={preferences.reducedMotion}
           learning={learning}
           onPillarPress={(route) => router.push(route as never)}

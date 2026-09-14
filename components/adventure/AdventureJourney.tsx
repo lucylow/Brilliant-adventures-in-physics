@@ -3,6 +3,7 @@ import { router } from "expo-router";
 import { BavBadge, BavButton, BavCard, BavProgressBar, Body, BodySmall, Caption, Heading3 } from "@/components/bav";
 import { BavXpBadge } from "@/components/bav/BavProgress";
 import { spacing } from "@/lib/design-system";
+import { useColors } from "@/hooks/use-colors";
 import type { AdventureChapterCard, AdventureMissionCard, AdventureViewModel } from "@/lib/view-models/adventure";
 
 export function AdventureJourney({ model }: { model: AdventureViewModel }) {
@@ -47,13 +48,14 @@ function ChapterCard({ chapter }: { chapter: AdventureChapterCard }) {
 }
 
 export function MissionDetailCard({ mission }: { mission: AdventureMissionCard }) {
+  const colors = useColors();
   return (
     <BavCard elevation="featured" accessibilityLabel={`Mission ${mission.title}`}>
-      <Caption style={{ color: "#FFFFFF" }}>Current mission</Caption>
-      <Heading3 style={{ color: "#FFFFFF", marginTop: 6 }}>{mission.title}</Heading3>
-      <BodySmall style={{ color: "#FFFFFF", marginTop: 8 }}>{mission.story}</BodySmall>
-      <Body style={{ color: "#FFFFFF", marginTop: 10 }}>{mission.objective}</Body>
-      <Caption style={{ color: "#FFFFFF", marginTop: 8 }}>Concepts · {mission.concepts.join(", ")}</Caption>
+      <Caption style={{ color: colors.onPrimary }}>Current mission</Caption>
+      <Heading3 style={{ color: colors.onPrimary, marginTop: 6 }}>{mission.title}</Heading3>
+      <BodySmall style={{ color: colors.onPrimary, marginTop: 8 }}>{mission.story}</BodySmall>
+      <Body style={{ color: colors.onPrimary, marginTop: 10 }}>{mission.objective}</Body>
+      <Caption style={{ color: colors.onPrimary, marginTop: 8 }}>Concepts · {mission.concepts.join(", ")}</Caption>
       <View style={{ marginTop: 12 }}>
         <BavXpBadge xp={mission.rewardXp} />
       </View>

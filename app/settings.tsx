@@ -26,6 +26,9 @@ import { isMockModeEnabled, isProductionRuntime } from "@/lib/mock/config";
 export default function SettingsScreen() {
   const colors = useColors();
   const { tr } = useAppTranslations();
+  const { lifetimeOwned, plan, status } = useEntitlements();
+  const subscriptionTitle = lifetimeOwned ? "Lifetime Unlock" : plan === "plus" ? "BAV+" : "Free";
+  const subscriptionStatus = status === "trial" ? "Trial" : status === "expired" ? "Ended" : lifetimeOwned ? "Permanent access" : status === "unlimited" ? "Active" : "Free learning";
   const [preferences, setPreferences] = useState<Preferences>({ streakEnabled: true, reducedMotion: false, hapticsEnabled: true, locale: "en" });
   const [saveMessage, setSaveMessage] = useState<string | null>(null);
   const [onboardingMessage, setOnboardingMessage] = useState<string | null>(null);
