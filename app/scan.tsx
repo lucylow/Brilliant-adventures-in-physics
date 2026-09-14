@@ -6,10 +6,12 @@ import { Card, Pill, PrimaryButton, SecondaryButton, SectionHeader } from "@/com
 import { InlineError } from "@/components/states";
 import { useColors } from "@/hooks/use-colors";
 import { safeProjectile } from "@/lib/physics-validation";
+import { scanScreenModel } from "@/lib/mock/ai/ai-screen-adapters";
 
 export default function ScanProblemScreen() {
   const colors = useColors();
-  const [question, setQuestion] = useState("A ball is launched at 18 m/s at 42° from level ground. Find its range.");
+  const demoScan = scanScreenModel();
+  const [question, setQuestion] = useState(demoScan?.scan.detectedText ?? "A ball is launched at 18 m/s at 42° from level ground. Find its range.");
   const [speed, setSpeed] = useState("18");
   const [angle, setAngle] = useState("42");
   const [solved, setSolved] = useState(false);
@@ -33,7 +35,9 @@ export default function ScanProblemScreen() {
       <ScrollView contentContainerStyle={{ paddingBottom: 32 }}>
         <SectionHeader title="Scan Problem" subtitle="Review the extracted values before solving." />
         <Card>
-          <Pill label="MANUAL REVIEW" active />
+          <Pill label={demoScan ? `DEMO AI · ${demoScan.scan.confidenceBand.toUpperCase()}` : "MANUAL REVIEW"} active />
+          {demoScan && <Text style={{ marginTop: 10, color: colors.primary, lineHeight: 20 }}>{demoScan.demoLabel}</Text>}
+          {demoScan?.scan.clarificationQuestion ? <Text style={{ marginTop: 8, color: colors.warning, lineHeight: 20 }}>{demoScan.scan.clarificationQuestion}</Text> : null}
           <Text style={{ marginTop: 14, color: colors.muted, lineHeight: 20 }}>Camera recognition can be uncertain. Editing the values keeps you in control.</Text>
           <TextInput accessibilityLabel="Physics problem statement" value={question} onChangeText={setQuestion} multiline placeholder="Type or paste a physics problem" placeholderTextColor={colors.muted} style={{ marginTop: 14, minHeight: 84, borderWidth: 1, borderColor: colors.border, borderRadius: 14, padding: 12, color: colors.foreground, textAlignVertical: "top" }} />
           <View style={{ flexDirection: "row", gap: 10, marginTop: 14 }}>

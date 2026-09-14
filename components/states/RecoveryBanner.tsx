@@ -1,6 +1,5 @@
-import { View } from "react-native";
+import { Text, View } from "react-native";
 import { useColors } from "@/hooks/use-colors";
-import { Text } from "react-native";
 
 export function RecoveryBanner({
   message,

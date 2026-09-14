@@ -18,6 +18,7 @@ import { publishAutosaveSync, subscribeAutosaveSync } from "@/lib/autosave-sync"
 import { loadSyncHistoryWithStatus, recordSyncHistory, type SyncHistoryEntry } from "@/lib/sync-history";
 import { loadBAVMilestoneAcknowledgementsWithStatus, resetBAVMilestoneAcknowledgements, type BAVMilestoneAcknowledgement } from "@/lib/bav-milestone-acknowledgements";
 import type { BAVMilestoneId } from "@/lib/bav-milestones";
+import { isMockModeEnabled, isProductionRuntime } from "@/lib/mock/config";
 
 export default function SettingsScreen() {
   const colors = useColors();
@@ -83,6 +84,15 @@ export default function SettingsScreen() {
         <Card style={{ marginTop: 12 }}><Text style={{ color: colors.foreground, fontSize: 18, fontWeight: "800" }}>{tr("settings.bavCelebrationsTitle")}</Text><Text style={{ color: colors.muted, marginTop: 5, lineHeight: 20 }}>{tr("settings.bavCelebrationsBody")}</Text><Text accessibilityLiveRegion="polite" style={{ color: colors.muted, marginTop: 8 }}>{bavCelebrationCount === null ? tr("settings.bavCelebrationsUnavailable") : tr("settings.bavCelebrationsCount", { count: bavCelebrationCount })}</Text>{bavCelebrationCount !== null && <View accessible accessibilityLabel={tr("settings.bavCelebrationBreakdownLabel")} style={{ marginTop: 10, padding: 12, borderRadius: 12, backgroundColor: colors.surface, borderWidth: 1, borderColor: colors.border }}><Text style={{ color: colors.foreground, fontWeight: "800" }}>{tr("settings.bavCelebrationBreakdownTitle")}</Text>{bavMilestoneRows.map((row) => { const stored = bavCelebrationEntries.some((entry) => entry.id === row.id); return <Text key={row.id} style={{ color: stored ? colors.success : colors.muted, marginTop: 6, lineHeight: 20 }}>{tr(row.titleKey)} · {stored ? tr("settings.bavCelebrationStored") : tr("settings.bavCelebrationNotStored")}</Text>; })}</View>}<View style={{ marginTop: 12 }}><SecondaryButton label={tr("settings.resetBavCelebrations")} onPress={resetBAVCelebrations} /></View>{bavCelebrationMessage && <Text accessibilityLiveRegion="polite" style={{ color: bavCelebrationMessage.ok ? colors.success : colors.warning, marginTop: 10, lineHeight: 20 }}>{bavCelebrationMessage.text}</Text>}</Card>
         <Pressable accessibilityRole="button" onPress={() => router.push("/privacy" as never)} style={({ pressed }) => ({ marginTop: 12, opacity: pressed ? 0.7 : 1 })}>
           <Card><Text style={{ color: colors.foreground, fontWeight: "800" }}>{tr("settings.privacyTitle")}</Text><Text style={{ color: colors.muted, marginTop: 4 }}>{tr("settings.privacyBody")}</Text><PersistenceDiagnostics /></Card></Pressable>
+        {!isProductionRuntime() && isMockModeEnabled() ? (
+          <Card style={{ marginTop: 12 }}>
+            <Text style={{ color: colors.foreground, fontSize: 18, fontWeight: "800" }}>Mock data</Text>
+            <Text style={{ color: colors.muted, marginTop: 5, lineHeight: 20 }}>Development-only controls for scenarios, learners, latency, and fixture reset. This card is hidden in production builds.</Text>
+            <View style={{ marginTop: 12 }}>
+              <SecondaryButton label="Open mock data panel" onPress={() => router.push("/dev/mock-data" as never)} />
+            </View>
+          </Card>
+        ) : null}
         {loadMessage && <Text accessibilityLiveRegion="assertive" style={{ marginTop: 12, color: colors.warning }}>{loadMessage}</Text>}{saveMessage && <Text accessibilityLiveRegion="assertive" style={{ marginTop: 12, color: colors.warning }}>{saveMessage}</Text>}<View style={{ marginTop: 20 }}><SecondaryButton label={tr("common.done")} onPress={() => router.back()} /></View>
       </ScrollView>
     </ScreenContainer>

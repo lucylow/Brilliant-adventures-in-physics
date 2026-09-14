@@ -107,11 +107,12 @@ function userMessageForKind(kind: DatabaseFailureKind): string {
 export function logDatabaseFailure(operation: string, error: unknown): DatabaseFailureKind {
   const kind = classifyDatabaseError(error);
   const message = error instanceof Error ? error.message : "unknown database error";
+  const sanitized = message.replace(/\b(drop|delete|insert|update|alter)\b[\s\S]*/i, "[redacted-sql]").slice(0, 180);
   console.error("[Database]", {
     operation,
     kind,
     code: databaseErrorCode(kind),
-    message: message.slice(0, 180),
+    message: sanitized,
   });
   return kind;
 }

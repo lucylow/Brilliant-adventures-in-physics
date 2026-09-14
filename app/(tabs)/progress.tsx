@@ -5,6 +5,10 @@ import { ScreenContainer } from "@/components/screen-container";
 import { Card, MasteryRing, PrimaryButton, SectionHeader, SecondaryButton } from "@/components/physica-ui";
 import { completionTimelineEntries, formatCompletionDate, loadLearningState, summarizeCompletionEvents, type CompletionEventFilter, type LearningState } from "@/lib/progress-store";
 import { evaluateAchievements } from "@/lib/achievements";
+import { getActiveAchievements, getActiveMissions } from "@/lib/mock/adapters/catalog";
+import { isMockModeEnabled } from "@/lib/mock/config";
+import { progressScreenModel } from "@/lib/mock/ai/ai-screen-adapters";
+import { getMockDataset } from "@/lib/mock/registry";
 import { achievementProgress } from "@/lib/achievement-progress";
 import { generateMission, levelProgress, missionProgress, streakMessage } from "@/lib/gamification";
 import { useColors } from "@/hooks/use-colors";
@@ -14,14 +18,9 @@ import { bavMilestoneProgress, evaluateBAVMilestones } from "@/lib/bav-milestone
 import { useAppTranslations } from "@/hooks/use-app-translations";
 import { BAVPillarMark } from "@/components/bav-discovery-panel";
 import { adventureProgress, completeAdventureMission, emptyAdventureState, generateAdventureMissions, loadAdventureState, missionEvidenceCount, missionIsComplete, saveAdventureState, worldForLevel, type AdventureState } from "@/lib/adventure";
+import { buildProgressViewModel, GUIDANCE_TOPICS } from "@/lib/view-models/progress";
+import { ProgressInsights } from "@/components/progress/ProgressInsights";
 import { loadPuzzleEvidenceWithStatus, loadResolvedPuzzleIdsWithStatus, loadReviewMasteryWithStatus, missedPuzzleReviewQueue, reviewHistorySummary, reviewMasteryPercentDelta, reviewReinforcementDelta, summarizePuzzleEvidence, summarizeReviewMastery, type PuzzleEvidence, type ReviewMasteryRecord } from "@/lib/puzzle-evidence";
-
-const TOPICS = [
-  { name: "Kinematics", detail: "Review motion graphs and units." },
-  { name: "Projectile motion", detail: "Practice launch angle and range." },
-  { name: "Newton’s laws", detail: "Focus on free-body diagrams." },
-  { name: "Circuits", detail: "Start with Ohm’s law." },
-];
 
 export default function ProgressScreen() {
   const colors = useColors();
@@ -54,12 +53,15 @@ export default function ProgressScreen() {
   const reviewMasterySummary = summarizeReviewMastery(reviewMastery);
   const recentReviewHistory = reviewHistorySummary(reviewMastery, 5);
   const adventureWorld = worldForLevel(level.level);
-  const adventureMissions = generateAdventureMissions(adventureWorld.id);
+  const adventureMissions = isMockModeEnabled() ? getActiveMissions(adventureWorld.id) : generateAdventureMissions(adventureWorld.id);
   const adventureMission = adventureMissions[0];
   const adventureEvidence = missionEvidenceCount(adventureMission, learning.topics, learning.completionEvents ?? []);
   const adventureComplete = missionIsComplete(adventureState, adventureMission) || adventureEvidence >= adventureMission.goal;
   useEffect(() => { if (adventureDataFallback || !adventureComplete || missionIsComplete(adventureState, adventureMission)) return; let active = true; const nextState = completeAdventureMission({ ...adventureState, worldId: adventureWorld.id }, adventureMission.id); setAdventureState(nextState); void saveAdventureState(nextState).then(() => { if (active) setAdventureSaveFailed(false); }).catch(() => { if (active) setAdventureSaveFailed(true); }); return () => { active = false; }; }, [adventureComplete, adventureDataFallback, adventureMission, adventureState, adventureWorld.id]);
-  const achievements = evaluateAchievements(learning);
+  const achievements = isMockModeEnabled() ? getActiveAchievements(learning) : evaluateAchievements(learning);
+  const TOPICS = isMockModeEnabled()
+    ? getMockDataset().topics.slice(0, 8).map((topic) => ({ name: topic.name, detail: topic.shortDescription }))
+    : GUIDANCE_TOPICS;
   const [achievementFilter, setAchievementFilter] = useState<"all" | "earned" | "progress">("all");
   const visibleAchievements = achievements.filter((achievement) => achievementFilter === "all" || (achievementFilter === "earned" ? achievement.earned : !achievement.earned));
   if (loadFailed) return <ScreenContainer className="p-5"><View style={{ flex: 1, justifyContent: "center" }}><Text accessibilityLiveRegion="assertive" style={{ color: colors.warning, lineHeight: 21 }}>{tr("progress.learningRecovered")}</Text><View style={{ marginTop: 16 }}><PrimaryButton label={tr("progress.retry")} onPress={loadProgress} /></View></View></ScreenContainer>;
@@ -68,6 +70,7 @@ export default function ProgressScreen() {
     <ScreenContainer className="p-5">
       <ScrollView contentContainerStyle={{ paddingBottom: 32 }}>
         <SectionHeader title={tr("progress.title")} subtitle={tr("progress.subtitle")} />
+        {progressScreenModel() && <Card style={{ marginBottom: 12 }}><Text style={{ color: colors.primary, fontWeight: "800" }}>{progressScreenModel()?.demoLabel}</Text><Text style={{ marginTop: 8, color: colors.foreground, lineHeight: 22 }}>{progressScreenModel()?.narrative.narrative}</Text><Text style={{ marginTop: 6, color: colors.muted }}>{progressScreenModel()?.coach.body}</Text></Card>}
         {reviewDataFallback && <Text accessibilityLiveRegion="polite" style={{ color: colors.warning, lineHeight: 21, marginBottom: 10 }}>{tr("progress.reviewDataFallback")}</Text>}
         {adventureDataFallback && <Text accessibilityLiveRegion="polite" style={{ color: colors.warning, lineHeight: 21, marginBottom: 10 }}>{tr("progress.adventureLoadFallback")}</Text>}
         <Card>
@@ -80,6 +83,9 @@ export default function ProgressScreen() {
             </View>
           </View>
         </Card>
+        <View style={{ marginTop: 16 }}>
+          <ProgressInsights model={buildProgressViewModel(learning)} reducedMotion={preferences.reducedMotion} />
+        </View>
         <View style={{ flexDirection: "row", gap: 10, marginTop: 14 }}>
           <Card style={{ flex: 1 }}><Text style={{ color: colors.muted, fontSize: 12 }}>{tr("progress.xp")}</Text><Text style={{ color: colors.foreground, fontSize: 26, fontWeight: "800", marginTop: 4 }}>{learning.correct * 10}</Text><Text style={{ color: colors.primary, marginTop: 4 }}>{tr("progress.level", { level: level.level })}</Text></Card>
           <Card style={{ flex: 1 }}><Text style={{ color: colors.muted, fontSize: 12 }}>{tr("progress.streak")}</Text><Text style={{ color: colors.foreground, fontSize: 26, fontWeight: "800", marginTop: 4 }}>{preferences.streakEnabled ? `${learning.streak} days` : tr("progress.hidden")}</Text><Text style={{ color: colors.muted, marginTop: 4 }}>{preferences.streakEnabled ? streakMessage(learning.streak) : tr("progress.streakOff")}</Text></Card>

@@ -2,6 +2,7 @@ import { useEffect, type ReactNode } from "react";
 import { Pressable, Text, View, type PressableProps, type StyleProp, type ViewStyle } from "react-native";
 import Animated, { Easing, useAnimatedStyle, useSharedValue, withSpring, withTiming } from "react-native-reanimated";
 import { motion, motionDuration, pressScale, progressPercent, type MotionPrefs } from "@/lib/motion";
+import { useColors } from "@/hooks/use-colors";
 
 export function MotionPressable({ children, reducedMotion = false, style, ...props }: Omit<PressableProps, "children"> & { children: ReactNode; reducedMotion?: boolean; style?: StyleProp<ViewStyle> }) {
   const scale = useSharedValue(1);
@@ -21,10 +22,11 @@ export function RevealBlock({ children, index = 0, preferences }: { children: Re
 }
 
 export function AnimatedProgress({ value, preferences }: { value: number; preferences: Pick<MotionPrefs, "reducedMotion"> }) {
+  const colors = useColors();
   const progress = useSharedValue(0);
   useEffect(() => { progress.value = withTiming(Math.max(0, Math.min(1, value)), { duration: motionDuration(360, preferences) }); }, [preferences, value, progress]);
   const style = useAnimatedStyle(() => ({ width: progressPercent(progress.value) }));
-  return <View accessibilityRole="progressbar" accessibilityValue={{ min: 0, max: 1, now: Math.max(0, Math.min(1, value)) }} style={{ height: 8, borderRadius: 8, backgroundColor: "#E5E7EB", overflow: "hidden" }}><Animated.View style={[{ height: 8, borderRadius: 8, backgroundColor: "#0A7EA4" }, style]} /></View>;
+  return <View accessibilityRole="progressbar" accessibilityValue={{ min: 0, max: 1, now: Math.max(0, Math.min(1, value)) }} style={{ height: 8, borderRadius: 8, backgroundColor: colors.border, overflow: "hidden" }}><Animated.View style={[{ height: 8, borderRadius: 8, backgroundColor: colors.primary }, style]} /></View>;
 }
 
 export function SimulationPlayhead({ progress, preferences }: { progress: number; preferences: Pick<MotionPrefs, "reducedMotion"> }) {

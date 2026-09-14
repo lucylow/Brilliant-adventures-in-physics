@@ -2,6 +2,10 @@ import { createMockTutorAnswer, type TutorAnswer, validateTutorAnswer } from "./
 import { executeService, serviceFailure, type Service, type ServiceResult } from "./service-result";
 import { labeledLocalFallback, parseTutorAnswer, parseTutorRequest } from "./tutor-validation";
 import { withTimeout } from "./safe-async";
+import { isMockAIEnabled } from "./mock/ai/config";
+import { createMockAIRequest } from "./mock/ai/ai-factories";
+import { getMockAIProvider, toTutorAnswer } from "./mock/ai/ai-client";
+import { MockAIError, mockAIErrorToServiceResult } from "./mock/ai/ai-errors";
 
 export type TutorRequest = { question: string; verifiedValues?: TutorAnswer["verifiedValues"] };
 
@@ -19,6 +23,34 @@ export function createDeterministicTutorService(): Service<TutorRequest, TutorAn
       return { ok: true, data: validateTutorAnswer(createMockTutorAnswer(valid.data.question, valid.data.verifiedValues)) };
     },
   };
+}
+
+export function createMockAITutorService(): Service<TutorRequest, TutorAnswer> {
+  return {
+    async execute(request, signal) {
+      const valid = validateTutorRequest(request);
+      if (!valid.ok) return valid;
+      try {
+        const wrapped = await getMockAIProvider().sendMessage(
+          createMockAIRequest({
+            feature: "tutor",
+            prompt: valid.data.question,
+            conceptIds: [],
+          }),
+          signal,
+        );
+        return { ok: true, data: validateTutorAnswer(toTutorAnswer(wrapped.data)) };
+      } catch (error) {
+        if (error instanceof MockAIError) return mockAIErrorToServiceResult(error.code);
+        throw error;
+      }
+    },
+  };
+}
+
+/** Selects Demo AI when mock AI is enabled; otherwise the existing deterministic tutor. */
+export function createAppTutorService(): Service<TutorRequest, TutorAnswer> {
+  return isMockAIEnabled() ? createMockAITutorService() : createDeterministicTutorService();
 }
 
 export type TutorResponse = ServiceResult<TutorAnswer> & { usedFallback?: boolean };

@@ -1,4 +1,4 @@
-import { assertMockOnly, getMockConfig, isMockModeEnabled, isProductionRuntime, setMockConfig } from "../config";
+import { assertMockOnly, getMockConfig, isDevelopmentRuntime, isMockModeEnabled, isProductionRuntime, setMockConfig } from "../config";
 import { MOCK_AI_DATA_VERSION, type MockAIFailureMode, type MockAILatencyProfile, type MockAIMode, type MockAIScenarioId } from "./ai-types";
 
 export type MockAIConfig = {
@@ -117,4 +117,4 @@ export function enableMockAIForTests(patch: Partial<MockAIConfig> = {}): MockAIC
   return setMockAIConfig({ aiMode: "mock-deterministic", latency: "instant", failureMode: "none", ...patch });
 }
 
-export { isProductionRuntime, isMockModeEnabled };
+export { isProductionRuntime, isMockModeEnabled, isDevelopmentRuntime };

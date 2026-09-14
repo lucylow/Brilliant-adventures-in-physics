@@ -1,0 +1,27 @@
+export const MOCK_SCENARIOS = [
+  { id: "fresh-user", title: "Fresh user", description: "New learner after onboarding, almost no history. Use this for empty-adjacent Home and first-run UX." },
+  { id: "beginner", title: "Beginner", description: "Alex-style early kinematics with a short streak and a handful of problems." },
+  { id: "active-learner", title: "Active learner", description: "Maya-style populated Home, Progress, Practice, Lab, Tutor, and Notebook. Default demo." },
+  { id: "advanced-learner", title: "Advanced learner", description: "Engineering student with rotation and circuits in progress." },
+  { id: "power-user", title: "Power user", description: "Dense history, high XP, many achievements earned, premium mock entitlements." },
+  { id: "exam-prep", title: "Exam prep", description: "Timed practice, review queue, and exam-oriented recommendations." },
+  { id: "explorer", title: "Explorer", description: "Simulation-heavy Lab with many saved experiments." },
+  { id: "offline-user", title: "Offline user", description: "Cached content plus a pending retry queue after failed tutor/save." },
+  { id: "returning-user", title: "Returning user", description: "Broken streak, leftover mastery, and a gentle restart." },
+  { id: "empty-state", title: "Empty state", description: "Catalog exists but the learner has no attempts, notes, or missions." },
+  { id: "error-state", title: "Error state", description: "Injects failure-oriented offline/tutor errors for UI recovery testing." },
+] as const;
+
+export const SCREEN_COVERAGE = {
+  Home: ["users", "learningState", "recommendations", "activity", "missions", "achievements"],
+  Practice: ["problems", "attempts", "reviewQueue", "mastery"],
+  Progress: ["mastery", "dailyActivity", "achievements", "missions", "learningState"],
+  Lab: ["simulations", "experiments", "snapshots"],
+  Tutor: ["tutorSessions"],
+  Notebook: ["notebook"],
+  Concepts: ["concepts", "topics"],
+  Lesson: ["lessons", "equations"],
+  Settings: ["users", "subscription"],
+  Scan: ["scanResults"],
+  Lens: ["lensRecords"],
+} as const;

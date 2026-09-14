@@ -63,14 +63,18 @@ See `docs/VALIDATION_MATRIX.md`. New files include `tests/app-errors.test.ts`, `
 
 ## Commands executed
 
-- `pnpm install`
-- `pnpm check`
-- `pnpm lint`
-- `pnpm test`
-- `pnpm build`
+- `pnpm install` — installed dependencies (workspace previously had no `node_modules`)
+- `pnpm check` — passed (`tsc --noEmit`)
+- `pnpm lint` — passed with 0 errors. Remaining warning: Expo ESLint `MODULE_TYPELESS_PACKAGE_JSON` for `eslint.config.js` (adding `"type": "module"` to package.json would be unsafe for this Expo app)
+- `pnpm test` — 338 passed, 1 skipped (`tests/auth.logout.test.ts`)
+- `pnpm build` — passed (`dist/index.js` 42.6kb)
 
-Results of the final run are recorded in the closing section of this hardening pass (they must match the actual command output; this document does not claim a green build unless those commands passed).
+This pass does **not** claim the product is “fully fixed” beyond those commands. See `docs/KNOWN_WARNINGS.md` for remaining limitations.
 
-## Remaining known limitations
+## Files changed (this pass)
 
-See `docs/KNOWN_WARNINGS.md`.
+Added: `shared/errors/*`, `lib/diagnostics/*`, `lib/safe-async/*`, `lib/storage/*`, `lib/physics-validation/*`, `lib/simulation-safety/*`, `lib/navigation/*`, `components/states/*`, `hooks/use-mounted-ref.ts`, `hooks/use-safe-async.ts`, `hooks/use-network-status.ts`, `lib/offline-queue.ts`, `lib/tutor-validation.ts`, `lib/media-validation.ts`, `lib/media-safety.ts`, `lib/screen-recovery.ts`, `lib/accessibility.ts`, `lib/pointer-events.ts`, `lib/privacy-export.ts`, `lib/app-config-safety.ts`, `server/_core/db-errors.ts`, `server/_core/startup.ts`, `server/_core/shutdown.ts`, `docs/*`, and the new regression tests listed above.
+
+Updated: `lib/privacy.ts`, `lib/tutor-service.ts`, `lib/service-result.ts`, `lib/media-safety.ts` boundary, `server/_core/index.ts`, `server/db.ts`, `components/app-error-boundary.tsx`, `app/scan.tsx`, `app/privacy.tsx`, `app/achievement.tsx`.
+
+See `docs/KNOWN_WARNINGS.md` for remaining limitations, including application-owned `style.pointerEvents` (supported), missing live AI provider secrets on the client (intentional), and the Expo ESLint package-type warning.
