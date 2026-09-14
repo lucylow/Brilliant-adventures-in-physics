@@ -7,7 +7,41 @@ const USAGE_KEY = "physicaai.usage.v1";
 const DRAFT_KEY = "physicaai.drafts.v1";
 const PRIVACY_ACTIVITY_KEY = "physicaai.privacy-activity.v1";
 const MAX_PRIVACY_ACTIVITY_EVENTS = 50;
-export const LOCAL_DATA_STORAGE_KEYS = [LEARNING_KEY, USAGE_KEY, DRAFT_KEY, PRIVACY_ACTIVITY_KEY, "physicaai.experiments.v1", "physicaai.autosave.queue.v1", "physicaai.autosave.last-save.v1", "physicaai.autosave.sync-history.v1", "physicaai.preferences.v1", "physicaai.onboarding.v1", "physicaai.astronomy-catalog.v1", "physicaai.quantum-catalog.v1", "physicaai.notebook.v1", "physicaai.adventure.v1", "physicaai.puzzle-evidence.v1", "physicaai.puzzle-evidence-resolved.v1", "physicaai.review-mastery.v1", "physicaai.bav-milestone-acknowledgements.v1"] as const;
+export const LOCAL_DATA_STORAGE_KEYS = [LEARNING_KEY, USAGE_KEY, DRAFT_KEY, PRIVACY_ACTIVITY_KEY, "physicaai.experiments.v1", "physicaai.autosave.queue.v1", "physicaai.autosave.last-save.v1", "physicaai.autosave.sync-history.v1", "physicaai.preferences.v1", "physicaai.onboarding.v1", "physicaai.astronomy-catalog.v1", "physicaai.quantum-catalog.v1", "physicaai.notebook.v1", "physicaai.adventure.v1", "physicaai.puzzle-evidence.v1", "physicaai.puzzle-evidence-resolved.v1", "physicaai.review-mastery.v1", "physicaai.bav-milestone-acknowledgements.v1", "physicaai.quarantine.v1"] as const;
+
+export type ClearLocalDataStatus = "fullyCleared" | "partiallyCleared" | "failed";
+export type ClearLocalDataReport = {
+  status: ClearLocalDataStatus;
+  cleared: string[];
+  failed: Array<{ key: string; reason: string }>;
+};
+
+function sanitizeClearReason(reason: string): string {
+  return reason.replace(/(api[_-]?key|secret|token|password|bearer|authorization)/gi, "[redacted]").slice(0, 120);
+}
+
+export async function clearAllLocalDataWithReport(): Promise<ClearLocalDataReport> {
+  const results = await Promise.allSettled(LOCAL_DATA_STORAGE_KEYS.map(async (key) => {
+    await AsyncStorage.removeItem(key);
+    return key;
+  }));
+  const cleared: string[] = [];
+  const failed: Array<{ key: string; reason: string }> = [];
+  results.forEach((result, index) => {
+    const key = LOCAL_DATA_STORAGE_KEYS[index] ?? "unknown";
+    if (result.status === "fulfilled") cleared.push(key);
+    else failed.push({ key, reason: sanitizeClearReason(result.reason instanceof Error ? result.reason.message : "unavailable") });
+  });
+  if (failed.length === 0) return { status: "fullyCleared", cleared, failed };
+  if (cleared.length === 0) return { status: "failed", cleared, failed };
+  return { status: "partiallyCleared", cleared, failed };
+}
+
+export function formatClearLocalDataReport(report: ClearLocalDataReport): string {
+  if (report.status === "fullyCleared") return "All PhysicaAI local data on this device was cleared.";
+  if (report.status === "partiallyCleared") return `Some local data could not be cleared (${report.failed.length} of ${LOCAL_DATA_STORAGE_KEYS.length}). Remaining records were left unchanged.`;
+  return "Local data could not be cleared. Your existing records were left unchanged.";
+}
 
 export type LocalDataSummary = { learningRecords: number; savedQuestions: number; savedExperiments: number; activeDrafts: number; completionEvents: number; lessonCompletions: number; labCompletions: number };
 export type LocalDataSummaryLoadResult = { summary: LocalDataSummary; recovered: boolean; reason?: "malformed" | "unavailable" };
@@ -125,6 +159,6 @@ export function formatPrivacyActivityTimestamp(occurredAt: string, locale: Suppo
 }
 
 export async function clearAllLocalData(): Promise<void> {
-  const results = await Promise.allSettled(LOCAL_DATA_STORAGE_KEYS.map((key) => AsyncStorage.removeItem(key)));
-  if (results.some((result) => result.status === "rejected")) throw new Error("Some local PhysicaAI data could not be cleared");
+  const report = await clearAllLocalDataWithReport();
+  if (report.status !== "fullyCleared") throw new Error("Some local PhysicaAI data could not be cleared");
 }

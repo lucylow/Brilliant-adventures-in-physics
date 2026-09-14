@@ -2,6 +2,7 @@ import { eq } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/mysql2";
 import { InsertUser, users } from "../drizzle/schema";
 import { ENV } from "./_core/env";
+import { logDatabaseFailure, toTrpcDatabaseError } from "./_core/db-errors";
 
 let _db: ReturnType<typeof drizzle> | null = null;
 
@@ -17,6 +18,12 @@ export async function getDb() {
   }
   return _db;
 }
+
+export async function closeDb(): Promise<void> {
+  _db = null;
+}
+
+export { toTrpcDatabaseError };
 
 export async function upsertUser(user: InsertUser): Promise<void> {
   if (!user.openId) {
@@ -72,21 +79,26 @@ export async function upsertUser(user: InsertUser): Promise<void> {
       set: updateSet,
     });
   } catch (error) {
-    console.error("[Database] Failed to upsert user:", error);
+    logDatabaseFailure("upsertUser", error);
     throw error;
   }
 }
 
 export async function getUserByOpenId(openId: string) {
+  if (typeof openId !== "string" || openId.trim().length === 0) return undefined;
   const db = await getDb();
   if (!db) {
     console.warn("[Database] Cannot get user: database not available");
     return undefined;
   }
 
-  const result = await db.select().from(users).where(eq(users.openId, openId)).limit(1);
-
-  return result.length > 0 ? result[0] : undefined;
+  try {
+    const result = await db.select().from(users).where(eq(users.openId, openId)).limit(1);
+    return result.length > 0 ? result[0] : undefined;
+  } catch (error) {
+    logDatabaseFailure("getUserByOpenId", error);
+    return undefined;
+  }
 }
 
 // TODO: add feature queries here as your schema grows.

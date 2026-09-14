@@ -7,6 +7,9 @@ import { registerOAuthRoutes } from "./oauth";
 import { registerStorageProxy } from "./storageProxy";
 import { appRouter } from "../routers";
 import { createContext } from "./context";
+import { closeDb } from "../db";
+import { installGracefulShutdown } from "./shutdown";
+import { readServerConfig, startupDiagnostics, validateServerConfig } from "./startup";
 
 function isPortAvailable(port: number): Promise<boolean> {
   return new Promise((resolve) => {
@@ -28,6 +31,12 @@ async function findAvailablePort(startPort: number = 3000): Promise<number> {
 }
 
 async function startServer() {
+  const config = readServerConfig();
+  const configErrors = validateServerConfig(config);
+  console.log(`[api] startup ${startupDiagnostics(config).join(" ")}`);
+  if (configErrors.length > 0 && config.isProduction) {
+    throw configErrors[0];
+  }
   const app = express();
   const server = createServer(app);
 
@@ -80,6 +89,7 @@ async function startServer() {
   server.listen(port, () => {
     console.log(`[api] server listening on port ${port}`);
   });
+  installGracefulShutdown(server, [closeDb]);
 }
 
 startServer().catch(console.error);

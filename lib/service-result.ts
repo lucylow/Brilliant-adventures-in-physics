@@ -31,3 +31,19 @@ export function serviceFailure(code: ServiceErrorCode, message: string, retryabl
 export function isServiceSuccess<T>(result: ServiceResult<T>): result is { ok: true; data: T } {
   return result.ok;
 }
+
+export function appErrorToServiceError(error: import("../shared/errors").AppError): ServiceError {
+  const codeMap: Record<string, ServiceErrorCode> = {
+    VALIDATION: "VALIDATION_ERROR",
+    NETWORK: "OFFLINE",
+    TIMEOUT: "TIMEOUT",
+    PERSISTENCE: "RETRYABLE_ERROR",
+    RATE_LIMIT: "RETRYABLE_ERROR",
+    TUTOR_SERVICE: "RETRYABLE_ERROR",
+  };
+  return {
+    code: codeMap[error.code] ?? "UNEXPECTED_ERROR",
+    message: error.userMessage,
+    retryable: error.retryable,
+  };
+}
