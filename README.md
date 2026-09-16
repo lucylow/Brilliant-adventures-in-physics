@@ -13,6 +13,7 @@ The product is built around three pillars:
 ![](https://github.com/lucylow/Brilliant-adventures-in-physics/blob/main/assets/images/Capture.PNG?raw=true)
 ![](https://github.com/lucylow/Brilliant-adventures-in-physics/blob/main/assets/images/76575675.PNG?raw=true)
 ![](https://github.com/lucylow/Brilliant-adventures-in-physics/blob/main/assets/images/00000.PNG?raw=true)
+![](https://github.com/lucylow/Brilliant-adventures-in-physics/blob/main/assets/images/Capture2313.PNG?raw=true)
 
 B.A.V. connects classical physics with quantum physics, atomic and molecular physics, nuclear physics, particle physics, optics, electronics, condensed matter, biophysics, astrophysics, and cosmology.
 
